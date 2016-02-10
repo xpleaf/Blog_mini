@@ -29,6 +29,15 @@ body {
 .article-entry-title a {
     text-decoration: none;
 }
+.article-entry-info {
+    height: 25px;
+}
+.article-entry-info .base-info {
+    float: left;
+}
+.article-entry-info .main-info {
+    float: right;
+}
 .footer {
 	background: #474E5D;
 	padding: 15px 0 5px;
@@ -37,6 +46,12 @@ body {
 .footer-content {
     text-align: center;
     color: #8a6d3b;
+}
+div.pagination {
+    width: 100%;
+    text-align: center;
+    padding: 0px;
+    margin: 0px;
 }
 .footer-content a {
     text-decoration: none;

@@ -27,38 +27,38 @@
            </div>
            <div class="collapse navbar-collapse">
               <ul class="nav navbar-nav">
-                 <li class="active"><a href="/">首页</a></li>
+                 <li class=""><a href="/">首页</a></li>
                  <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">技术文档1 <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-                       <li><a href="#">Python</a></li>
+                       <li><a href="{{ url_for('main.articleTypes', id=ArticleType.query.filter_by(name='Python').first().id) }}">Python</a></li>
                        <li class="divider"></li>
-                       <li><a href="#">Linux</a></li>
+                       <li><a href="{{ url_for('main.articleTypes', id=ArticleType.query.filter_by(name='Linux').first().id) }}">Linux</a></li>
                        <li class="divider"></li>
-                       <li><a href="#">开源技术</a></li>
+                       <li><a href="{{ url_for('main.articleTypes', id=ArticleType.query.filter_by(name='开源技术').first().id) }}">开源技术</a></li>
                     </ul>
                  </li>
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">技术文档2 <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-                       <li><a href="#">网络技术</a></li>
+                       <li><a href="{{ url_for('main.articleTypes', id=ArticleType.query.filter_by(name='网络技术').first().id) }}">网络技术</a></li>
                        <li class="divider"></li>
-                       <li><a href="#">思科网络技术</a></li>
+                       <li><a href="{{ url_for('main.articleTypes', id=ArticleType.query.filter_by(name='思科网络技术').first().id) }}">思科网络技术</a></li>
                        <li class="divider"></li>
-                       <li><a href="#">CCIE</a></li>
+                       <li><a href="{{ url_for('main.articleTypes', id=ArticleType.query.filter_by(name='CCIE').first().id) }}">CCIE</a></li>
                     </ul>
                  </li>
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">爱生活，爱自己 <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-                       <li><a href="#">学校那些事</a></li>
+                       <li><a href="{{ url_for('main.articleTypes', id=ArticleType.query.filter_by(name='学校那些事').first().id) }}">学校那些事</a></li>
                        <li class="divider"></li>
-                       <li><a href="#">感情那些事</a></li>
+                       <li><a href="{{ url_for('main.articleTypes', id=ArticleType.query.filter_by(name='感情那些事').first().id) }}">感情那些事</a></li>
                        <li class="divider"></li>
-                       <li><a href="#">不一样的自己</a></li>
+                       <li><a href="{{ url_for('main.articleTypes', id=ArticleType.query.filter_by(name='不一样的自己').first().id) }}">不一样的自己</a></li>
                     </ul>
                  </li>
               </ul>

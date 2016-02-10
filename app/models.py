@@ -6,21 +6,21 @@ from . import db
 class ArticleType(db.Model):
     __tablename__ = 'articleTypes'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text, unique=True)
+    name = db.Column(db.String(64), unique=True)
     introduction = db.Column(db.String(128))
     articles = db.relationship('Article', backref='articleType', lazy='dynamic')
 
     @staticmethod
     def insert_articleTypes():
-        article_types = {'Python': '记录Python的点点滴滴'.decode('utf8'),
-                 'Linux': '我的Linux成长之路'.decode('utf8'),
-                 '开源技术'.decode('utf8'): '感兴趣的开源技术，当然也有我自己的开源软件'.decode('utf8'),
-                 '网络技术'.decode('utf8'): '大而全的网络技术，没有具体的方向'.decode('utf8'),
-                 '思科网络技术'.decode('utf8'): '主要是思科的路由交换技术'.decode('utf8'),
-                 'CCIE': '因为曾经CCIE这个名词对我有特殊的意义，所以特留一个板块'.decode('utf8'),
-                 '学校那些事'.decode('utf8'): '小学 初中 高中 大学，总有一些刻骨铭心的事'.decode('utf8'),
-                 '感情那些事'.decode('utf8'): '各种情感的交织'.decode('utf8'),
-                 '不一样的自己'.decode('utf8'): '奋斗中的自己'.decode('utf8')}
+        article_types = {'Python': u'记录Python的点点滴滴',
+                 'Linux': u'我的Linux成长之路',
+                 u'开源技术': u'感兴趣的开源技术，当然也有我自己的开源软件',
+                 u'网络技术': u'大而全的网络技术，没有具体的方向',
+                 u'思科网络技术': u'主要是思科的路由交换技术',
+                 'CCIE': u'因为曾经CCIE这个名词对我有特殊的意义，所以特留一个板块',
+                 u'学校那些事': u'小学 初中 高中 大学，总有一些刻骨铭心的事',
+                 u'感情那些事': u'各种情感的交织',
+                 u'不一样的自己': u'奋斗中的自己'}
         for t in article_types:
             article_type = ArticleType.query.filter_by(name=t).first()
             if article_type is None:
@@ -40,9 +40,9 @@ class Source(db.Model):
 
     @staticmethod
     def insert_sources():
-        sources = ('原创'.decode('utf8'),
-                   '转载'.decode('utf8'),
-                   '翻译'.decode('utf8'))
+        sources = (u'原创',
+                   u'转载',
+                   u'翻译')
         for s in sources:
             source = Source.query.filter_by(name=s).first()
             if source is None:
@@ -87,7 +87,7 @@ class Article(db.Model):
     title = db.Column(db.String(64))
     content = db.Column(db.Text)
     summary = db.Column(db.Text)
-    creat_time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    create_time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     update_time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     num_of_view = db.Column(db.Integer, default=0)
     articleType_id = db.Column(db.Integer, db.ForeignKey('articleTypes.id'))
