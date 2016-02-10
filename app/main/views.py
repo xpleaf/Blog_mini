@@ -1,6 +1,6 @@
 from flask import render_template, request, current_app
 from . import main
-from ..models import Article, ArticleType
+from ..models import Article, ArticleType, article_types
 
 
 @main.route('/')
@@ -10,7 +10,7 @@ def index():
             page, per_page=current_app.config['ARTICLES_PER_PAGE'],
             error_out=False)
     articles = pagination.items
-    return render_template('index.html', ArticleType=ArticleType,
+    return render_template('index.html', ArticleType=ArticleType, article_types=article_types,
                            articles=articles, pagination=pagination, endpoint='.index')
 
 
@@ -22,5 +22,5 @@ def articleTypes(id):
             page, per_page=current_app.config['ARTICLES_PER_PAGE'],
             error_out=False)
     articles = pagination.items
-    return render_template('index.html', ArticleType=ArticleType,
+    return render_template('index.html', ArticleType=ArticleType, article_types=article_types,
                            articles=articles, pagination=pagination, endpoint='.articleTypes', id=id)

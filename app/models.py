@@ -2,30 +2,28 @@
 from datetime import datetime
 from . import db
 
+article_types = {u'开发语言': ['Python', 'Java', 'JavaScript'],
+                 'Linux': [u'Linux成长之路', u'Linux运维实战', 'CentOS', 'Ubuntu'],
+                 u'网络技术': [u'思科网络技术', u'其它'],
+                 u'数据库': ['MySQL', 'Redis'],
+                 u'爱生活，爱自己': [u'生活那些事', u'学校那些事',u'感情那些事'],
+                 u'Web开发': ['Flask', 'Django'],}
 
 class ArticleType(db.Model):
     __tablename__ = 'articleTypes'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    introduction = db.Column(db.String(128))
+    introduction = db.Column(db.String(128), default=None)
     articles = db.relationship('Article', backref='articleType', lazy='dynamic')
 
     @staticmethod
     def insert_articleTypes():
-        article_types = {'Python': u'记录Python的点点滴滴',
-                 'Linux': u'我的Linux成长之路',
-                 u'开源技术': u'感兴趣的开源技术，当然也有我自己的开源软件',
-                 u'网络技术': u'大而全的网络技术，没有具体的方向',
-                 u'思科网络技术': u'主要是思科的路由交换技术',
-                 'CCIE': u'因为曾经CCIE这个名词对我有特殊的意义，所以特留一个板块',
-                 u'学校那些事': u'小学 初中 高中 大学，总有一些刻骨铭心的事',
-                 u'感情那些事': u'各种情感的交织',
-                 u'不一样的自己': u'奋斗中的自己'}
-        for t in article_types:
-            article_type = ArticleType.query.filter_by(name=t).first()
-            if article_type is None:
-                article_type = ArticleType(name=t, introduction=article_types[t])
-            db.session.add(article_type)
+        for key in article_types:
+            for t in article_types[key]:
+                article_type = ArticleType.query.filter_by(name=t).first()
+                if article_type is None:
+                    article_type = ArticleType(name=t)
+                db.session.add(article_type)
         db.session.commit()
 
     def __repr__(self):

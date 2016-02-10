@@ -6,6 +6,10 @@
         {% include "article_entry.html" %}
     {% endfor %}
     <div class="pagination">
+    {% if endpoint == '.index' %}
+        {{ macros.pagination_widget(pagination, endpoint) }}
+    {% else %}
         {{ macros.pagination_widget(pagination, endpoint, id=id) }}
+    {% endif %}
     </div>
 {% endblock %}
