@@ -1,16 +1,11 @@
 {% extends 'base.html' %}
+{% import "_macros.html" as macros %}
 
 {% block content %}
-    {% for i in range(7) %}
-        <div id='article' class="entry-box">
-            <div class="article-entry-header">
-                <h3 class="article-entry-title">
-                    <a href="#">Python自动化运开发</a>
-                </h3>
-            </div>
-            <div class="article-entry-sum">
-                <p>详细介绍了作者的Python自动化运维开发之路，其中的辛酸，只有经历过的人才懂</p>
-            </div>
-        </div>
+    {% for article in articles %}
+        {% include "article_entry.html" %}
     {% endfor %}
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, endpoint, id=id) }}
+    </div>
 {% endblock %}
