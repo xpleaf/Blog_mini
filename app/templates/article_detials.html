@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id='article-detials' class="entry-box">
+    {% include '_article_info.html' %}
+    <hr>
+    <div>
+        <p>
+            {{ article.content }}
+        </p>
+    </div>
+    <hr>
+    <h4>评论</h4>
+    {% include "_article_comments.html" %}
+</div>
+{% endblock %}

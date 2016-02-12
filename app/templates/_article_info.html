@@ -1,0 +1,19 @@
+<div class="article-entry-header">
+    <h2 class="article-entry-title">
+        <a href="{{ url_for('.articleDetails', id=article.id) }}">{{ article.title }}</a>
+    </h2>
+</div>
+<div class="article-entry-info">
+    <div class="base-info">
+        <span class="label label-default">{{ article.create_time.date() }}</span>
+        <span class="label label-warning">{{ article.source.name }}</span>
+        <span class="label label-info">{{ article.articleType.name }}</span>
+    </div>
+    <div class="main-info">
+        <span class="label label-primary">浏览 {{ article.num_of_view }}</span>
+        <span class="label label-success">评论 {{ article.comments.count() }}</span>
+    </div>
+</div>
+<div class="article-entry-sum">
+    <p>{{ article.summary }}</p>
+</div>
