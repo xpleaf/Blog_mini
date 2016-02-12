@@ -24,3 +24,10 @@ def articleTypes(id):
     articles = pagination.items
     return render_template('index.html', ArticleType=ArticleType, article_types=article_types,
                            articles=articles, pagination=pagination, endpoint='.articleTypes', id=id)
+
+
+@main.route('/article-detials/<int:id>')
+def articleDetails(id):
+    article = Article.query.get_or_404(id)
+    return render_template('article_detials.html', ArticleType=ArticleType,
+                           article_types=article_types, article=article)

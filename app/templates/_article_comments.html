@@ -1,0 +1,11 @@
+<ul class="comments">
+    {% for comment in article.comments %}
+    <li class="comment">
+        <div class="comment-info">
+            <div class="comment-date"><span>{{ comment.timestamp }}</span></div>
+            <div class="comment-author"><span>{{ comment.author_name }}</span></div>
+            <div class="comment-content">{{ comment.content }}</div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>

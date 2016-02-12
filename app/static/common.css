@@ -30,7 +30,7 @@ body {
     text-decoration: none;
 }
 .article-entry-info {
-    height: 25px;
+    height: 35px;
 }
 .article-entry-info .base-info {
     float: left;
@@ -55,4 +55,30 @@ div.pagination {
 }
 .footer-content a {
     text-decoration: none;
+}
+
+/*CSS For Comments*/
+ul.comments {
+    list-style-type: none;
+    padding: 0px;
+    margin: 16px 0px 0px 0px;
+}
+ul.comments li.comment:nth-child(1) {
+    border-top: 1px solid #e0e0e0;
+}
+ul.comments li.comment {
+    margin-left: 32px;
+    padding: 8px;
+    border-bottom: 1px solid #e0e0e0;
+}
+ul.comments .comment-date {
+    float: right;
+    color: #8c8c8c;
+}
+ul.comments .comment-author {
+    font-weight: bold;
+    color: #337ab7;
+}
+ul.comments .comment-content {
+    margin: 10px 0px 5px 0px;
 }

@@ -2,9 +2,7 @@
 {% import "_macros.html" as macros %}
 
 {% block content %}
-    {% for article in articles %}
-        {% include "article_entry.html" %}
-    {% endfor %}
+    {% include "_article_entry.html" %}
     <div class="pagination">
     {% if endpoint == '.index' %}
         {{ macros.pagination_widget(pagination, endpoint) }}
