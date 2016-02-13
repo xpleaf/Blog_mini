@@ -63,7 +63,8 @@ class Comment(db.Model):
     avatar_hash = db.Column(db.String(32))
     article_id = db.Column(db.Integer, db.ForeignKey('articles.id'))
 
-    def __init__(self):
+    def __init__(self, **kwargs):
+        super(Comment, self).__init__(**kwargs)
         if self.author_email is not None and self.avatar_hash is None:
             self.avatar_hash = hashlib.md5(
                     self.author_email.encode('utf-8')).hexdigest()

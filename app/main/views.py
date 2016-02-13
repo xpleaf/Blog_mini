@@ -40,7 +40,16 @@ def articleDetails(id):
                           author_email=form.email.data)
         db.session.add(comment)
         db.session.commit()
-        return redirect(url_for('.articleDetails', id=article.id))
+        return redirect(url_for('.articleDetails', id=article.id), page=-1)
+    page = request.args.get('page', 1, type=int)
+    if page == -1:
+        page = (article.comments.count() - 1) // \
+            current_app.config['COMMENTS_PER_PAGE'] + 1
+    pagination = article.comments.order_by(Comment.timestamp.asc()).paginate(
+        page, per_page=current_app.config['COMMENTS_PER_PAGE'],
+        error_out=False)
+    comments = pagination.items
     return render_template('article_detials.html', ArticleType=ArticleType,
                            article_types=article_types, article=article,
-                           form=form)
+                           comments=comments, pagination=pagination, form=form,
+                           endpoint='.articleDetails', id=article.id)

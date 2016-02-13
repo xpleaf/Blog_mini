@@ -1,6 +1,6 @@
 <ul class="comments">
-    {% if article.comments.count() %}
-        {% for comment in article.comments %}
+    {% if comments %}
+        {% for comment in comments %}
         <li class="comment">
             <div class="comment-thumbnail">
                 <img class="img-rounded profile-thumbnail" src="{{ comment.gravatar() }}">

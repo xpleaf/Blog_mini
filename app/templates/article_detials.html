@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
+{% import '_macros.html' as macros %}
 
 {% block content %}
 <div id='article-detials' class="entry-box">
@@ -11,8 +12,11 @@
         </p>
     </div>
     <hr>
-    <h4>评论</h4>
+    <h4 id="comments">评论</h4>
     {% include "_article_comments.html" %}
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, endpoint, id=id, fragment='#comments') }}
+    </div>
     <h4>发表评论</h4>
     <div class="row comment-submit">
         <div class="col-md-8">
