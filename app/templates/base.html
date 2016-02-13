@@ -5,8 +5,9 @@
     <title>香飘叶子个人博客</title>
     <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='common.css') }}" rel="stylesheet">
-    <script src="{{ url_for('static', filename='js/jquery-1.12.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
 </head>
 <body>
 <header>
@@ -93,6 +94,17 @@
         <a href="#">香飘叶子</a>
         -专注技术分享
     </p>
+</div>
+<div class="btn-group-vertical floatButton">
+    <button id="goTop" class="btn btn-default" title="去顶部" type="button">
+        <span class="glyphicon glyphicon-arrow-up"></span>
+    </button>
+    <button id="refresh" class="btn btn-default" title="刷新" type="button">
+        <span class="glyphicon glyphicon-refresh"></span>
+    </button>
+    <button id="goBottom" class="btn btn-default" title="去底部" type="button">
+        <span class="glyphicon glyphicon-arrow-down"></span>
+    </button>
 </div>
 </body>
 </html>

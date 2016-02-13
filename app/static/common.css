@@ -82,3 +82,11 @@ ul.comments .comment-author {
 ul.comments .comment-content {
     margin: 10px 0px 5px 0px;
 }
+
+/*CSS For floatButton*/
+.floatButton {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    z-index: 9999999;
+}
