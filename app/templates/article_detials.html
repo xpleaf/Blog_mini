@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block content %}
 <div id='article-detials' class="entry-box">
@@ -12,5 +13,11 @@
     <hr>
     <h4>评论</h4>
     {% include "_article_comments.html" %}
+    <h4>发表评论</h4>
+    <div class="row comment-submit">
+        <div class="col-md-8">
+        {{ wtf.quick_form(form) }}
+        </div>
+    </div>
 </div>
 {% endblock %}

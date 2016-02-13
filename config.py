@@ -10,6 +10,7 @@ class Config():
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data.sqlite')
     ARTICLES_PER_PAGE = 10
+    SECRET_KEY = 'secret key to protect from csrf'
 
     @staticmethod
     def init_app(app):

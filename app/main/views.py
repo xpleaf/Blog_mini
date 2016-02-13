@@ -1,6 +1,9 @@
-from flask import render_template, request, current_app
+from flask import render_template, request, current_app, redirect,\
+    url_for
 from . import main
-from ..models import Article, ArticleType, article_types
+from ..models import Article, ArticleType, article_types, Comment
+from .forms import CommentForm
+from .. import db
 
 
 @main.route('/')
@@ -26,8 +29,18 @@ def articleTypes(id):
                            articles=articles, pagination=pagination, endpoint='.articleTypes', id=id)
 
 
-@main.route('/article-detials/<int:id>')
+@main.route('/article-detials/<int:id>', methods=['GET', 'POST'])
 def articleDetails(id):
+    form = CommentForm()
     article = Article.query.get_or_404(id)
+    if form.validate_on_submit():
+        comment = Comment(article=article,
+                          content=form.content.data,
+                          author_name=form.name.data,
+                          author_email=form.email.data)
+        db.session.add(comment)
+        db.session.commit()
+        return redirect(url_for('.articleDetails', id=article.id))
     return render_template('article_detials.html', ArticleType=ArticleType,
-                           article_types=article_types, article=article)
+                           article_types=article_types, article=article,
+                           form=form)

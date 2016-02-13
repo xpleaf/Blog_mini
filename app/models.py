@@ -1,4 +1,5 @@
 #coding: utf-8
+import hashlib
 from datetime import datetime
 from . import db
 
@@ -59,7 +60,24 @@ class Comment(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     author_name = db.Column(db.String(64))
     author_email = db.Column(db.String(64))
+    avatar_hash = db.Column(db.String(32))
     article_id = db.Column(db.Integer, db.ForeignKey('articles.id'))
+
+    def __init__(self):
+        if self.author_email is not None and self.avatar_hash is None:
+            self.avatar_hash = hashlib.md5(
+                    self.author_email.encode('utf-8')).hexdigest()
+
+    def gravatar(self, size=40, default='identicon', rating='g'):
+        # if request.is_secure:
+        #     url = 'https://secure.gravatar.com/avatar'
+        # else:
+        #     url = 'http://www.gravatar.com/avatar'
+        url = 'http://gravatar.duoshuo.com/avatar'
+        hash = self.avatar_hash or hashlib.md5(
+            self.author_email.encode('utf-8')).hexdigest()
+        return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
+            url=url, hash=hash, size=size, default=default, rating=rating)
 
     @staticmethod
     def generate_fake(count=100):

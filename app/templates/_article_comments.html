@@ -1,11 +1,20 @@
 <ul class="comments">
-    {% for comment in article.comments %}
-    <li class="comment">
-        <div class="comment-info">
-            <div class="comment-date"><span>{{ comment.timestamp }}</span></div>
-            <div class="comment-author"><span>{{ comment.author_name }}</span></div>
-            <div class="comment-content">{{ comment.content }}</div>
-        </div>
-    </li>
-    {% endfor %}
+    {% if article.comments.count() %}
+        {% for comment in article.comments %}
+        <li class="comment">
+            <div class="comment-thumbnail">
+                <img class="img-rounded profile-thumbnail" src="{{ comment.gravatar() }}">
+            </div>
+            <div class="comment-info">
+                <div class="comment-date"><span>{{ comment.timestamp.replace(microsecond=0) }}</span></div>
+                <div class="comment-author"><span>{{ comment.author_name }}</span></div>
+                <div class="comment-content">{{ comment.content }}</div>
+            </div>
+        </li>
+        {% endfor %}
+    {% else %}
+        <li class="comment">
+            <div class="comment-content">暂无评论</div>
+        </li>
+    {% endif %}
 </ul>

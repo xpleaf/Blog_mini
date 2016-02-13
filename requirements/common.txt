@@ -2,6 +2,9 @@ Flask==0.10.1
 Flask-Script==2.0.5
 Flask-SQLAlchemy==2.1
 Flask-Migrate==1.7.0
+Flask-WTF==0.12
+Flask-Bootstrap==0.1.2
+WTForms==2.1
 itsdangerous==0.24
 Jinja2==2.8
 MarkupSafe==0.23

@@ -71,6 +71,19 @@ ul.comments li.comment {
     padding: 8px;
     border-bottom: 1px solid #e0e0e0;
 }
+div.comment-thumbnail {
+    position: absolute;
+}
+.profile-thumbnail {
+    position: absolute;
+}
+div.comment-info {
+    margin-left: 48px;
+    min-height: 48px;
+}
+ul.comments li.comment:hover {
+    background-color: #f0f0f0;
+}
 ul.comments .comment-date {
     float: right;
     color: #8c8c8c;
@@ -79,8 +92,10 @@ ul.comments .comment-author {
     font-weight: bold;
     color: #337ab7;
 }
-ul.comments .comment-content {
-    margin: 10px 0px 5px 0px;
+
+/*CSS For submit comment*/
+.comment-submit {
+    margin-left: 25px;
 }
 
 /*CSS For floatButton*/
