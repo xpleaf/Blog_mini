@@ -127,7 +127,7 @@ class Article(db.Model):
                         content=forgery_py.lorem_ipsum.sentences(randint(15, 35)),
                         summary=forgery_py.lorem_ipsum.sentences(randint(2, 5)),
                         num_of_view=randint(100, 15000),
-                        articleType=aT,source=s)
+                        articleType=aT, source=s)
             db.session.add(a)
             try:
                 db.session.commit()

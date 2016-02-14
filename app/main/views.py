@@ -1,5 +1,6 @@
+#coding:utf-8
 from flask import render_template, request, current_app, redirect,\
-    url_for
+    url_for, flash
 from . import main
 from ..models import Article, ArticleType, article_types, Comment
 from .forms import CommentForm
@@ -40,7 +41,8 @@ def articleDetails(id):
                           author_email=form.email.data)
         db.session.add(comment)
         db.session.commit()
-        return redirect(url_for('.articleDetails', id=article.id), page=-1)
+        flash(u'提交评论成功！')
+        return redirect(url_for('.articleDetails', id=article.id, page=-1))
     page = request.args.get('page', 1, type=int)
     if page == -1:
         page = (article.comments.count() - 1) // \
