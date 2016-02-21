@@ -18,5 +18,6 @@ tinymce.init({
      print preview media fullpage | \
      forecolor backcolor emoticons |\
      codesample fontsizeselect fullscreen',
-    fontsize_formats: '10pt 12pt 14pt 18pt 24pt 36pt'
+    fontsize_formats: '10pt 12pt 14pt 18pt 24pt 36pt',
+    nonbreaking_force_tab: true
 });

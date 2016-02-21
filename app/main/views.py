@@ -34,6 +34,7 @@ def articleTypes(id):
 def articleDetails(id):
     form = CommentForm()
     article = Article.query.get_or_404(id)
+
     if form.validate_on_submit():
         comment = Comment(article=article,
                           content=form.content.data,
@@ -41,8 +42,11 @@ def articleDetails(id):
                           author_email=form.email.data)
         db.session.add(comment)
         db.session.commit()
-        flash(u'提交评论成功！')
+        flash(u'提交评论成功！', 'success')
         return redirect(url_for('.articleDetails', id=article.id, page=-1))
+    if form.errors:
+        flash(u'发表评论失败', 'danger')
+
     page = request.args.get('page', 1, type=int)
     if page == -1:
         page = (article.comments.count() - 1) // \

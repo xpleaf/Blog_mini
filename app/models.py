@@ -101,7 +101,7 @@ class Comment(db.Model):
 class Article(db.Model):
     __tablename__ = 'articles'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(64))
+    title = db.Column(db.String(64), unique=True)
     content = db.Column(db.Text)
     summary = db.Column(db.Text)
     create_time = db.Column(db.DateTime, index=True, default=datetime.utcnow)

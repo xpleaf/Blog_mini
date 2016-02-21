@@ -2,16 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <title>香飘叶子个人博客</title>
     {% block stylesheet %}
     <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/common.css') }}" rel="stylesheet">
-    {% endblock %}
-
-    {% block script %}
-    <script src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/floatButton.js') }}"></script>
     {% endblock %}
 </head>
 <body>
@@ -58,9 +53,9 @@
     <div class="container">
     <div class="row">
         <div class="col-md-8 article">
-            {% for message in get_flashed_messages() %}
-                <div class="alert alert-success">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+                <div class="alert alert-{{category}} alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     {{ message }}
                 </div>
             {% endfor %}
@@ -117,5 +112,10 @@
         <span class="glyphicon glyphicon-arrow-down"></span>
     </button>
 </div>
+{% block script %}
+    <script src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/floatButton.js') }}"></script>
+{% endblock %}
 </body>
 </html>
