@@ -1,2 +1,2 @@
-# flask_catalog
+# Blog_mini
 An open souce blog system.
