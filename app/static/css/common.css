@@ -105,3 +105,20 @@ ul.comments .comment-author {
     right: 0;
     z-index: 9999999;
 }
+
+/*CSS For submit article*/
+.submit-article-title {
+    width: 450px;
+}
+.submit-article-editor {
+    margin: 10px 0px 10px 0px;
+}
+.submit-article-summary {
+    width: 500px;
+}
+.submit-article-button {
+    text-align: center;
+}
+/*.submit-article-button {*/
+    /*margin: auto;*/
+/*}*/

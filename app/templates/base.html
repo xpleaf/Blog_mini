@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>香飘叶子个人博客</title>
+    {% block stylesheet %}
     <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='common.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/common.css') }}" rel="stylesheet">
+    {% endblock %}
+
+    {% block script %}
     <script src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
-    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/floatButton.js') }}"></script>
+    {% endblock %}
 </head>
 <body>
 <header>
