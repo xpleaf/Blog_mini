@@ -11,13 +11,26 @@
             {{ article.content | safe }}
         </p>
     </div>
+    <div class="article-add-info">
+        <p><span class="glyphicon glyphicon-time">博文最后更新时间：{{ article.update_time.date() }}</span></p>
+    </div>
+    {% if current_user.is_authenticated %}
+    <div class="article-edit">
+        <a href="{{ url_for('admin.editArticles', id=article.id) }}">
+            <button type="button" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-pencil"></span>
+                编辑
+            </button>
+        </a>
+    </div>
+    {% endif %}
     <hr>
-    <h4 id="comments">评论</h4>
+    <h4 id="comments"><span class="glyphicon glyphicon-comment">评论</span></h4>
     {% include "_article_comments.html" %}
     <div class="pagination">
         {{ macros.pagination_widget(pagination, endpoint, id=id, fragment='#comments') }}
     </div>
-    <h4>发表评论</h4>
+    <h4><span class="glyphicon glyphicon-comment">发表评论</span></h4>
     <div class="row comment-submit">
         <div class="col-md-8">
         {{ wtf.quick_form(form) }}

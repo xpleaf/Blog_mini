@@ -1,4 +1,5 @@
 # coding:utf-8
+from datetime import datetime
 from flask import render_template, redirect, flash, \
     url_for
 from flask.ext.login import login_required
@@ -35,10 +36,36 @@ def submitArticles():
             db.session.commit()
             flash(u'发表文章成功！', 'success')
             article_id = Article.query.filter_by(title=title).first().id
-            return redirect(url_for('main.articleDetails', ArticleType=ArticleType,
-                           article_types=article_types, id=article_id))
+            return redirect(url_for('main.articleDetails', id=article_id))
     if form.errors:
         flash(u'发表文章失败', 'danger')
 
     return render_template('admin/submit_articles.html', ArticleType=ArticleType,
                            article_types=article_types, form=form)
+
+
+@admin.route('/edit-articles/<int:id>', methods=['GET', 'POST'])
+@login_required
+def editArticles(id):
+    article = Article.query.get_or_404(id)
+    form = SubmitArticlesForm()
+
+    sources = [(s.id, s.name) for s in Source.query.all()]
+    form.source.choices = sources
+    types = [(t.id, t.name) for t in ArticleType.query.all()]
+    form.types.choices = types
+
+    if form.validate_on_submit():
+        article.content = form.content.data
+        article.update_time = datetime.utcnow()
+        db.session.add(article)
+        db.session.commit()
+        flash(u'博文更新成功！', 'success')
+        return redirect(url_for('main.articleDetails', id=article.id))
+    form.source.data = article.source_id
+    form.title.data = article.title
+    form.content.data = article.content
+    form.types.data = article.articleType_id
+    form.summary.data = article.summary
+    return render_template('admin/submit_articles.html', ArticleType=ArticleType, article_types=article_types,
+                           form=form)

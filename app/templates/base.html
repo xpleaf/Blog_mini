@@ -28,7 +28,7 @@
            </div>
            <div class="collapse navbar-collapse">
               <ul class="nav navbar-nav">
-                 <li class=""><a href="/">首页</a></li>
+                 <li class=""><a href="/"><span class="glyphicon glyphicon-home"> 首页</span></a></li>
                   {% for key in article_types %}
                       <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ key }} <b class="caret"></b></a>
@@ -47,7 +47,7 @@
               </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('admin.submitArticles') }}">发表博文</a></li>
+                        <li><a href="{{ url_for('admin.submitArticles') }}"><span class="glyphicon glyphicon-file">发表博文</span></a></li>
                     {% endif %}
                 </ul>
            </div>
@@ -106,11 +106,11 @@
         -专注技术分享
         {% if current_user.is_authenticated %}
         -<a href="{{ url_for('auth.logout') }}">
-            <span class="label label-danger">退出登陆</span>
+            <span class="glyphicon glyphicon-user">退出登陆</span>
         </a>
         {% else %}
         -<a href="{{ url_for('auth.login') }}">
-            <span class="label label-info">后台管理</span>
+            <span class="glyphicon glyphicon-wrench">后台管理</span>
         </a>
         {% endif %}
     </p>

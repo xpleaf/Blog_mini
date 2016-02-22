@@ -122,3 +122,8 @@ ul.comments .comment-author {
 /*.submit-article-button {*/
     /*margin: auto;*/
 /*}*/
+
+/*CSS For edit article*/
+.article-edit {
+    text-align: right;
+}
