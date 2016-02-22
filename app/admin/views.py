@@ -1,6 +1,7 @@
 # coding:utf-8
 from flask import render_template, redirect, flash, \
     url_for
+from flask.ext.login import login_required
 from . import admin
 from ..models import ArticleType, Source, Article, article_types
 from .forms import SubmitArticlesForm
@@ -8,6 +9,7 @@ from .. import db
 
 
 @admin.route('/submit-articles', methods=['GET', 'POST'])
+@login_required
 def submitArticles():
     form = SubmitArticlesForm()
 
