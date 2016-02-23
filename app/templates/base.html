@@ -48,12 +48,14 @@
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_authenticated %}
                         <li><a href="{{ url_for('admin.submitArticles') }}"><span class="glyphicon glyphicon-file">发表博文</span></a></li>
+                        <li><a href="{{ url_for('admin.manager') }}"><span class="glyphicon glyphicon-user">管理博客</span></a></li>
                     {% endif %}
                 </ul>
            </div>
         </div>
     </nav>
 </header>
+{% block Content %}
 <div class="content">
     <div class="container">
     <div class="row">
@@ -68,6 +70,7 @@
             {% endblock %}
         </div>
         <div class="col-md-4 blog_nav">
+            {% block blog_nav_plugin %}
             <div id='about' class="entry-box">
                 <h5><strong>关于香飘叶子</strong></h5>
                 <p>
@@ -95,10 +98,12 @@
                 <p>51cto博客：<a href="http://xpleaf.blog.51cto.com/" target="_blank">http://xpleaf.blog.51cto.com/</a></p>
                 <p>GitHub：<a href="https://github.com/xpleaf" target="_blank">https://github.com/xpleaf</a></p>
             </div>
+            {% endblock %}
         </div>
     </div>
 </div>
 </div>
+{% endblock %}
 <div class="footer">
     <p class="footer-content">
         @2016

@@ -9,6 +9,12 @@ from .forms import SubmitArticlesForm
 from .. import db
 
 
+@admin.route('/', methods=['GET', 'POST'])
+@login_required
+def manager():
+    return render_template('admin/admin_base.html', ArticleType=ArticleType, article_types=article_types)
+
+
 @admin.route('/submit-articles', methods=['GET', 'POST'])
 @login_required
 def submitArticles():

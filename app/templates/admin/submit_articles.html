@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'admin/admin_base.html' %}
 
 {% block stylesheet %}
     {{ super() }}
@@ -9,10 +9,11 @@
 {% block script %}
     {{ super() }}
     <script src="{{ url_for('static', filename='tinymce/js/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='tinymce/js/tinymce/plugins/codesample/plugin.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/tinymce_setup.js') }}"></script>
 {% endblock %}
 
-{% block content %}
+{% block admin_content %}
 <div class="entry-box submit-article">
     <h4><strong>发表博文</strong></h4>
     <hr/>
