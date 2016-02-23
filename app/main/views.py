@@ -55,6 +55,7 @@ def articleDetails(id):
         page, per_page=current_app.config['COMMENTS_PER_PAGE'],
         error_out=False)
     comments = pagination.items
+    article.add_view(article, db)
     return render_template('article_detials.html', ArticleType=ArticleType,
                            article_types=article_types, article=article,
                            comments=comments, pagination=pagination, form=form,

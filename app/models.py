@@ -161,5 +161,11 @@ class Article(db.Model):
             except IntegrityError:
                 db.session.rollback()
 
+    @staticmethod
+    def add_view(article, db):
+        article.num_of_view += 1
+        db.session.add(article)
+        db.session.commit()
+
     def __repr__(self):
         return '<Article %r>' % self.title
