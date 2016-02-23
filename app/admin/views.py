@@ -56,7 +56,11 @@ def editArticles(id):
     form.types.choices = types
 
     if form.validate_on_submit():
+        article.title = form.title.data
+        article.source_id = form.source.data
         article.content = form.content.data
+        article.type_id = form.types.data
+        article.summary = form.summary.data
         article.update_time = datetime.utcnow()
         db.session.add(article)
         db.session.commit()
