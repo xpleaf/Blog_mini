@@ -93,9 +93,15 @@ def manageArticles():
     sources.append((-1, u'全部来源'))
     form.source.choices = sources
 
-    if form.validate_on_submit():
-        types_id = form.types.data
-        source_id = form.source.data
+    types_id = request.args.get('types_id')
+    source_id = request.args.get('source_id')
+    if form.validate_on_submit() or (types_id is not None and source_id is not None):
+        if form.validate_on_submit():
+            types_id = form.types.data
+            source_id = form.source.data
+        else:
+            types_id = int(types_id)
+            source_id = int(source_id)
         page = request.args.get('page', 1, type=int)
 
         result = Article.query.order_by(Article.create_time.desc())
@@ -110,7 +116,7 @@ def manageArticles():
         articles = pagination.items
         return render_template('admin/manage_articles.html', ArticleType=ArticleType, article_types=article_types,
                                Article=Article, articles=articles, pagination=pagination,
-                               endpoint='admin.manageArticles', form=form)
+                               endpoint='admin.manageArticles', form=form, types_id=types_id, source_id=source_id)
 
     page = request.args.get('page', 1, type=int)
     pagination = Article.query.order_by(Article.create_time.desc()).paginate(
