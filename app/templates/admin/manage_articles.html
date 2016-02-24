@@ -1,0 +1,43 @@
+{% extends 'admin/admin_base.html' %}
+{% import "_macros.html" as macros %}
+
+{% block admin_content %}
+<div class="entry-box manage-articles">
+    <h4><strong>管理博文</strong></h4>
+    <hr/>
+    <p><span class="glyphicon glyphicon-file"></span>博文总数：{{ Article.query.count() }}</p>
+    <div class="row articles-list">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>全选</th>
+                <th style="text-align: center">博文标题</th>
+                <th>来源</th>
+                <th>分类</th>
+                <th>发表日期</th>
+                <th align="center">编辑</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for article in articles %}
+            <tr>
+                <td>选择</td>
+                <td style="text-align: left"><a href="{{ url_for('main.articleDetails', id=article.id) }}" target="_blank">{{ article.title }}</a></td>
+                <td>{{ article.source.name }}</td>
+                <td>{{ article.articleType.name }}</td>
+                <td>{{ article.create_time.replace(microsecond=0) }}</td>
+                <td>
+                    <a href="{{ url_for('admin.editArticles', id=article.id) }}">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="pagination">
+            {{ macros.pagination_widget(pagination, endpoint) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

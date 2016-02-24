@@ -1,7 +1,7 @@
 # coding:utf-8
 from datetime import datetime
 from flask import render_template, redirect, flash, \
-    url_for
+    url_for, request, current_app
 from flask.ext.login import login_required
 from . import admin
 from ..models import ArticleType, Source, Article, article_types
@@ -79,3 +79,16 @@ def editArticles(id):
     form.summary.data = article.summary
     return render_template('admin/submit_articles.html', ArticleType=ArticleType, article_types=article_types,
                            form=form)
+
+
+@admin.route('/manage-articles', methods=['GET', 'POST'])
+@login_required
+def manageArticles():
+    page = request.args.get('page', 1, type=int)
+    pagination = Article.query.order_by(Article.create_time.desc()).paginate(
+            page, per_page=current_app.config['ARTICLES_PER_PAGE'],
+            error_out=False)
+    articles = pagination.items
+    return render_template('admin/manage_articles.html', ArticleType=ArticleType, article_types=article_types,
+                           Article=Article, articles=articles,
+                           pagination=pagination,endpoint='admin.manageArticles')

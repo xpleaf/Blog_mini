@@ -127,3 +127,15 @@ ul.comments .comment-author {
 .article-edit {
     text-align: right;
 }
+
+/*CSS For manage articles*/
+.articles-list {
+    margin-left: 30px;
+    margin-right: 30px;
+}
+.manage-articles th {
+    text-align: center;
+}
+.manage-articles td {
+    text-align: center;
+}
