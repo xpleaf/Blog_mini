@@ -84,7 +84,9 @@ def editArticles(id):
 @admin.route('/manage-articles', methods=['GET', 'POST'])
 @login_required
 def manageArticles():
-    form = ManageArticlesForm()
+    types_id = -1
+    source_id = -1
+    form = ManageArticlesForm(request.form, types=types_id, source=source_id)
 
     types = [(t.id, t.name) for t in ArticleType.query.all()]
     types.append((-1, u'全部分类'))
@@ -93,16 +95,18 @@ def manageArticles():
     sources.append((-1, u'全部来源'))
     form.source.choices = sources
 
-    types_id = request.args.get('types_id')
-    source_id = request.args.get('source_id')
-    if form.validate_on_submit() or (types_id is not None and source_id is not None):
+    if form.validate_on_submit() or \
+            (request.args.get('types_id') is not None and request.args.get('source_id') is not None):
         if form.validate_on_submit():
             types_id = form.types.data
             source_id = form.source.data
+            page = 1
         else:
-            types_id = int(types_id)
-            source_id = int(source_id)
-        page = request.args.get('page', 1, type=int)
+            types_id = int(request.args.get('types_id'))
+            source_id = int(request.args.get('source_id'))
+            form.types.data = types_id
+            form.source.data = source_id
+            page = request.args.get('page', 1, type=int)
 
         result = Article.query.order_by(Article.create_time.desc())
         if types_id != -1:
@@ -125,4 +129,4 @@ def manageArticles():
     articles = pagination.items
     return render_template('admin/manage_articles.html', ArticleType=ArticleType, article_types=article_types,
                            Article=Article, articles=articles, pagination=pagination, endpoint='admin.manageArticles',
-                           form=form)
+                           form=form, types_id=types_id, source_id=source_id)

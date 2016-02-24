@@ -10,8 +10,8 @@
         <form class="manage-articles" method="post" action="">
             {{ form.csrf_token }}
             <div class="form-group">
-                {{ form.types(class='', required='') }}
-                {{ form.source(class='', required='') }}
+                {{ form.types(class='', required='', id='types_choice') }}
+                {{ form.source(class='', required='', id='source_choice') }}
                 <button type="submit" class="btn btn-sm btn-default">筛选</button>
             </div>
         </form>
