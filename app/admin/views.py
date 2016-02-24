@@ -86,12 +86,12 @@ def editArticles(id):
 def manageArticles():
     form = ManageArticlesForm()
 
-    sources = [(s.id, s.name) for s in Source.query.all()]
-    sources.append((-1, u'全部分类'))
-    form.source.choices = sources
     types = [(t.id, t.name) for t in ArticleType.query.all()]
-    types.append((-1, u'全部来源'))
+    types.append((-1, u'全部分类'))
     form.types.choices = types
+    sources = [(s.id, s.name) for s in Source.query.all()]
+    sources.append((-1, u'全部来源'))
+    form.source.choices = sources
 
     if form.validate_on_submit():
         types_id = form.types.data
