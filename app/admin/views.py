@@ -98,24 +98,14 @@ def manageArticles():
         source_id = form.source.data
         page = request.args.get('page', 1, type=int)
 
-        if types_id == -1 and source_id != -1:
-            source = Source.query.get_or_404(source_id)
-            pagination = Article.query.order_by(Article.create_time.desc()).filter_by(source=source).paginate(
-                    page, per_page=current_app.config['ARTICLES_PER_PAGE'],error_out=False)
-        elif source_id == -1 and types_id != -1:
+        result = Article.query.order_by(Article.create_time.desc())
+        if types_id != -1:
             articleType = ArticleType.query.get_or_404(types_id)
-            pagination = Article.query.order_by(Article.create_time.desc()).filter_by(
-                    articleType=articleType).paginate(
-                    page, per_page=current_app.config['ARTICLES_PER_PAGE'],error_out=False)
-        elif source_id == -1 and types_id == -1:
-            pagination = Article.query.order_by(Article.create_time.desc()).paginate(
-                    page, per_page=current_app.config['ARTICLES_PER_PAGE'], error_out=False)
-        else:
+            result = result.filter_by(articleType=articleType)
+        if source_id != -1:
             source = Source.query.get_or_404(source_id)
-            articleType = ArticleType.query.get_or_404(types_id)
-            pagination = Article.query.order_by(Article.create_time.desc()).filter_by(
-                    source=source).filter_by(articleType=articleType).paginate(
-                    page, per_page=current_app.config['ARTICLES_PER_PAGE'],error_out=False)
+            result = result.filter_by(source=source)
+        pagination = result.paginate(page, per_page=current_app.config['ARTICLES_PER_PAGE'], error_out=False)
 
         articles = pagination.items
         return render_template('admin/manage_articles.html', ArticleType=ArticleType, article_types=article_types,
