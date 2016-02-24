@@ -10,9 +10,15 @@
         <form class="manage-articles" method="post" action="">
             {{ form.csrf_token }}
             <div class="form-group">
-                {{ form.types(class='', required='', id='types_choice') }}
-                {{ form.source(class='', required='', id='source_choice') }}
-                <button type="submit" class="btn btn-sm btn-default">筛选</button>
+                <div class="col-sm-2">
+                    {{ form.types(class='form-control', required='', id='types_choice') }}
+                </div>
+                <div class="col-sm-2">
+                    {{ form.source(class='form-control', required='', id='source_choice') }}
+                </div>
+                <button type="submit" class="btn btn-default">
+                    <span class="glyphicon glyphicon-search"></span> 筛选
+                </button>
             </div>
         </form>
         <table class="table table-striped table-hover">
