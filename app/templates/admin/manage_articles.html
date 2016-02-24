@@ -7,6 +7,14 @@
     <hr/>
     <p><span class="glyphicon glyphicon-file"></span>博文总数：{{ Article.query.count() }}</p>
     <div class="row articles-list">
+        <form class="manage-articles" method="post" action="">
+            {{ form.csrf_token }}
+            <div class="form-group">
+                {{ form.types(class='', required='') }}
+                {{ form.source(class='', required='') }}
+                <button type="submit" class="btn btn-sm btn-default">筛选</button>
+            </div>
+        </form>
         <table class="table table-striped">
             <thead>
             <tr>

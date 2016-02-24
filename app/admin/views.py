@@ -5,7 +5,7 @@ from flask import render_template, redirect, flash, \
 from flask.ext.login import login_required
 from . import admin
 from ..models import ArticleType, Source, Article, article_types
-from .forms import SubmitArticlesForm
+from .forms import SubmitArticlesForm, ManageArticlesForm
 from .. import db
 
 
@@ -84,11 +84,49 @@ def editArticles(id):
 @admin.route('/manage-articles', methods=['GET', 'POST'])
 @login_required
 def manageArticles():
+    form = ManageArticlesForm()
+
+    sources = [(s.id, s.name) for s in Source.query.all()]
+    sources.append((-1, u'全部分类'))
+    form.source.choices = sources
+    types = [(t.id, t.name) for t in ArticleType.query.all()]
+    types.append((-1, u'全部来源'))
+    form.types.choices = types
+
+    if form.validate_on_submit():
+        types_id = form.types.data
+        source_id = form.source.data
+        page = request.args.get('page', 1, type=int)
+
+        if types_id == -1 and source_id != -1:
+            source = Source.query.get_or_404(source_id)
+            pagination = Article.query.order_by(Article.create_time.desc()).filter_by(source=source).paginate(
+                    page, per_page=current_app.config['ARTICLES_PER_PAGE'],error_out=False)
+        elif source_id == -1 and types_id != -1:
+            articleType = ArticleType.query.get_or_404(types_id)
+            pagination = Article.query.order_by(Article.create_time.desc()).filter_by(
+                    articleType=articleType).paginate(
+                    page, per_page=current_app.config['ARTICLES_PER_PAGE'],error_out=False)
+        elif source_id == -1 and types_id == -1:
+            pagination = Article.query.order_by(Article.create_time.desc()).paginate(
+                    page, per_page=current_app.config['ARTICLES_PER_PAGE'], error_out=False)
+        else:
+            source = Source.query.get_or_404(source_id)
+            articleType = ArticleType.query.get_or_404(types_id)
+            pagination = Article.query.order_by(Article.create_time.desc()).filter_by(
+                    source=source).filter_by(articleType=articleType).paginate(
+                    page, per_page=current_app.config['ARTICLES_PER_PAGE'],error_out=False)
+
+        articles = pagination.items
+        return render_template('admin/manage_articles.html', ArticleType=ArticleType, article_types=article_types,
+                               Article=Article, articles=articles, pagination=pagination,
+                               endpoint='admin.manageArticles', form=form)
+
     page = request.args.get('page', 1, type=int)
     pagination = Article.query.order_by(Article.create_time.desc()).paginate(
             page, per_page=current_app.config['ARTICLES_PER_PAGE'],
             error_out=False)
     articles = pagination.items
     return render_template('admin/manage_articles.html', ArticleType=ArticleType, article_types=article_types,
-                           Article=Article, articles=articles,
-                           pagination=pagination,endpoint='admin.manageArticles')
+                           Article=Article, articles=articles, pagination=pagination, endpoint='admin.manageArticles',
+                           form=form)
