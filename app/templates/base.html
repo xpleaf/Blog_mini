@@ -131,9 +131,11 @@
         <span class="glyphicon glyphicon-arrow-down"></span>
     </button>
 </div>
+{% block script_jquery %}
+    <script src="{{ url_for('static', filename='js/jquery-2.2.1.min.js') }}"></script>
+{% endblock %}
 {% block script %}
-    <script src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/floatButton.js') }}"></script>
 {% endblock %}
 </body>

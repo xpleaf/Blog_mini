@@ -23,9 +23,9 @@
         </form>
         <table class="table table-striped table-hover">
             <thead>
-            <tr>
-                <th>全选</th>
-                <th style="text-align: center">博文标题</th>
+            <tr class="table-header">
+                <th class="table-checkbox-or-left"><input type="checkbox" id="select-all">全选</th>
+                <th>博文标题</th>
                 <th>来源</th>
                 <th>分类</th>
                 <th>发表日期</th>
@@ -35,8 +35,8 @@
             <tbody>
             {% for article in articles %}
             <tr>
-                <td>选择</td>
-                <td style="text-align: left"><a href="{{ url_for('main.articleDetails', id=article.id) }}" target="_blank">{{ article.title }}</a></td>
+                <td class="table-checkbox-or-left"><input type="checkbox" class="select-article" value="{{ article.id }}"></td>
+                <td class="table-checkbox-or-left"><a href="{{ url_for('main.articleDetails', id=article.id) }}" target="_blank">{{ article.title }}</a></td>
                 <td>{{ article.source.name }}</td>
                 <td>{{ article.articleType.name }}</td>
                 <td>{{ article.create_time.replace(microsecond=0) }}</td>
@@ -54,4 +54,13 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{#Using script-jquery block to solve the problem of checkbox in jquery-2.x.x#}
+{% block script_jquery %}
+    <script src="{{ url_for('static', filename='js/jquery-1.8.3.min.js') }}"></script>
+{% endblock %}
+
+{% block script %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='js/selectArticles.js') }}"></script>
 {% endblock %}

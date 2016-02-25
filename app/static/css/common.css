@@ -139,3 +139,9 @@ ul.comments .comment-author {
 .manage-articles td {
     text-align: center;
 }
+.manage-articles .table-header {
+    background-color: #779ecb
+}
+.manage-articles .table-checkbox-or-left {
+    text-align: left;
+}
