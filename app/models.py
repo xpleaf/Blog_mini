@@ -52,7 +52,10 @@ class ArticleType(db.Model):
                 if article_type is None:
                     article_type = ArticleType(name=t)
                 db.session.add(article_type)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
 
     def __repr__(self):
         return '<Type %r>' % self.name
@@ -122,7 +125,10 @@ class Comment(db.Model):
                         author_email=forgery_py.internet.email_address(),
                         article=a)
             db.session.add(c)
+        try:
             db.session.commit()
+        except:
+            db.session.rollback()
 
 
 class Article(db.Model):

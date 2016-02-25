@@ -17,3 +17,6 @@ class SubmitArticlesForm(CommonForm):
 
 class ManageArticlesForm(CommonForm):
     pass
+
+class DeleteArticleForm(Form):
+    articleId = StringField(validators=[DataRequired()])

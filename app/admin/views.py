@@ -5,7 +5,7 @@ from flask import render_template, redirect, flash, \
 from flask.ext.login import login_required
 from . import admin
 from ..models import ArticleType, Source, Article, article_types
-from .forms import SubmitArticlesForm, ManageArticlesForm
+from .forms import SubmitArticlesForm, ManageArticlesForm, DeleteArticleForm
 from .. import db
 
 
@@ -50,7 +50,7 @@ def submitArticles():
                            article_types=article_types, form=form)
 
 
-@admin.route('/edit-articles/<int:id>', methods=['GET', 'POST'])
+@admin.route('/edit-articles/<int:id>')
 @login_required
 def editArticles(id):
     article = Article.query.get_or_404(id)
@@ -84,9 +84,10 @@ def editArticles(id):
 @admin.route('/manage-articles', methods=['GET', 'POST'])
 @login_required
 def manageArticles():
-    types_id = -1
-    source_id = -1
+    types_id = request.args.get('types_id', -1, type=int)
+    source_id = request.args.get('source_id', -1, type=int)
     form = ManageArticlesForm(request.form, types=types_id, source=source_id)
+    form2 = DeleteArticleForm()
 
     types = [(t.id, t.name) for t in ArticleType.query.all()]
     types.append((-1, u'全部分类'))
@@ -102,8 +103,8 @@ def manageArticles():
             source_id = form.source.data
             page = 1
         else:
-            types_id = int(request.args.get('types_id'))
-            source_id = int(request.args.get('source_id'))
+            types_id = request.args.get('types_id', type=int)
+            source_id = request.args.get('source_id', type=int)
             form.types.data = types_id
             form.source.data = source_id
             page = request.args.get('page', 1, type=int)
@@ -120,7 +121,8 @@ def manageArticles():
         articles = pagination.items
         return render_template('admin/manage_articles.html', ArticleType=ArticleType, article_types=article_types,
                                Article=Article, articles=articles, pagination=pagination,
-                               endpoint='admin.manageArticles', form=form, types_id=types_id, source_id=source_id)
+                               endpoint='admin.manageArticles',
+                               form=form, form2=form2, types_id=types_id, source_id=source_id)
 
     page = request.args.get('page', 1, type=int)
     pagination = Article.query.order_by(Article.create_time.desc()).paginate(
@@ -129,4 +131,31 @@ def manageArticles():
     articles = pagination.items
     return render_template('admin/manage_articles.html', ArticleType=ArticleType, article_types=article_types,
                            Article=Article, articles=articles, pagination=pagination, endpoint='admin.manageArticles',
-                           form=form, types_id=types_id, source_id=source_id)
+                           form=form, form2=form2, types_id=types_id, source_id=source_id)
+
+
+@admin.route('/manage-articles/delete', methods=['GET', 'POST'])
+@login_required
+def deleteArticle():
+    types_id = request.args.get('types_id', -1, type=int)
+    source_id = request.args.get('source_id', -1, type=int)
+    form = DeleteArticleForm()
+
+    if form.validate_on_submit():
+        articleId = int(form.articleId.data)
+        article = Article.query.get_or_404(articleId)
+        for comment in article.comments:
+            db.session.delete(comment)
+        db.session.delete(article)
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash(u'删除失败！', 'danger')
+            return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
+        else:
+            flash(u'删除成功！', 'success')
+            return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
+    if form.errors:
+        flash(u'删除失败！', 'danger')
+        return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))

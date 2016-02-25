@@ -5,7 +5,7 @@
 <div class="entry-box manage-articles">
     <h4><strong>管理博文</strong></h4>
     <hr/>
-    <p><span class="glyphicon glyphicon-file"></span>博文总数：{{ Article.query.count() }}</p>
+    <p><span class="glyphicon glyphicon-file"></span>博文总数：<span class="badge">{{ Article.query.count() }}</span></p>
     <div class="row articles-list">
         <form class="manage-articles" method="post" action="">
             {{ form.csrf_token }}
@@ -16,7 +16,7 @@
                 <div class="col-sm-2">
                     {{ form.source(class='form-control', required='', id='source_choice') }}
                 </div>
-                <button type="submit" class="btn btn-default">
+                <button type="submit" class="btn btn-primary">
                     <span class="glyphicon glyphicon-search"></span> 筛选
                 </button>
             </div>
@@ -29,7 +29,8 @@
                 <th>来源</th>
                 <th>分类</th>
                 <th>发表日期</th>
-                <th align="center">编辑</th>
+                <th>编辑</th>
+                <th>删除</th>
             </tr>
             </thead>
             <tbody>
@@ -45,6 +46,17 @@
                         <span class="glyphicon glyphicon-pencil"></span>
                     </a>
                 </td>
+                <td>
+                    <form class="delete-article" id="delForm{{ article.id }}" method="post"
+                          action="{{ url_for('admin.deleteArticle', types_id=types_id, source_id=source_id) }}">
+                        {{ form2.csrf_token }}
+                        {{ form2.articleId(type='hidden', value=article.id) }}
+                        <a class="btn btn-sm btn-default" onclick="delCfm({{ article.id }})">
+                            <span class="glyphicon glyphicon-trash delete-article"></span>
+                        </a>
+                        {# 注意这里用a标签而不是button标签，否则即使button没有submit属性，也会自动提交，因为button默认type='submit'#}
+                    </form>
+                </td>
             </tr>
             {% endfor %}
             </tbody>
@@ -54,13 +66,24 @@
         </div>
     </div>
 </div>
-{% endblock %}
-{#Using script-jquery block to solve the problem of checkbox in jquery-2.x.x#}
-{% block script_jquery %}
-    <script src="{{ url_for('static', filename='js/jquery-1.8.3.min.js') }}"></script>
-{% endblock %}
-
-{% block script %}
-    {{ super() }}
-    <script src="{{ url_for('static', filename='js/selectArticles.js') }}"></script>
+<!-- 信息删除确认 -->
+<div class="modal fade" id="delCfmModel">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title">确认删除博文？</h4>
+            </div>
+            <div class="modal-body">
+                <p>将连同博文评论一起删除，并且删除后不可恢复，您确认要删除吗？</p>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="url"/>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a onclick="" id="cfmClick" class="btn btn-success" data-dismiss="modal">确定</a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 {% endblock %}

@@ -145,3 +145,6 @@ ul.comments .comment-author {
 .manage-articles .table-checkbox-or-left {
     text-align: left;
 }
+.manage-articles .delete-article {
+    color: #c9302c;
+}
