@@ -35,6 +35,12 @@
                   action="{{ url_for('admin.delArticles', types_id=types_id, source_id=source_id) }}">
                 {{ form3.csrf_token }}
                 {{ form3.articleIds(type='hidden', value='') }}
+                <form class="solve problem">
+                    {{ form2.articleId(type='hidden') }}
+                {# 注意这个form是不会生成的，内层form，最接近外层form的第一个form，jinjia2是不会生成的 #}
+                {# 这是用来解决博文列表的第一列form无法解决的问题，如果不这样做，第一列的删除表单将无法提交，因为根本不存在 #}
+                {# 但是第一列之后的form表单都是可以正常生成的，当然，如果不想用这个方法，那建议你不要嵌套form，用Ajax技术也是可以的 #}
+                </form>
                 <table class="table table-striped table-hover">
                     <thead>
                     <tr class="table-header">
