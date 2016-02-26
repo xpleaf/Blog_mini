@@ -100,6 +100,7 @@ class Comment(db.Model):
     author_email = db.Column(db.String(64))
     avatar_hash = db.Column(db.String(32))
     article_id = db.Column(db.Integer, db.ForeignKey('articles.id'))
+    disabled = db.Column(db.Boolean, default=False)
 
     followed = db.relationship('Follow',
                                foreign_keys=[Follow.follower_id],
