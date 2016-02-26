@@ -57,7 +57,7 @@
                         <td>{{ article.create_time.replace(microsecond=0) }}</td>
                         <td>
                             <a href="{{ url_for('admin.editArticles', id=article.id) }}">
-                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="glyphicon glyphicon-pencil" title="编辑博文"></span>
                             </a>
                         </td>
                         <td>
@@ -65,7 +65,7 @@
                                   action="{{ url_for('admin.delArticle', types_id=types_id, source_id=source_id) }}">
                                 {{ form2.csrf_token }}
                                 {{ form2.articleId(type='hidden', value=article.id) }}
-                                <a class="btn btn-sm btn-default" onclick="delCfm({{ article.id }})">
+                                <a class="btn btn-sm btn-default" onclick="delCfm({{ article.id }})"  title="删除博文">
                                     <span class="glyphicon glyphicon-trash delete-article"></span>
                                 </a>
                                 {# 注意这里用a标签而不是button标签，否则即使button没有submit属性，也会自动提交，因为button默认type='submit'#}

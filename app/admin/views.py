@@ -157,7 +157,7 @@ def delArticle():
             flash(u'删除失败！', 'danger')
             return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
         else:
-            flash(u'成功博文和%s条评论！' % count, 'success')
+            flash(u'成功删除博文和%s条评论！' % count, 'success')
             return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
     if form.errors:
         flash(u'删除失败！', 'danger')
