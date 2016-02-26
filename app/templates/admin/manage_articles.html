@@ -7,66 +7,82 @@
     <hr/>
     <p><span class="glyphicon glyphicon-file"></span>博文总数：<span class="badge">{{ Article.query.count() }}</span></p>
     <div class="row articles-list">
-        <form class="manage-articles" method="post" action="">
-            {{ form.csrf_token }}
-            <div class="form-group">
-                <div class="col-sm-2">
-                    {{ form.types(class='form-control', required='', id='types_choice') }}
-                </div>
-                <div class="col-sm-2">
-                    {{ form.source(class='form-control', required='', id='source_choice') }}
-                </div>
-                <button type="submit" class="btn btn-primary">
-                    <span class="glyphicon glyphicon-search"></span> 筛选
-                </button>
-            </div>
-        </form>
-        <table class="table table-striped table-hover">
-            <thead>
-            <tr class="table-header">
-                <th class="table-checkbox-or-left"><input type="checkbox" id="select-all">全选</th>
-                <th>博文标题</th>
-                <th>来源</th>
-                <th>分类</th>
-                <th>发表日期</th>
-                <th>编辑</th>
-                <th>删除</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for article in articles %}
-            <tr>
-                <td class="table-checkbox-or-left"><input type="checkbox" class="select-article" value="{{ article.id }}"></td>
-                <td class="table-checkbox-or-left"><a href="{{ url_for('main.articleDetails', id=article.id) }}" target="_blank">{{ article.title }}</a></td>
-                <td>{{ article.source.name }}</td>
-                <td>{{ article.articleType.name }}</td>
-                <td>{{ article.create_time.replace(microsecond=0) }}</td>
-                <td>
-                    <a href="{{ url_for('admin.editArticles', id=article.id) }}">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                    </a>
-                </td>
-                <td>
-                    <form class="delete-article" id="delForm{{ article.id }}" method="post"
-                          action="{{ url_for('admin.deleteArticle', types_id=types_id, source_id=source_id) }}">
-                        {{ form2.csrf_token }}
-                        {{ form2.articleId(type='hidden', value=article.id) }}
-                        <a class="btn btn-sm btn-default" onclick="delCfm({{ article.id }})">
-                            <span class="glyphicon glyphicon-trash delete-article"></span>
+        <div class="list-handle">
+            <form class="manage-articles" method="post" action="">
+                {{ form.csrf_token }}
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        {{ form.types(class='form-control', required='', id='types_choice') }}
+                    </div>
+                    <div class="col-sm-2">
+                        {{ form.source(class='form-control', required='', id='source_choice') }}
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-search"></span> 筛选
+                        </button>
+                    </div>
+                    <div class="col-sm-2 col-sm-offset-4">
+                        <a class="btn btn-danger" id="delArticles">
+                            <span class="glyphicon glyphicon-trash"></span>批量删除
                         </a>
-                        {# 注意这里用a标签而不是button标签，否则即使button没有submit属性，也会自动提交，因为button默认type='submit'#}
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="list-detials">
+            <form class="delete-articles" id="delArticlesForm" method="post"
+                  action="{{ url_for('admin.delArticles', types_id=types_id, source_id=source_id) }}">
+                {{ form3.csrf_token }}
+                {{ form3.articleIds(type='hidden', value='') }}
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr class="table-header">
+                        <th class="table-checkbox-or-left"><input type="checkbox" id="select-all">全选</th>
+                        <th>博文标题</th>
+                        <th>来源</th>
+                        <th>分类</th>
+                        <th>发表日期</th>
+                        <th>编辑</th>
+                        <th>删除</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for article in articles %}
+                    <tr>
+                        <td class="table-checkbox-or-left"><input type="checkbox" class="op_check" value="{{ article.id }}"></td>
+                        <td class="table-checkbox-or-left"><a href="{{ url_for('main.articleDetails', id=article.id) }}" target="_blank">{{ article.title }}</a></td>
+                        <td>{{ article.source.name }}</td>
+                        <td>{{ article.articleType.name }}</td>
+                        <td>{{ article.create_time.replace(microsecond=0) }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.editArticles', id=article.id) }}">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <form class="delete-article" id="delForm{{ article.id }}" method="post"
+                                  action="{{ url_for('admin.delArticle', types_id=types_id, source_id=source_id) }}">
+                                {{ form2.csrf_token }}
+                                {{ form2.articleId(type='hidden', value=article.id) }}
+                                <a class="btn btn-sm btn-default" onclick="delCfm({{ article.id }})">
+                                    <span class="glyphicon glyphicon-trash delete-article"></span>
+                                </a>
+                                {# 注意这里用a标签而不是button标签，否则即使button没有submit属性，也会自动提交，因为button默认type='submit'#}
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+        </div>
         <div class="pagination">
             {{ macros.pagination_widget(pagination, endpoint, types_id=types_id, source_id=source_id) }}
         </div>
     </div>
 </div>
-<!-- 信息删除确认 -->
+<!-- 信息删除确认: For delete an article confirm -->
 <div class="modal fade" id="delCfmModel">
     <div class="modal-dialog">
         <div class="modal-content message_align">
@@ -79,9 +95,48 @@
                 <p>将连同博文评论一起删除，并且删除后不可恢复，您确认要删除吗？</p>
             </div>
             <div class="modal-footer">
-                <input type="hidden" id="url"/>
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <a onclick="" id="cfmClick" class="btn btn-success" data-dismiss="modal">确定</a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- 信息删除确认: For select articles confirm -->
+<div class="modal fade" id="selArtsCfmModel">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title">未选择博文</h4>
+            </div>
+            <div class="modal-body">
+                <p>请选择您要删除的博文！</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a class="btn btn-success" data-dismiss="modal">确定</a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- 信息删除确认: For delete articles confirm -->
+<div class="modal fade" id="delArtsCfmModel">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title">确认删除所选博文？</h4>
+            </div>
+            <div class="modal-body">
+                <p>将连同博文评论一起删除，并且删除后不可恢复，您确认要删除所选博文吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a id="delArtsCfm" class="btn btn-success" data-dismiss="modal">确定</a>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

@@ -148,3 +148,6 @@ ul.comments .comment-author {
 .manage-articles .delete-article {
     color: #c9302c;
 }
+.manage-articles .list-handle {
+    padding-bottom: 25px;
+}

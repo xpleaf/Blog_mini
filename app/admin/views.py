@@ -1,11 +1,12 @@
 # coding:utf-8
 from datetime import datetime
+import json
 from flask import render_template, redirect, flash, \
     url_for, request, current_app
 from flask.ext.login import login_required
 from . import admin
 from ..models import ArticleType, Source, Article, article_types
-from .forms import SubmitArticlesForm, ManageArticlesForm, DeleteArticleForm
+from .forms import SubmitArticlesForm, ManageArticlesForm, DeleteArticleForm, DeleteArticlesForm
 from .. import db
 
 
@@ -87,7 +88,8 @@ def manageArticles():
     types_id = request.args.get('types_id', -1, type=int)
     source_id = request.args.get('source_id', -1, type=int)
     form = ManageArticlesForm(request.form, types=types_id, source=source_id)
-    form2 = DeleteArticleForm()
+    form2 = DeleteArticleForm() # for delete an article
+    from3 = DeleteArticlesForm() # for delete articles
 
     types = [(t.id, t.name) for t in ArticleType.query.all()]
     types.append((-1, u'全部分类'))
@@ -122,7 +124,7 @@ def manageArticles():
         return render_template('admin/manage_articles.html', ArticleType=ArticleType, article_types=article_types,
                                Article=Article, articles=articles, pagination=pagination,
                                endpoint='admin.manageArticles',
-                               form=form, form2=form2, types_id=types_id, source_id=source_id)
+                               form=form, form2=form2, form3=from3, types_id=types_id, source_id=source_id)
 
     page = request.args.get('page', 1, type=int)
     pagination = Article.query.order_by(Article.create_time.desc()).paginate(
@@ -131,12 +133,12 @@ def manageArticles():
     articles = pagination.items
     return render_template('admin/manage_articles.html', ArticleType=ArticleType, article_types=article_types,
                            Article=Article, articles=articles, pagination=pagination, endpoint='admin.manageArticles',
-                           form=form, form2=form2, types_id=types_id, source_id=source_id)
+                           form=form, form2=form2, form3=from3, types_id=types_id, source_id=source_id)
 
 
-@admin.route('/manage-articles/delete', methods=['GET', 'POST'])
+@admin.route('/manage-articles/delArticle', methods=['GET', 'POST'])
 @login_required
-def deleteArticle():
+def delArticle():
     types_id = request.args.get('types_id', -1, type=int)
     source_id = request.args.get('source_id', -1, type=int)
     form = DeleteArticleForm()
@@ -144,6 +146,7 @@ def deleteArticle():
     if form.validate_on_submit():
         articleId = int(form.articleId.data)
         article = Article.query.get_or_404(articleId)
+        count = article.comments.count()
         for comment in article.comments:
             db.session.delete(comment)
         db.session.delete(article)
@@ -154,7 +157,42 @@ def deleteArticle():
             flash(u'删除失败！', 'danger')
             return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
         else:
-            flash(u'删除成功！', 'success')
+            flash(u'成功博文和%s条评论！' % count, 'success')
+            return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
+    if form.errors:
+        flash(u'删除失败！', 'danger')
+        return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
+
+
+@admin.route('/manage-articles/delArticles', methods=['GET', 'POST'])
+@login_required
+def delArticles():
+    types_id = request.args.get('types_id', -1, type=int)
+    source_id = request.args.get('source_id', -1, type=int)
+    # form2 = DeleteArticleForm()
+    form = DeleteArticlesForm()
+
+    # if form2.validate_on_submit():
+    #     articleId = form2.articleId.data
+    #     print articleId
+
+    if form.validate_on_submit():
+        articleIds = json.loads(form.articleIds.data)
+        count = 0
+        for articleId in articleIds:
+            article = Article.query.get_or_404(int(articleId))
+            count += article.comments.count()
+            for comment in article.comments:
+                db.session.delete(comment)
+            db.session.delete(article)
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash(u'删除失败！', 'danger')
+            return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
+        else:
+            flash(u'成功删除%s篇博文和%s条评论！' % (len(articleIds), count), 'success')
             return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
     if form.errors:
         flash(u'删除失败！', 'danger')

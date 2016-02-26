@@ -11,11 +11,32 @@ $(document).ready(function () {
 
 //JS For submit article id to delete article
 function delCfm(articleId) {
-    $('#cfmClick').click(function(){
+    $('#cfmClick').click(function () {
         formSubmit(articleId);
     });
     $('#delCfmModel').modal();
 }
 function formSubmit(articleId) {
-    $('#delForm'+articleId).submit();
+    $('#delForm' + articleId).submit();
 }
+
+//JS For select articles to delete
+$(document).ready(function () {
+    $('#delArtsCfm').click(function(){
+        $('#delArticlesForm').submit();
+    });
+
+    $('#delArticles').click(function () {
+        if ($('.op_check').filter(':checked').size() > 0) {
+            var articleIds = [];
+            $('.op_check:checked').each(function(){
+                articleIds.push($(this).val());
+            });
+            var articleIdsJson = JSON.stringify(articleIds);
+            $('#articleIds').val(articleIdsJson);
+            $('#delArtsCfmModel').modal();
+        } else {
+            $('#selArtsCfmModel').modal();
+        }
+    });
+});
