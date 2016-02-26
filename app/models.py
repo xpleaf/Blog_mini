@@ -83,6 +83,14 @@ class Source(db.Model):
         return '<Source %r>' % self.name
 
 
+class Follow(db.Model):
+    __tablename__ = 'follows'
+    follower_id = db.Column(db.Integer, db.ForeignKey('comments.id'),
+                           primary_key=True)
+    followed_id = db.Column(db.Integer, db.ForeignKey('comments.id'),
+                         primary_key=True)
+
+
 class Comment(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
@@ -92,6 +100,17 @@ class Comment(db.Model):
     author_email = db.Column(db.String(64))
     avatar_hash = db.Column(db.String(32))
     article_id = db.Column(db.Integer, db.ForeignKey('articles.id'))
+
+    followed = db.relationship('Follow',
+                               foreign_keys=[Follow.follower_id],
+                               backref=db.backref('follower', lazy='joined'),
+                               lazy='dynamic',
+                               cascade='all, delete-orphan')
+    followers = db.relationship('Follow',
+                               foreign_keys=[Follow.followed_id],
+                               backref=db.backref('followed', lazy='joined'),
+                               lazy='dynamic',
+                               cascade='all, delete-orphan')
 
     def __init__(self, **kwargs):
         super(Comment, self).__init__(**kwargs)
