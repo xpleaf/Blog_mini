@@ -88,8 +88,8 @@ def manageArticles():
     types_id = request.args.get('types_id', -1, type=int)
     source_id = request.args.get('source_id', -1, type=int)
     form = ManageArticlesForm(request.form, types=types_id, source=source_id)
-    form2 = DeleteArticleForm() # for delete an article
-    from3 = DeleteArticlesForm() # for delete articles
+    form2 = DeleteArticleForm()  # for delete an article
+    from3 = DeleteArticlesForm()  # for delete articles
 
     types = [(t.id, t.name) for t in ArticleType.query.all()]
     types.append((-1, u'全部分类'))
@@ -97,6 +97,8 @@ def manageArticles():
     sources = [(s.id, s.name) for s in Source.query.all()]
     sources.append((-1, u'全部来源'))
     form.source.choices = sources
+
+    pagination_search = 0
 
     if form.validate_on_submit() or \
             (request.args.get('types_id') is not None and request.args.get('source_id') is not None):
@@ -118,19 +120,19 @@ def manageArticles():
         if source_id != -1:
             source = Source.query.get_or_404(source_id)
             result = result.filter_by(source=source)
-        pagination = result.paginate(page, per_page=current_app.config['ARTICLES_PER_PAGE'], error_out=False)
+        pagination_search = result.paginate(
+                page, per_page=current_app.config['ARTICLES_PER_PAGE'], error_out=False)
 
+    if pagination_search != 0:
+        pagination = pagination_search
+        articles = pagination_search.items
+    else:
+        page = request.args.get('page', 1, type=int)
+        pagination = Article.query.order_by(Article.create_time.desc()).paginate(
+                page, per_page=current_app.config['ARTICLES_PER_PAGE'],
+                error_out=False)
         articles = pagination.items
-        return render_template('admin/manage_articles.html', ArticleType=ArticleType, article_types=article_types,
-                               Article=Article, articles=articles, pagination=pagination,
-                               endpoint='admin.manageArticles',
-                               form=form, form2=form2, form3=from3, types_id=types_id, source_id=source_id)
 
-    page = request.args.get('page', 1, type=int)
-    pagination = Article.query.order_by(Article.create_time.desc()).paginate(
-            page, per_page=current_app.config['ARTICLES_PER_PAGE'],
-            error_out=False)
-    articles = pagination.items
     return render_template('admin/manage_articles.html', ArticleType=ArticleType, article_types=article_types,
                            Article=Article, articles=articles, pagination=pagination, endpoint='admin.manageArticles',
                            form=form, form2=form2, form3=from3, types_id=types_id, source_id=source_id)
@@ -155,13 +157,12 @@ def delArticle():
         except:
             db.session.rollback()
             flash(u'删除失败！', 'danger')
-            return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
         else:
             flash(u'成功删除博文和%s条评论！' % count, 'success')
-            return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
     if form.errors:
         flash(u'删除失败！', 'danger')
-        return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
+
+    return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
 
 
 @admin.route('/manage-articles/delArticles', methods=['GET', 'POST'])
@@ -190,13 +191,12 @@ def delArticles():
         except:
             db.session.rollback()
             flash(u'删除失败！', 'danger')
-            return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
         else:
             flash(u'成功删除%s篇博文和%s条评论！' % (len(articleIds), count), 'success')
-            return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
     if form.errors:
         flash(u'删除失败！', 'danger')
-        return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
+
+    return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
 
 
 @admin.route('/manage-articles/manage-comments/disable/<int:id>')
@@ -219,7 +219,31 @@ def enable_comment(id):
     comment.disabled = False
     db.session.add(comment)
     db.session.commit()
-    flash(u'恢复评论成功！', 'success')
+    flash(u'恢复显示评论成功！', 'success')
     return redirect(url_for('main.articleDetails',
                             id=comment.article_id,
+                            page=request.args.get('page', 1, type=int)))
+
+
+# 单条评论的删除，这里就不使用表单或者Ajax了，这与博文的管理不同，但后面多条评论的删除会使用Ajax
+# 前面在admin页面删除单篇博文时使用表单而不是Ajax，其实使用Ajax效果会更好，当然这里只是尽可能
+# 使用不同的技术，因为以后在做自动化运维开发时总有用得上的地方
+@admin.route('/manage-articles/manage-comments/delete/<int:id>')
+@login_required
+def delete_comment(id):
+    comment = Comment.query.get_or_404(id)
+    article_id = comment.article_id
+    for follower in comment.followers:
+        db.session.delete(follower)
+    db.session.delete(comment)
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        flash(u'删除评论失败！', 'danger')
+    else:
+        flash(u'删除评论成功！', 'success')
+
+    return redirect(url_for('main.articleDetails',
+                            id=article_id,
                             page=request.args.get('page', 1, type=int)))

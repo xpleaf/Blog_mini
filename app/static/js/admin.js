@@ -40,3 +40,11 @@ $(document).ready(function () {
         }
     });
 });
+
+//JS For confirm to delete a comment in articleDetails page
+function delCommentCfm(url) {
+    $('#delCommentCfmClick').click(function(){
+        window.location.href = url;
+    });
+    $('#delCommentCfmModel').modal();
+}
