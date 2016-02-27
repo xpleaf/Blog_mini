@@ -233,8 +233,6 @@ def enable_comment(id):
 def delete_comment(id):
     comment = Comment.query.get_or_404(id)
     article_id = comment.article_id
-    for follower in comment.followers:
-        db.session.delete(follower)
     db.session.delete(comment)
     try:
         db.session.commit()

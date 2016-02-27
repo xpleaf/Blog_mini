@@ -2,7 +2,7 @@
 from flask import render_template, request, current_app, redirect,\
     url_for, flash
 from . import main
-from ..models import Article, ArticleType, article_types, Comment
+from ..models import Article, ArticleType, article_types, Comment, Follow
 from .forms import CommentForm
 from .. import db
 
@@ -42,6 +42,15 @@ def articleDetails(id):
                           author_email=form.email.data)
         db.session.add(comment)
         db.session.commit()
+        followed_id = int(form.follow.data)
+        if followed_id != -1:
+            followed = Comment.query.get_or_404(followed_id)
+            f = Follow(follower=comment, followed=followed)
+            comment.comment_type = 'reply'
+            comment.reply_to = followed.author_name
+            db.session.add(f)
+            db.session.add(comment)
+            db.session.commit()
         flash(u'提交评论成功！', 'success')
         return redirect(url_for('.articleDetails', id=article.id, page=-1))
     if form.errors:

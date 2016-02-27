@@ -101,6 +101,8 @@ class Comment(db.Model):
     avatar_hash = db.Column(db.String(32))
     article_id = db.Column(db.Integer, db.ForeignKey('articles.id'))
     disabled = db.Column(db.Boolean, default=False)
+    comment_type = db.Column(db.String, default='comment')
+    reply_to = db.Column(db.String, default='notReply')
 
     followed = db.relationship('Follow',
                                foreign_keys=[Follow.follower_id],
@@ -150,6 +152,16 @@ class Comment(db.Model):
         except:
             db.session.rollback()
 
+    def is_reply(self):
+        if self.followed.count() == 0:
+            return False
+        else:
+            return True
+    # to confirm whether the comment is a reply or not
+
+    def followed_name(self):
+        if self.is_reply():
+            return self.followed.first().followed.author_name
 
 class Article(db.Model):
     __tablename__ = 'articles'

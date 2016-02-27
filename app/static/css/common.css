@@ -101,6 +101,10 @@ ul.comments .delete-comment {
     margin-left: 25px;
 }
 
+.comment-reply-info {
+    color: #3f42cd;
+}
+
 /*CSS For floatButton*/
 .floatButton {
     position: fixed;

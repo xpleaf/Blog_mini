@@ -2,6 +2,19 @@
     {% if comments %}
         {% for comment in comments %}
         <li class="comment">
+            {% if comment.comment_type == 'reply' %}
+                <p class="comment-reply-info">
+                    <span class="glyphicon glyphicon-envelope"></span>
+                    回复给<strong><i>
+                    {% if comment.followed_name() %}
+                        {{ comment.followed_name() }}
+                    {% else %}
+                        {{ comment.reply_to }}
+                        ({{ comment.reply_to }}的该条评论已经被删除！)
+                    {% endif %}
+                    ：</i></strong>
+                </p>
+            {% endif %}
             <div class="comment-thumbnail">
                 <img class="img-rounded profile-thumbnail" src="{{ comment.gravatar() }}">
             </div>
@@ -10,7 +23,7 @@
                 <div class="comment-author">
                     <span>{{ comment.author_name }}</span>
                     {% if comment.author_email == 'flasky_mini@sina.com' %}
-                    <span class="label label-danger">管理员认证</span>
+                    <span class="glyphicon glyphicon-user">管理员</span>
                     {% endif %}
                 </div>
                 <div class="comment-content">
@@ -71,7 +84,7 @@
             </div>
             <div class="modal-body">
                 <p>
-                    将连同该评论的所有回复一起删除，并且删除后不可恢复，您确认要删除吗？
+                    将该评论删除后不可恢复，您确认要删除吗？
                 </p>
                 <p>
                     （提示：如果您只是不想显示该评论内容，可以选择将其屏蔽，而不必删除。）
