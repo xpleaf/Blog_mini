@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
 {% import '_macros.html' as macros %}
 
 {% block content %}
@@ -30,12 +29,8 @@
     <div class="pagination">
         {{ macros.pagination_widget(pagination, endpoint, id=id, fragment='#comments') }}
     </div>
-    <h4><span class="glyphicon glyphicon-comment">发表评论</span></h4>
-    <div class="row comment-submit">
-        <div class="col-md-8">
-        {{ wtf.quick_form(form) }}
-        </div>
-    </div>
+    <h4  id="submit-comment"><span class="glyphicon glyphicon-comment">发表评论</span></h4>
+    {% include "_submit_comment.html" %}
 </div>
 {% endblock %}
 
@@ -49,4 +44,5 @@
     <script src="{{ url_for('static', filename='tinymce/js/tinymce/extentsion_self/codesimple_extentsion/prism.js') }}">
     </script>
     <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/commentReply.js') }}"></script>
 {% endblock %}

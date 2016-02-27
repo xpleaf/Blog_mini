@@ -32,7 +32,7 @@ def articleTypes(id):
 
 @main.route('/article-detials/<int:id>', methods=['GET', 'POST'])
 def articleDetails(id):
-    form = CommentForm()
+    form = CommentForm(request.form, follow=-1)
     article = Article.query.get_or_404(id)
 
     if form.validate_on_submit():

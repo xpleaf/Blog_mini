@@ -45,7 +45,7 @@
                 {% endif %}
                 {% if comment.disabled == False %}
                 <div class="col-sm-1 {% if current_user.is_anonymous %}col-sm-offset-10{% endif %}">
-                    <button class="btn btn-sm btn-info">
+                    <button class="btn btn-sm btn-info" onclick="go_to_reply({{ comment.id }}, '{{ comment.author_name }}')">
                         <span class="glyphicon glyphicon-comment"></span> 回复
                     </button>
                 </div>
