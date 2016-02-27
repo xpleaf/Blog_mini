@@ -58,5 +58,7 @@ def articleDetails(id):
     article.add_view(article, db)
     return render_template('article_detials.html', ArticleType=ArticleType,
                            article_types=article_types, article=article,
-                           comments=comments, pagination=pagination, form=form,
+                           comments=comments, pagination=pagination, page=page, form=form,
                            endpoint='.articleDetails', id=article.id)
+    # page=page, this is used to return the current page args to the
+    # disable comment or enable comment endpoint to pass it to the articleDetails endpoint

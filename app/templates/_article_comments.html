@@ -13,7 +13,42 @@
                     <span class="label label-danger">管理员认证</span>
                     {% endif %}
                 </div>
-                <div class="comment-content">{{ comment.content }}</div>
+                <div class="comment-content">
+                    {% if comment.disabled == False %}
+                        {{ comment.content }}
+                    {% else %}
+                        <p><span class="glyphicon glyphicon-remove-sign"></span><i>该评论已经被管理员屏蔽！</i></p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row comment-handle">
+                {% if current_user.is_authenticated %}
+                <div class="col-sm-1 col-sm-offset-8">
+                    {% if comment.disabled == False %}
+                    <a class="btn btn-sm btn-warning"
+                       href="{{ url_for('admin.disable_comment', id=comment.id, page=page) }}">
+                        <span class="glyphicon glyphicon-remove-sign"></span> 屏蔽
+                    </a>
+                    {% else %}
+                    <a class="btn btn-sm btn-success"
+                       href="{{ url_for('admin.enable_comment', id=comment.id, page=page) }}">
+                        <span class="glyphicon glyphicon-ok-sign"></span> 恢复
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="col-sm-1 delete-comment">
+                    <button class="btn btn-sm btn-danger">
+                        <span class="glyphicon glyphicon-trash"></span> 删除
+                    </button>
+                </div>
+                {% endif %}
+                {% if comment.disabled == False %}
+                <div class="col-sm-1 {% if current_user.is_anonymous %}col-sm-offset-10{% endif %}">
+                    <button class="btn btn-sm btn-info">
+                        <span class="glyphicon glyphicon-comment"></span> 回复
+                    </button>
+                </div>
+                {% endif %}
             </div>
         </li>
         {% endfor %}

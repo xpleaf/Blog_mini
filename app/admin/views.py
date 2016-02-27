@@ -5,7 +5,7 @@ from flask import render_template, redirect, flash, \
     url_for, request, current_app
 from flask.ext.login import login_required
 from . import admin
-from ..models import ArticleType, Source, Article, article_types
+from ..models import ArticleType, Source, Article, article_types, Comment
 from .forms import SubmitArticlesForm, ManageArticlesForm, DeleteArticleForm, DeleteArticlesForm
 from .. import db
 
@@ -197,3 +197,29 @@ def delArticles():
     if form.errors:
         flash(u'删除失败！', 'danger')
         return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
+
+
+@admin.route('/manage-articles/manage-comments/disable/<int:id>')
+@login_required
+def disable_comment(id):
+    comment = Comment.query.get_or_404(id)
+    comment.disabled = True
+    db.session.add(comment)
+    db.session.commit()
+    flash(u'屏蔽评论成功！', 'success')
+    return redirect(url_for('main.articleDetails',
+                            id=comment.article_id,
+                            page=request.args.get('page', 1, type=int)))
+
+
+@admin.route('/manage-articles/manage-comments/enable/<int:id>')
+@login_required
+def enable_comment(id):
+    comment = Comment.query.get_or_404(id)
+    comment.disabled = False
+    db.session.add(comment)
+    db.session.commit()
+    flash(u'恢复评论成功！', 'success')
+    return redirect(url_for('main.articleDetails',
+                            id=comment.article_id,
+                            page=request.args.get('page', 1, type=int)))
