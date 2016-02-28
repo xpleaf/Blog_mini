@@ -15,7 +15,7 @@ from .. import db
 @admin.route('/', methods=['GET', 'POST'])
 @login_required
 def manager():
-    return render_template('admin/admin_base.html', ArticleType=ArticleType, article_types=article_types)
+    return render_template('admin/admin_base.html')
 
 
 @admin.route('/submit-articles', methods=['GET', 'POST'])
@@ -49,8 +49,7 @@ def submitArticles():
     if form.errors:
         flash(u'发表文章失败', 'danger')
 
-    return render_template('admin/submit_articles.html', ArticleType=ArticleType,
-                           article_types=article_types, form=form)
+    return render_template('admin/submit_articles.html', form=form)
 
 
 @admin.route('/edit-articles/<int:id>')
@@ -80,8 +79,7 @@ def editArticles(id):
     form.content.data = article.content
     form.types.data = article.articleType_id
     form.summary.data = article.summary
-    return render_template('admin/submit_articles.html', ArticleType=ArticleType, article_types=article_types,
-                           form=form)
+    return render_template('admin/submit_articles.html', form=form)
 
 
 @admin.route('/manage-articles', methods=['GET', 'POST'])
@@ -135,9 +133,11 @@ def manage_articles():
                 error_out=False)
         articles = pagination.items
 
-    return render_template('admin/manage_articles.html', ArticleType=ArticleType, article_types=article_types,
-                           Article=Article, articles=articles, pagination=pagination, endpoint='admin.manage_articles',
-                           form=form, form2=form2, form3=from3, types_id=types_id, source_id=source_id, page=page)
+    return render_template('admin/manage_articles.html', Article=Article,
+                           articles=articles, pagination=pagination,
+                           endpoint='admin.manage_articles',
+                           form=form, form2=form2, form3=from3,
+                           types_id=types_id, source_id=source_id, page=page)
 
 
 @admin.route('/manage-articles/delete-article', methods=['GET', 'POST'])
@@ -295,8 +295,9 @@ def manage_comments():
         page, per_page=current_app.config['COMMENTS_PER_PAGE'],
         error_out=False)
     comments = pagination.items
-    return render_template('admin/manage_comments.html', ArticleType=ArticleType, article_types=article_types,
-                           User=User, Comment=Comment, comments=comments, pagination=pagination, page=page,
+    return render_template('admin/manage_comments.html', User=User,
+                           Comment=Comment, comments=comments,
+                           pagination=pagination, page=page,
                            endpoint='.manage_comments', form=form, form2=form2)
 
 

@@ -2,12 +2,17 @@
 from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
 from app import create_app, db
-from app.models import ArticleType, Source, Comment, Article, User
+from app.models import ArticleType, article_types, Source, Comment, Article, User
 
 app = create_app()
 manager = Manager(app)
 migrate = Migrate(app, db)
 manager.add_command('db', MigrateCommand)
+
+
+# Global variables for jiajia2 templates:
+app.jinja_env.globals['ArticleType'] = ArticleType
+app.jinja_env.globals['article_types'] = article_types
 
 
 def make_shell_context():

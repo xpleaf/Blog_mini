@@ -15,8 +15,8 @@ def index():
             page, per_page=current_app.config['ARTICLES_PER_PAGE'],
             error_out=False)
     articles = pagination.items
-    return render_template('index.html', ArticleType=ArticleType, article_types=article_types,
-                           articles=articles, pagination=pagination, endpoint='.index')
+    return render_template('index.html', articles=articles,
+                           pagination=pagination, endpoint='.index')
 
 
 @main.route('/article-types/<int:id>/')
@@ -27,8 +27,9 @@ def articleTypes(id):
             page, per_page=current_app.config['ARTICLES_PER_PAGE'],
             error_out=False)
     articles = pagination.items
-    return render_template('index.html', ArticleType=ArticleType, article_types=article_types,
-                           articles=articles, pagination=pagination, endpoint='.articleTypes', id=id)
+    return render_template('index.html', articles=articles,
+                           pagination=pagination, endpoint='.articleTypes',
+                           id=id)
 
 
 @main.route('/article-detials/<int:id>', methods=['GET', 'POST'])
@@ -66,9 +67,8 @@ def articleDetails(id):
         error_out=False)
     comments = pagination.items
     article.add_view(article, db)
-    return render_template('article_detials.html', ArticleType=ArticleType,
-                           article_types=article_types, User=User, article=article,
-                           comments=comments, pagination=pagination, page=page, form=form,
-                           endpoint='.articleDetails', id=article.id)
+    return render_template('article_detials.html', User=User, article=article,
+                           comments=comments, pagination=pagination, page=page,
+                           form=form, endpoint='.articleDetails', id=article.id)
     # page=page, this is used to return the current page args to the
     # disable comment or enable comment endpoint to pass it to the articleDetails endpoint
