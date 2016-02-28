@@ -86,7 +86,7 @@ def editArticles(id):
 
 @admin.route('/manage-articles', methods=['GET', 'POST'])
 @login_required
-def manageArticles():
+def manage_articles():
     types_id = request.args.get('types_id', -1, type=int)
     source_id = request.args.get('source_id', -1, type=int)
     form = ManageArticlesForm(request.form, types=types_id, source=source_id)
@@ -136,13 +136,13 @@ def manageArticles():
         articles = pagination.items
 
     return render_template('admin/manage_articles.html', ArticleType=ArticleType, article_types=article_types,
-                           Article=Article, articles=articles, pagination=pagination, endpoint='admin.manageArticles',
-                           form=form, form2=form2, form3=from3, types_id=types_id, source_id=source_id)
+                           Article=Article, articles=articles, pagination=pagination, endpoint='admin.manage_articles',
+                           form=form, form2=form2, form3=from3, types_id=types_id, source_id=source_id, page=page)
 
 
-@admin.route('/manage-articles/delArticle', methods=['GET', 'POST'])
+@admin.route('/manage-articles/delete-article', methods=['GET', 'POST'])
 @login_required
-def delArticle():
+def delete_article():
     types_id = request.args.get('types_id', -1, type=int)
     source_id = request.args.get('source_id', -1, type=int)
     form = DeleteArticleForm()
@@ -164,12 +164,13 @@ def delArticle():
     if form.errors:
         flash(u'删除失败！', 'danger')
 
-    return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
+    return redirect(url_for('admin.manage_articles', types_id=types_id, source_id=source_id,
+                            page=request.args.get('page', 1, type=int)))
 
 
-@admin.route('/manage-articles/delArticles', methods=['GET', 'POST'])
+@admin.route('/manage-articles/delete-articles', methods=['GET', 'POST'])
 @login_required
-def delArticles():
+def delete_articles():
     types_id = request.args.get('types_id', -1, type=int)
     source_id = request.args.get('source_id', -1, type=int)
     # form2 = DeleteArticleForm()
@@ -198,7 +199,8 @@ def delArticles():
     if form.errors:
         flash(u'删除失败！', 'danger')
 
-    return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
+    return redirect(url_for('admin.manage_articles', types_id=types_id, source_id=source_id,
+                            page=request.args.get('page', 1, type=int)))
 
 
 @admin.route('/manage-comments/disable/<int:id>')

@@ -32,7 +32,7 @@
         </div>
         <div class="list-detials">
             <form class="delete-articles" id="delArticlesForm" method="post"
-                  action="{{ url_for('admin.delArticles', types_id=types_id, source_id=source_id) }}">
+                  action="{{ url_for('admin.delete_articles', types_id=types_id, source_id=source_id, page=page) }}">
                 {{ form3.csrf_token }}
                 {{ form3.articleIds(type='hidden', value='') }}
                 <form class="solve problem">
@@ -68,7 +68,7 @@
                         </td>
                         <td>
                             <form class="delete-article" id="delForm{{ article.id }}" method="post"
-                                  action="{{ url_for('admin.delArticle', types_id=types_id, source_id=source_id) }}">
+                                  action="{{ url_for('admin.delete_article', types_id=types_id, source_id=source_id, page=page) }}">
                                 {{ form2.csrf_token }}
                                 {{ form2.articleId(type='hidden', value=article.id) }}
                                 <a class="btn btn-sm btn-default" onclick="delCfm({{ article.id }})"  title="删除博文">
