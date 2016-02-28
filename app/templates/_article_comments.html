@@ -27,10 +27,19 @@
                     {% endif %}
                 </div>
                 <div class="comment-content">
-                    {% if comment.disabled == False %}
-                        {{ comment.content }}
-                    {% else %}
-                        <p><span class="glyphicon glyphicon-remove-sign"></span><i>该评论已经被管理员屏蔽！</i></p>
+                    {% if comment.disabled == False or current_user.is_authenticated %}
+                        <p>{{ comment.content }}</p>
+                    {% endif %}
+                    {% if comment.disabled == True and current_user.is_authenticated %}
+                        <p class="disabled-comment-admin-info">
+                            <span class="glyphicon glyphicon-remove-sign"></span>
+                            <i>该评论已经被管理员屏蔽！访客无法查看和回复此评论内容。</i>
+                        </p>
+                    {% elif comment.disabled == True %}
+                        <p class="disabled-comment-admin-info">
+                            <span class="glyphicon glyphicon-remove-sign"></span>
+                            <i>该评论已经被管理员屏蔽！</i>
+                        </p>
                     {% endif %}
                 </div>
             </div>
@@ -56,7 +65,7 @@
                     </button>
                 </div>
                 {% endif %}
-                {% if comment.disabled == False %}
+                {% if comment.disabled == False or current_user.is_authenticated %}
                 <div class="col-sm-1 {% if current_user.is_anonymous %}col-sm-offset-10{% endif %}">
                     <button class="btn btn-sm btn-info" onclick="go_to_reply({{ comment.id }}, '{{ comment.author_name }}')">
                         <span class="glyphicon glyphicon-comment"></span> 回复
