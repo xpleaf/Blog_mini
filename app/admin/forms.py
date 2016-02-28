@@ -28,5 +28,9 @@ class DeleteArticlesForm(Form):
     articleIds = StringField(validators=[DataRequired()])
 
 
+class DeleteCommentsForm(Form):
+    commentIds = StringField(validators=[DataRequired()])
+
+
 class AdminCommentForm(CommentForm):
     article = StringField(validators=[DataRequired()])

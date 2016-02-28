@@ -50,14 +50,33 @@ function delCommentCfm(url) {
 }
 
 //JS For select comments to delete
+
+//function sub_JSON_data(commentIds) {
+//    console.log(commentIds);
+//    console.log(typeof commentIds);
+//    $.ajax({
+//        type:'post',
+//        url:'manage-comments/delete-comments',
+//        data: commentIds
+//    });
+//}
+//注意，可以使用Ajax技术，但是批量删除评论的情况直接使用表单会简单，因为还需要考虑整个页面的处理
+
 $(document).ready(function(){
     $('#delComments').click(function(){
-        if($('.op_check').filter(':checked').size() > 0) {
+        if($('.op_check_com').filter(':checked').size() > 0) {
             var commentIds = [];
-            $('.op_check:checked').each(function(){
+            $('.op_check_com:checked').each(function(){
                 commentIds.push($(this).val());
             });
-            var commentIds = JSON.stringify(commentIds);
+            var commentIdsJson = JSON.stringify(commentIds);
+            $('#commentIds').val(commentIdsJson);
+            $('#delComsCfm').click(function() {
+                $('#delCommentsForm').submit();
+            });
+            $('#delComsCfmModel').modal();
+        } else {
+            $('#selComsCfmModal').modal();
         }
     });
 });

@@ -8,7 +8,7 @@ from . import admin
 from ..models import ArticleType, Source, Article, article_types, \
     Comment, User, Follow
 from .forms import SubmitArticlesForm, ManageArticlesForm, DeleteArticleForm, \
-    DeleteArticlesForm, AdminCommentForm
+    DeleteArticlesForm, AdminCommentForm, DeleteCommentsForm
 from .. import db
 
 
@@ -240,7 +240,7 @@ def enable_comment(id):
 # 单条评论的删除，这里就不使用表单或者Ajax了，这与博文的管理不同，但后面多条评论的删除会使用Ajax
 # 前面在admin页面删除单篇博文时使用表单而不是Ajax，其实使用Ajax效果会更好，当然这里只是尽可能
 # 使用不同的技术，因为以后在做自动化运维开发时总有用得上的地方
-@admin.route('/manage-comments/delete/<int:id>')
+@admin.route('/manage-comments/delete-comment/<int:id>')
 @login_required
 def delete_comment(id):
     comment = Comment.query.get_or_404(id)
@@ -267,6 +267,7 @@ def delete_comment(id):
 @login_required
 def manage_comments():
     form = AdminCommentForm(follow=-1, article=-1)
+    form2 = DeleteCommentsForm(commentIds=-1)
 
     if form.validate_on_submit():
         article = Article.query.get_or_404(int(form.article.data))
@@ -294,4 +295,30 @@ def manage_comments():
     comments = pagination.items
     return render_template('admin/manage_comments.html', ArticleType=ArticleType, article_types=article_types,
                            User=User, Comment=Comment, comments=comments, pagination=pagination, page=page,
-                           endpoint='.manage_comments', form=form)
+                           endpoint='.manage_comments', form=form, form2=form2)
+
+
+@admin.route('/manage-comments/delete-comments', methods=['GET', 'POST'])
+@login_required
+def delete_comments():
+    form2 = DeleteCommentsForm(commentIds=-1)
+
+    if form2.validate_on_submit():
+        commentIds = json.loads(form2.commentIds.data)
+        count = 0
+        for commentId in commentIds:
+            comment = Comment.query.get_or_404(int(commentId))
+            count += 1
+            db.session.delete(comment)
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash(u'删除失败！', 'danger')
+        else:
+            flash(u'成功删除%s条评论！' % count , 'success')
+    if form2.errors:
+        flash(u'删除失败！', 'danger')
+
+    page = request.args.get('page', 1, type=int)
+    return redirect(url_for('.manage_comments', page=page))

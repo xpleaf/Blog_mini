@@ -7,6 +7,10 @@
     <hr/>
     <p><span class="glyphicon glyphicon-comment"></span>评论总数：<span class="badge">{{ Comment.query.count() }}</span></p>
     <div class="handle-box-admin">
+        <form id="delCommentsForm" method="post" action="{{ url_for('admin.delete_comments', page=page) }}">
+            {{ form2.csrf_token }}
+            {{ form2.commentIds(type='hidden') }}
+        </form>
         <input type="checkbox" id="select-all" name="select-all" class="select-comments-admin">
         <label for="select-all">全选</label>
         <a class="btn btn-sm btn-danger delComments" id="delComments">
@@ -17,7 +21,7 @@
         {% for comment in comments %}
         <li class="comment">
             <div class="comment-thumbnail">
-                <input type="checkbox" class="op_check" value="{{ comment.id }}">&nbsp;
+                <input type="checkbox" class="op_check op_check_com" value="{{ comment.id }}">&nbsp;
                 <img class="img-rounded profile-thumbnail"
                      src="{{ comment.gravatar() }}">
             </div>
@@ -106,6 +110,49 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <a onclick="" id="delCommentCfmClick" class="btn btn-success" data-dismiss="modal">确定</a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- 信息删除确认: For select comments confirm -->
+<div class="modal fade" id="selComsCfmModal">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title">未选择评论</h4>
+            </div>
+            <div class="modal-body">
+                <p>请选择您要删除的评论！</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a class="btn btn-success" data-dismiss="modal">确定</a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- 信息删除确认: For delete comments confirm -->
+<div class="modal fade" id="delComsCfmModel">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title">确认删除所选评论？</h4>
+            </div>
+            <div class="modal-body">
+                <p>将评论删除后不可恢复，您确认要删除所选评论吗？</p>
+                <p>
+                    （提示：如果您只是不想显示该评论内容，可以选择将其屏蔽，而不必删除。）
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a id="delComsCfm" class="btn btn-success" data-dismiss="modal">确定</a>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
