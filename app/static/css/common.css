@@ -57,7 +57,7 @@ div.pagination {
     text-decoration: none;
 }
 
-/*CSS For Comments*/
+/*CSS For Comments(Article details page)*/
 ul.comments {
     list-style-type: none;
     padding: 0px;
@@ -77,7 +77,7 @@ div.comment-thumbnail {
 .profile-thumbnail {
     position: absolute;
 }
-div.comment-info {
+ul.comments div.comment-info {
     margin-left: 48px;
     min-height: 48px;
 }
@@ -92,17 +92,44 @@ ul.comments .comment-author {
     font-weight: bold;
     color: #337ab7;
 }
-ul.comments .delete-comment {
+ul.comments .delete-comment{
     margin: 0px 5px 0px 5px;
+}
+.comment-reply-info {
+    color: #3f42cd;
+}
+
+/*CSS For Comments(admin page), use the same CSS as above*/
+ul.comments .comment-handle-admin {
+    float: right;
+}
+ul.comments .disabled-comment-admin-info {
+    color: #2c4a35;
+}
+ul.comments div.comment-info-admin {
+    margin-left: 68px;
+    min-height: 48px;
+}
+div.manage-comments .select-comments-admin {
+    margin-left: 40px;
+}
+div.manage-comments .handle-box-admin {
+    margin-bottom: -10px;
+}
+div.manage-comments .delComments {
+    float: right;
+}
+ul.comments .delete-comment-admin-btn {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+ul.comments .disabled-comment-admin-btn {
+    margin-left: 5px;
 }
 
 /*CSS For submit comment*/
 .comment-submit {
     margin-left: 25px;
-}
-
-.comment-reply-info {
-    color: #3f42cd;
 }
 
 /*CSS For floatButton*/

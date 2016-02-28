@@ -2,6 +2,7 @@
 from flask.ext.wtf import Form
 from wtforms import SelectField, StringField, TextAreaField, SubmitField
 from wtforms.validators import DataRequired, Length
+from ..main.forms import CommentForm
 
 
 class CommonForm(Form):
@@ -25,3 +26,7 @@ class DeleteArticleForm(Form):
 
 class DeleteArticlesForm(Form):
     articleIds = StringField(validators=[DataRequired()])
+
+
+class AdminCommentForm(CommentForm):
+    article = StringField(validators=[DataRequired()])

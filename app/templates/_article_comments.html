@@ -22,8 +22,8 @@
                 <div class="comment-date"><span>{{ comment.timestamp.replace(microsecond=0) }}</span></div>
                 <div class="comment-author">
                     <span>{{ comment.author_name }}</span>
-                    {% if comment.author_email == 'flasky_mini@sina.com' %}
-                    <span class="glyphicon glyphicon-user">管理员</span>
+                    {% if User.query.filter_by(email=comment.author_email).count() %}
+                        <span class="glyphicon glyphicon-user">管理员</span>
                     {% endif %}
                 </div>
                 <div class="comment-content">

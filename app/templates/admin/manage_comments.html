@@ -1,0 +1,142 @@
+{% extends 'admin/admin_base.html' %}
+{% import "_macros.html" as macros %}
+
+{% block admin_content %}
+<div class="entry-box manage-comments">
+    <h4><strong>博文评论</strong></h4>
+    <hr/>
+    <p><span class="glyphicon glyphicon-comment"></span>评论总数：<span class="badge">{{ Comment.query.count() }}</span></p>
+    <div class="handle-box-admin">
+        <input type="checkbox" id="select-all" name="select-all" class="select-comments-admin">
+        <label for="select-all">全选</label>
+        <a class="btn btn-sm btn-danger delComments" id="delComments">
+            <span class="glyphicon glyphicon-trash"></span>批量删除
+        </a>
+    </div>
+    <ul class="comments">
+        {% for comment in comments %}
+        <li class="comment">
+            <div class="comment-thumbnail">
+                <input type="checkbox" class="op_check" value="{{ comment.id }}">&nbsp;
+                <img class="img-rounded profile-thumbnail"
+                     src="{{ comment.gravatar() }}">
+            </div>
+            <div class="comment-info-admin">
+                <span class="comment-author">
+                    {{ comment.author_name }}
+                    {{ comment.author_email }}
+                    {% if User.query.filter_by(email=comment.author_email).count() %}
+                        <span class="glyphicon glyphicon-user">管理员</span>
+                    {% endif %}
+                </span>
+                <span>
+                    在《<a href="{{ url_for('main.articleDetails', id=comment.article.id) }}" target="_blank">{{ comment.article.title }}</a>》
+                    发表评论：
+                </span>
+                <a class="btn btn-sm btn-info comment-handle-admin" title="回复评论"
+                   onclick="pop_commentForm('{{ comment.id }}', '{{ comment.article.id }}')">
+                    <span class="glyphicon glyphicon-comment"></span>
+                </a>
+                <a class="btn btn-sm btn-danger comment-handle-admin delete-comment-admin-btn"  title="删除评论"
+                   onclick="delCommentCfm('{{ url_for('admin.delete_comment', id=comment.id, page=page, delete_type='admin') }}')">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </a>
+                {% if comment.disabled == True %}
+                    <a class="btn btn-sm btn-success comment-handle-admin disabled-comment-admin-btn" title="恢复评论"
+                       href="{{ url_for('admin.enable_comment', id=comment.id, page=page, enable_type='admin') }}">
+                        <span class="glyphicon glyphicon-ok-sign"></span>
+                    </a>
+                {% else %}
+                    <a class="btn btn-sm btn-warning comment-handle-admin disabled-comment-admin-btn" title="屏蔽评论"
+                       href="{{ url_for('admin.disable_comment', id=comment.id, page=page, disable_type='admin') }}">
+                        <span class="glyphicon glyphicon-remove-sign"></span>
+                    </a>
+                {% endif %}
+                <div class="comment-date">
+                    <span>{{ comment.timestamp.replace(microsecond=0) }}</span>
+                </div>
+                <div class="comment-content">
+                    {% if comment.comment_type == 'reply' %}
+                        <p class="comment-reply-info">
+                            <span class="glyphicon glyphicon-envelope"></span>
+                            回复给<strong><i>
+                            {% if comment.followed_name() %}
+                                {{ comment.followed_name() }}
+                            {% else %}
+                                {{ comment.reply_to }}
+                                ({{ comment.reply_to }}的该条评论已经被删除！)
+                            {% endif %}
+                            ：</i></strong>
+                        </p>
+                    {% endif %}
+                    <p>{{ comment.content }}</p>
+                    {% if comment.disabled == True %}
+                        <p class="disabled-comment-admin-info">
+                            <span class="glyphicon glyphicon-remove-sign"></span>
+                            <i>该评论已在博文页面中屏蔽！</i>
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, endpoint) }}
+    </div>
+</div>
+
+<!-- 信息删除确认: For delete a comment confirm -->
+<div class="modal fade" id="delCommentCfmModel">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title">确认删除评论？</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    将该评论删除后不可恢复，您确认要删除吗？
+                </p>
+                <p>
+                    （提示：如果您只是不想显示该评论内容，可以选择将其屏蔽，而不必删除。）
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a onclick="" id="delCommentCfmClick" class="btn btn-success" data-dismiss="modal">确定</a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- 信息删除确认: For comment form-->
+<div class="modal fade" id="commentFormModel">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title">提交评论（管理员）</h4>
+            </div>
+            <div class="modal-body">
+                <form id="commentForm" method="post" action="">
+                    <div class="form-group">
+                        {{ form.csrf_token }}
+                        {{ form.follow(type='hidden') }}
+                        {{ form.article(type='hidden') }}
+                        {{ form.name.label }}{{ form.name(class='form-control', required='', value=current_user.username) }}
+                        {{ form.email.label }}{{ form.email(class='form-control', required='', value=current_user.email) }}
+                        {{ form.content.label }}{{ form.content(class='form-control', required='') }}
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a id="subCommentCfmClick" class="btn btn-success" data-dismiss="modal">确定</a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endblock %}

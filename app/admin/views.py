@@ -5,8 +5,10 @@ from flask import render_template, redirect, flash, \
     url_for, request, current_app
 from flask.ext.login import login_required
 from . import admin
-from ..models import ArticleType, Source, Article, article_types, Comment
-from .forms import SubmitArticlesForm, ManageArticlesForm, DeleteArticleForm, DeleteArticlesForm
+from ..models import ArticleType, Source, Article, article_types, \
+    Comment, User, Follow
+from .forms import SubmitArticlesForm, ManageArticlesForm, DeleteArticleForm, \
+    DeleteArticlesForm, AdminCommentForm
 from .. import db
 
 
@@ -199,7 +201,7 @@ def delArticles():
     return redirect(url_for('.manageArticles', types_id=types_id, source_id=source_id))
 
 
-@admin.route('/manage-articles/manage-comments/disable/<int:id>')
+@admin.route('/manage-comments/disable/<int:id>')
 @login_required
 def disable_comment(id):
     comment = Comment.query.get_or_404(id)
@@ -207,12 +209,17 @@ def disable_comment(id):
     db.session.add(comment)
     db.session.commit()
     flash(u'屏蔽评论成功！', 'success')
+    if request.args.get('disable_type') == 'admin':
+        page = request.args.get('page', 1, type=int)
+        return redirect(url_for('admin.manage_comments',
+                                page=page))
+
     return redirect(url_for('main.articleDetails',
                             id=comment.article_id,
                             page=request.args.get('page', 1, type=int)))
 
 
-@admin.route('/manage-articles/manage-comments/enable/<int:id>')
+@admin.route('/manage-comments/enable/<int:id>')
 @login_required
 def enable_comment(id):
     comment = Comment.query.get_or_404(id)
@@ -220,6 +227,11 @@ def enable_comment(id):
     db.session.add(comment)
     db.session.commit()
     flash(u'恢复显示评论成功！', 'success')
+    if request.args.get('enable_type') == 'admin':
+        page = request.args.get('page', 1, type=int)
+        return redirect(url_for('admin.manage_comments',
+                                page=page))
+
     return redirect(url_for('main.articleDetails',
                             id=comment.article_id,
                             page=request.args.get('page', 1, type=int)))
@@ -228,7 +240,7 @@ def enable_comment(id):
 # 单条评论的删除，这里就不使用表单或者Ajax了，这与博文的管理不同，但后面多条评论的删除会使用Ajax
 # 前面在admin页面删除单篇博文时使用表单而不是Ajax，其实使用Ajax效果会更好，当然这里只是尽可能
 # 使用不同的技术，因为以后在做自动化运维开发时总有用得上的地方
-@admin.route('/manage-articles/manage-comments/delete/<int:id>')
+@admin.route('/manage-comments/delete/<int:id>')
 @login_required
 def delete_comment(id):
     comment = Comment.query.get_or_404(id)
@@ -241,7 +253,45 @@ def delete_comment(id):
         flash(u'删除评论失败！', 'danger')
     else:
         flash(u'删除评论成功！', 'success')
+    if request.args.get('delete_type') == 'admin':
+        page = request.args.get('page', 1, type=int)
+        return redirect(url_for('admin.manage_comments',
+                                page=page))
 
     return redirect(url_for('main.articleDetails',
                             id=article_id,
                             page=request.args.get('page', 1, type=int)))
+
+
+@admin.route('/manage-comments', methods=['GET', 'POST'])
+@login_required
+def manage_comments():
+    form = AdminCommentForm(follow=-1, article=-1)
+
+    if form.validate_on_submit():
+        article = Article.query.get_or_404(int(form.article.data))
+        comment = Comment(article=article,
+                          content=form.content.data,
+                          author_name=form.name.data,
+                          author_email=form.email.data)
+        db.session.add(comment)
+        db.session.commit()
+
+        followed = Comment.query.get_or_404(int(form.follow.data))
+        f = Follow(follower=comment, followed=followed)
+        comment.comment_type = 'reply'
+        comment.reply_to = followed.author_name
+        db.session.add(f)
+        db.session.add(comment)
+        db.session.commit()
+        flash(u'提交评论成功！', 'success')
+        return redirect(url_for('.manage_comments'))
+
+    page = request.args.get('page', 1, type=int)
+    pagination = Comment.query.order_by(Comment.timestamp.desc()).paginate(
+        page, per_page=current_app.config['COMMENTS_PER_PAGE'],
+        error_out=False)
+    comments = pagination.items
+    return render_template('admin/manage_comments.html', ArticleType=ArticleType, article_types=article_types,
+                           User=User, Comment=Comment, comments=comments, pagination=pagination, page=page,
+                           endpoint='.manage_comments', form=form)

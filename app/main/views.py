@@ -2,7 +2,8 @@
 from flask import render_template, request, current_app, redirect,\
     url_for, flash
 from . import main
-from ..models import Article, ArticleType, article_types, Comment, Follow
+from ..models import Article, ArticleType, article_types, Comment, \
+    Follow, User
 from .forms import CommentForm
 from .. import db
 
@@ -66,7 +67,7 @@ def articleDetails(id):
     comments = pagination.items
     article.add_view(article, db)
     return render_template('article_detials.html', ArticleType=ArticleType,
-                           article_types=article_types, article=article,
+                           article_types=article_types, User=User, article=article,
                            comments=comments, pagination=pagination, page=page, form=form,
                            endpoint='.articleDetails', id=article.id)
     # page=page, this is used to return the current page args to the
