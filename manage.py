@@ -10,7 +10,7 @@ migrate = Migrate(app, db)
 manager.add_command('db', MigrateCommand)
 
 
-# Global variables for jiajia2 templates:
+# Global variables to jiajia2 environment:
 app.jinja_env.globals['ArticleType'] = ArticleType
 app.jinja_env.globals['article_types'] = article_types
 

@@ -52,7 +52,7 @@ def submitArticles():
     return render_template('admin/submit_articles.html', form=form)
 
 
-@admin.route('/edit-articles/<int:id>')
+@admin.route('/edit-articles/<int:id>', methods=['GET', 'POST'])
 @login_required
 def editArticles(id):
     article = Article.query.get_or_404(id)
@@ -64,10 +64,13 @@ def editArticles(id):
     form.types.choices = types
 
     if form.validate_on_submit():
+        articleType = ArticleType.query.get_or_404(int(form.types.data))
+        article.articleType = articleType
+        source = Source.query.get_or_404(int(form.source.data))
+        article.source = source
+
         article.title = form.title.data
-        article.source_id = form.source.data
         article.content = form.content.data
-        article.type_id = form.types.data
         article.summary = form.summary.data
         article.update_time = datetime.utcnow()
         db.session.add(article)
