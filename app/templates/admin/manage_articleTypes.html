@@ -18,6 +18,7 @@
                     <th>分类名称</th>
                     <th>分类介绍</th>
                     <th>所属导航</th>
+                    <th>博文数量</th>
                     <th>修改</th>
                     <th>删除</th>
                 </tr>
@@ -40,9 +41,11 @@
                                 该分类暂时没有所属导航
                             {% endif %}
                         </td>
+                        <td>{{ articleType.articles.count() }}</td>
                         <td><a title="修改分类信息"><span class="glyphicon glyphicon-edit"></span></a></td>
                         <td>
-                            <a class="btn btn-sm btn-default delete-articleType" title="删除分类">
+                            <a class="btn btn-sm btn-default delete-articleType" title="删除分类"
+                               onclick="delArticleTypeCfm('{{ url_for('admin.delete_articleType', id=articleType.id, page=page) }}')">
                                 <span class="glyphicon glyphicon-trash"></span>
                             </a>
                         </td>
@@ -89,6 +92,28 @@
                     <button id="addArticlyTypeCfmClick" type="submit" class="btn btn-success">确定</button>
                 </div>
             </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- 信息删除确认: For delete an articletype confirm -->
+<div class="modal fade" id="delArticleTypeCfmModel">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title">确认删除分类？</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    将该分类删除后不可恢复，同时会将该分类的所有博文设置为<strong>未分类</strong>，您确认要删除吗？
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a onclick="" id="delArticleTypeCfmClick" class="btn btn-success" data-dismiss="modal">确定</a>
+            </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

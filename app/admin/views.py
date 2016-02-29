@@ -47,11 +47,11 @@ def submitArticles():
                               source=source, articleType=articleType)
             db.session.add(article)
             db.session.commit()
-            flash(u'发表文章成功！', 'success')
+            flash(u'发表博文成功！', 'success')
             article_id = Article.query.filter_by(title=title).first().id
             return redirect(url_for('main.articleDetails', id=article_id))
     if form.errors:
-        flash(u'发表文章失败', 'danger')
+        flash(u'发表博文失败', 'danger')
 
     return render_template('admin/submit_articles.html', form=form)
 
@@ -358,6 +358,8 @@ def manage_articleTypes():
                menu = None
             articleType = ArticleType(name=name, introduction=introduction,
                                       menu=menu)
+            # Note: to check whether introduction or menu is existing or not,
+            # just use if introduction or if articleType.menu.
             db.session.add(articleType)
             db.session.commit()
             flash(u'添加分类成功！', 'success')
@@ -373,4 +375,30 @@ def manage_articleTypes():
     articleTypes = pagination.items
     return render_template('admin/manage_articleTypes.html', articleTypes=articleTypes,
                            pagination=pagination, endpoint='.manage_articleTypes',
-                           form=form)
+                           form=form, page=page)
+
+
+@admin.route('/manage-articleTypes/delete-articleType/<int:id>')
+@login_required
+def delete_articleType(id):
+    page = request.args.get('page', 1, type=int)
+
+    articleType = ArticleType.query.get_or_404(id)
+    defaultType = ArticleType.query.filter_by(name=u'未分类').first()
+    if articleType == defaultType:
+        flash(u'您没有删除系统默认分类的权限！', 'danger')
+        return redirect(url_for('admin.manage_articleTypes', page=page))
+    count = 0
+    for article in articleType.articles.all():
+        count += 1
+        article.articleType = defaultType
+        db.session.add(article)
+    db.session.delete(articleType)
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        flash(u'删除分类失败！', 'danger')
+    else:
+        flash(u'删除分类成功！同时将原来该分类的%s篇博文添加到<未分类>。' % count, 'success')
+    return redirect(url_for('admin.manage_articleTypes', page=page))

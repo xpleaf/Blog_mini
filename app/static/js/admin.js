@@ -95,3 +95,17 @@ $(document).ready(function() {
     });
 });
 
+//JS For reply to an articleType
+function pop_commentForm(followId, articleId) {
+    $('#follow').val(followId);
+    $('#article').val(articleId);
+    $('#commentFormModel').modal();
+}
+
+//JS For confirm to delete an articleType
+function delArticleTypeCfm(url) {
+    $('#delArticleTypeCfmClick').click(function(){
+        window.location.href = url;
+    });
+    $('#delArticleTypeCfmModel').modal();
+}
