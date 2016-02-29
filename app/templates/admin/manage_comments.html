@@ -167,22 +167,24 @@
                         aria-hidden="true">×</span></button>
                 <h4 class="modal-title">提交评论（管理员）</h4>
             </div>
-            <div class="modal-body">
-                <form id="commentForm" method="post" action="">
-                    <div class="form-group">
-                        {{ form.csrf_token }}
-                        {{ form.follow(type='hidden') }}
-                        {{ form.article(type='hidden') }}
-                        {{ form.name.label }}{{ form.name(class='form-control', required='', value=current_user.username) }}
-                        {{ form.email.label }}{{ form.email(class='form-control', required='', value=current_user.email) }}
-                        {{ form.content.label }}{{ form.content(class='form-control', required='') }}
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <a id="subCommentCfmClick" class="btn btn-success" data-dismiss="modal">确定</a>
-            </div>
+            <form id="commentForm" method="post" action="">
+                <div class="modal-body">
+
+                        <div class="form-group">
+                            {{ form.csrf_token }}
+                            {{ form.follow(type='hidden') }}
+                            {{ form.article(type='hidden') }}
+                            {{ form.name.label }}{{ form.name(class='form-control', required='', value=current_user.username) }}
+                            {{ form.email.label }}{{ form.email(class='form-control', required='', value=current_user.email) }}
+                            {{ form.content.label }}{{ form.content(class='form-control', required='') }}
+                        </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" id="subCommentCfmClick" class="btn btn-success">确定</button>
+                </div>
+            </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

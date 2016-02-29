@@ -1,4 +1,8 @@
 # coding:utf-8
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 from datetime import datetime
 import json
 from flask import render_template, redirect, flash, \
@@ -6,9 +10,9 @@ from flask import render_template, redirect, flash, \
 from flask.ext.login import login_required
 from . import admin
 from ..models import ArticleType, Source, Article, article_types, \
-    Comment, User, Follow
+    Comment, User, Follow, Menu
 from .forms import SubmitArticlesForm, ManageArticlesForm, DeleteArticleForm, \
-    DeleteArticlesForm, AdminCommentForm, DeleteCommentsForm
+    DeleteArticlesForm, AdminCommentForm, DeleteCommentsForm, ArticleTypeForm
 from .. import db
 
 
@@ -292,6 +296,9 @@ def manage_comments():
         db.session.commit()
         flash(u'提交评论成功！', 'success')
         return redirect(url_for('.manage_comments'))
+    if form.errors:
+        flash(u'提交评论失败！请查看填写有无错误。', 'danger')
+        return redirect(url_for('.manage_comments'))
 
     page = request.args.get('page', 1, type=int)
     pagination = Comment.query.order_by(Comment.timestamp.desc()).paginate(
@@ -328,3 +335,42 @@ def delete_comments():
 
     page = request.args.get('page', 1, type=int)
     return redirect(url_for('.manage_comments', page=page))
+
+
+@admin.route('/manage-articleTypes', methods=['GET', 'POST'])
+@login_required
+def manage_articleTypes():
+    form = ArticleTypeForm(menus=-1)
+
+    menus = [(m.id, m.name) for m in Menu.query.all()]
+    menus.append((-1, u'不选择导航（该分类将单独成一导航）'))
+    form.menus.choices = menus
+
+    if form.validate_on_submit():
+        name = form.name.data
+        articleType = ArticleType.query.filter_by(name=name).first()
+        if articleType:
+            flash(u'添加分类失败！该分类已经存在。', 'danger')
+        else:
+            introduction = form.introduction.data
+            menu = Menu.query.get(form.menus.data)
+            if not menu:
+               menu = None
+            articleType = ArticleType(name=name, introduction=introduction,
+                                      menu=menu)
+            db.session.add(articleType)
+            db.session.commit()
+            flash(u'添加分类成功！', 'success')
+        return redirect(url_for('.manage_articleTypes'))
+    if form.errors:
+        flash(u'添加分类失败！请查看填写有无错误。', 'danger')
+        return redirect(url_for('.manage_articleTypes'))
+
+    page = request.args.get('page', 1, type=int)
+    pagination = ArticleType.query.order_by(ArticleType.id.desc()).paginate(
+        page, per_page=current_app.config['COMMENTS_PER_PAGE'],
+        error_out=False)
+    articleTypes = pagination.items
+    return render_template('admin/manage_articleTypes.html', articleTypes=articleTypes,
+                           pagination=pagination, endpoint='.manage_articleTypes',
+                           form=form)

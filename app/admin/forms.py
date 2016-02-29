@@ -34,3 +34,10 @@ class DeleteCommentsForm(Form):
 
 class AdminCommentForm(CommentForm):
     article = StringField(validators=[DataRequired()])
+
+
+class ArticleTypeForm(Form):
+    name = StringField(u'分类名称', validators=[DataRequired(), Length(1, 64)])
+    introduction = TextAreaField(u'分类介绍')
+    menus = SelectField(u'所属导航', coerce=int, validators=[DataRequired()])
+# You must add coerce=int, or the SelectFile validate function only validate the int data

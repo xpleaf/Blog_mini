@@ -37,12 +37,20 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+class Menu(db.Model):
+    __tablename__ = 'menus'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    types = db.relationship('ArticleType', backref='menu', lazy='dynamic')
+
+
 class ArticleType(db.Model):
     __tablename__ = 'articleTypes'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
     introduction = db.Column(db.String(128), default=None)
     articles = db.relationship('Article', backref='articleType', lazy='dynamic')
+    menu_id = db.Column(db.Integer, db.ForeignKey('menus.id'), default=-1)
 
     @staticmethod
     def insert_articleTypes():

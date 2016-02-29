@@ -9,7 +9,7 @@
 				<li class="nav-header">博文管理</li>
 				<li><a href="{{ url_for('admin.submitArticles') }}">发表博文</a></li>
 				<li><a href="{{ url_for('admin.manage_articles') }}">管理博文</a></li>
-				<li><a href="#">博文分类</a></li>
+				<li><a href="{{ url_for('admin.manage_articleTypes') }}">博文分类</a></li>
 
 				<li class="nav-header">评论管理</li>
 				<li><a href="{{ url_for('admin.manage_comments') }}">博文评论</a></li>

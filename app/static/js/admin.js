@@ -83,11 +83,15 @@ $(document).ready(function(){
 
 //JS For reply to a comment in manage-comments page
 function pop_commentForm(followId, articleId) {
-    $('#subCommentCfmClick').click(function(){
-       $('#commentForm').submit();
-    });
     $('#follow').val(followId);
     $('#article').val(articleId);
     $('#commentFormModel').modal();
 }
+
+//JS For add articleType
+$(document).ready(function() {
+    $('.add-articleType-btn').click(function() {
+        $('#addArticleTypeFormModel').modal();
+    });
+});
 

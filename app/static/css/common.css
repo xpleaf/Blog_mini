@@ -185,3 +185,27 @@ ul.comments .disabled-comment-admin-btn {
 .manage-articles .list-handle {
     padding-bottom: 25px;
 }
+
+/*CSS For manage articleTypes*/
+.manage-articleTypes .articleTypes-box {
+    margin-left: 30px;
+    margin-right: 30px;
+}
+.manage-articleTypes th {
+    text-align: center;
+}
+.manage-articleTypes td {
+    text-align: center;
+}
+.manage-articleTypes .table-header {
+    background-color: #779ecb
+}
+.manage-articleTypes .table-checkbox-or-left {
+    text-align: left;
+}
+.manage-articleTypes .delete-articleType {
+    color: #c9302c;
+}
+.manage-articleTypes .add-articleType-btn {
+    float: right;
+}
