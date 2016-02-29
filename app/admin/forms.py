@@ -41,3 +41,7 @@ class ArticleTypeForm(Form):
     introduction = TextAreaField(u'分类介绍')
     menus = SelectField(u'所属导航', coerce=int, validators=[DataRequired()])
 # You must add coerce=int, or the SelectFile validate function only validate the int data
+
+
+class EditArticleTypeForm(ArticleTypeForm):
+    articleType_id = StringField(validators=[DataRequired()])

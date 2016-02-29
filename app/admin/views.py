@@ -6,13 +6,14 @@ sys.setdefaultencoding('utf-8')
 from datetime import datetime
 import json
 from flask import render_template, redirect, flash, \
-    url_for, request, current_app
+    url_for, request, current_app, jsonify
 from flask.ext.login import login_required
 from . import admin
 from ..models import ArticleType, Source, Article, article_types, \
     Comment, User, Follow, Menu
 from .forms import SubmitArticlesForm, ManageArticlesForm, DeleteArticleForm, \
-    DeleteArticlesForm, AdminCommentForm, DeleteCommentsForm, ArticleTypeForm
+    DeleteArticlesForm, AdminCommentForm, DeleteCommentsForm, ArticleTypeForm, \
+    EditArticleTypeForm
 from .. import db
 
 
@@ -341,16 +342,21 @@ def delete_comments():
 @login_required
 def manage_articleTypes():
     form = ArticleTypeForm(menus=-1)
+    form2= EditArticleTypeForm()
 
     menus = [(m.id, m.name) for m in Menu.query.all()]
     menus.append((-1, u'不选择导航（该分类将单独成一导航）'))
     form.menus.choices = menus
+    form2.menus.choices = menus
+
+    page = request.args.get('page', 1, type=int)
+    # sub_type = request.args.get('type')
 
     if form.validate_on_submit():
         name = form.name.data
         articleType = ArticleType.query.filter_by(name=name).first()
         if articleType:
-            flash(u'添加分类失败！该分类已经存在。', 'danger')
+            flash(u'添加分类失败！该分类名称已经存在。', 'danger')
         else:
             introduction = form.introduction.data
             menu = Menu.query.get(form.menus.data)
@@ -368,14 +374,65 @@ def manage_articleTypes():
         flash(u'添加分类失败！请查看填写有无错误。', 'danger')
         return redirect(url_for('.manage_articleTypes'))
 
-    page = request.args.get('page', 1, type=int)
     pagination = ArticleType.query.order_by(ArticleType.id.desc()).paginate(
         page, per_page=current_app.config['COMMENTS_PER_PAGE'],
         error_out=False)
     articleTypes = pagination.items
     return render_template('admin/manage_articleTypes.html', articleTypes=articleTypes,
                            pagination=pagination, endpoint='.manage_articleTypes',
-                           form=form, page=page)
+                           form=form, form2=form2, page=page)
+# 提示，添加分类的验证表单也写在了上面，建议可以分开来写，这里只是提供一种方法分，前面的也是如此
+# 虽然分开来写会多写一点代码，但这样的逻辑就更清晰了
+# 另外需要注意的是，两个验证表单写在同一个view当中会出现问题，所以建议还是分开来写
+
+
+@admin.route('/manage-articletypes/edit-articleType', methods=['POST'])
+def edit_articleType():
+    form2= EditArticleTypeForm()
+
+    menus = [(m.id, m.name) for m in Menu.query.all()]
+    menus.append((-1, u'不选择导航（该分类将单独成一导航）'))
+    form2.menus.choices = menus
+
+    page = request.args.get('page', 1, type=int)
+
+    if form2.validate_on_submit():
+        name = form2.name.data
+        articleType = ArticleType.query.filter_by(name=name).first()
+        articleType_id = int(form2.articleType_id.data)
+
+        if ArticleType.query.get_or_404(articleType_id).name == u'未分类':
+            defaultType = ArticleType.query.get_or_404(articleType_id)
+            if form2.name.data != defaultType.name or \
+                form2.introduction.data != defaultType.introduction:
+                flash(u'您只能修改系统默认分类的所属导航！', 'danger')
+            else:
+                menu = Menu.query.get(form2.menus.data)
+                if not menu:
+                    menu = None
+                defaultType.menu = menu
+                db.session.add(articleType)
+                db.session.commit()
+                flash(u'修改系统默认分类的所属导航成功！', 'success')
+        elif articleType and articleType.id != articleType_id:
+            flash(u'修改分类失败！该分类名称已经存在。', 'danger')
+        else:
+            introduction = form2.introduction.data
+            menu = Menu.query.get(form2.menus.data)
+            if not menu:
+               menu = None
+            articleType = ArticleType.query.get_or_404(articleType_id)
+            articleType.name = name
+            articleType.introduction = introduction
+            articleType.menu = menu
+
+            db.session.add(articleType)
+            db.session.commit()
+            flash(u'修改分类成功！', 'success')
+        return redirect(url_for('.manage_articleTypes', page=page))
+    if form2.errors:
+        flash(u'修改分类失败！请查看填写有无错误。', 'danger')
+        return redirect(url_for('.manage_articleTypes', page=page))
 
 
 @admin.route('/manage-articleTypes/delete-articleType/<int:id>')
@@ -402,3 +459,15 @@ def delete_articleType(id):
     else:
         flash(u'删除分类成功！同时将原来该分类的%s篇博文添加到<未分类>。' % count, 'success')
     return redirect(url_for('admin.manage_articleTypes', page=page))
+
+
+@admin.route('/manage-articleTypes/get-articleType-info/<int:id>')
+@login_required
+def get_articleType_info(id):
+    if request.is_xhr:
+        articletype = ArticleType.query.get_or_404(id)
+        return jsonify({
+            'name': articletype.name,
+            'introduction': articletype.introduction,
+            'menu': articletype.menu_id or -1
+        })

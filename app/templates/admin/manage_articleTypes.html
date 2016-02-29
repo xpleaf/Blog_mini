@@ -31,7 +31,7 @@
                             {% if articleType.introduction %}
                                 {{ articleType.introduction }}
                             {% else %}
-                                该分类暂时没有任何介绍
+                                该分类暂时没有介绍
                             {% endif %}
                         </td>
                         <td>
@@ -42,7 +42,12 @@
                             {% endif %}
                         </td>
                         <td>{{ articleType.articles.count() }}</td>
-                        <td><a title="修改分类信息"><span class="glyphicon glyphicon-edit"></span></a></td>
+                        <td>
+                            <a class="btn" title="修改分类信息"
+                               onclick="get_articleType_info('{{ url_for('admin.get_articleType_info', id=articleType.id) }}', {{ articleType.id }})">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                        </td>
                         <td>
                             <a class="btn btn-sm btn-default delete-articleType" title="删除分类"
                                onclick="delArticleTypeCfm('{{ url_for('admin.delete_articleType', id=articleType.id, page=page) }}')">
@@ -90,6 +95,38 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     <button id="addArticlyTypeCfmClick" type="submit" class="btn btn-success">确定</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- 信息删除确认: For edit articleType form-->
+<div class="modal fade" id="editArticleTypeFormModel">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="ModalTitle"></h4>
+            </div>
+            <form id="editArticleTypeForm" method="post"
+                  action="{{ url_for('admin.edit_articleType', page=page) }}">
+                <div class="modal-body">
+                        <div class="form-group">
+                            {{ form2.csrf_token }}
+                            {{ form2.articleType_id(type='hidden') }}
+                            {{ form2.name.label }}
+                            {{ form2.name(id='editName', class='form-control', required='') }}
+                            {{ form2.introduction.label }}（可选）
+                            {{ form2.introduction(id='editIntroduction', class='form-control') }}
+                            {{ form2.menus.label }}
+                            {{ form2.menus(id='editMenus', class='form-control', required='') }}
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button id="editArticlyTypeCfmClick" type="submit" class="btn btn-success">确定</button>
                 </div>
             </form>
         </div><!-- /.modal-content -->

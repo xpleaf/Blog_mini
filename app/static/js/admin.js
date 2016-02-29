@@ -95,17 +95,22 @@ $(document).ready(function() {
     });
 });
 
-//JS For reply to an articleType
-function pop_commentForm(followId, articleId) {
-    $('#follow').val(followId);
-    $('#article').val(articleId);
-    $('#commentFormModel').modal();
-}
-
 //JS For confirm to delete an articleType
 function delArticleTypeCfm(url) {
     $('#delArticleTypeCfmClick').click(function(){
         window.location.href = url;
     });
     $('#delArticleTypeCfmModel').modal();
+}
+
+//JS For edit articleType to get its info
+function get_articleType_info(url, id) {
+    $.getJSON(url, function(data) {
+        $('#editName').val(data.name);
+        $('#editIntroduction').val(data.introduction);
+        $('#editMenus').val(data.menu);
+        $('#articleType_id').val(id);
+        $('#ModalTitle').text('修改博文分类：' + data.name);
+        $('#editArticleTypeFormModel').modal();
+    });
 }
