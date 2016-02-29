@@ -5,8 +5,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <title>香飘叶子个人博客</title>
     {% block stylesheet %}
-    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/common.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/common.css') }}" rel="stylesheet">
     {% endblock %}
 </head>
 <body>
@@ -18,91 +18,108 @@
     </div>
     <nav class="navbar navbar-inverse" role="navigation">
         <div class="container">
-           <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                 <span class="sr-only">切换导航</span>
-                 <span class="icon-bar"></span>
-                 <span class="icon-bar"></span>
-                 <span class="icon-bar"></span>
-              </button>
-           </div>
-           <div class="collapse navbar-collapse">
-              <ul class="nav navbar-nav">
-                 <li class=""><a href="/"><span class="glyphicon glyphicon-home"> 首页</span></a></li>
-                  {% for key in article_types %}
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ key }} <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            {% for article_type in article_types[key] %}
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">切换导航</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class=""><a href="/"><span class="glyphicon glyphicon-home"> 首页</span></a></li>
+                    {% for menu in Menu.query.all() %}
+                        {% if menu.types.count() %}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ menu.name }} <b
+                                        class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    {% for article_type in menu.types.all() %}
+                                        <li>
+                                            <a href="{{ url_for('main.articleTypes', id=article_type.id) }}">
+                                                {{ article_type.name }}
+                                            </a>
+                                        </li>
+                                        <li class="divider"></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    {% for article_type in ArticleType.query.all() %}
+                        {% if not article_type.menu %}
                             <li>
-                                <a href="{{ url_for('main.articleTypes', id=ArticleType.query.filter_by(name=article_type).first().id) }}">
-                                    {{ article_type }}
+                                <a href="{{ url_for('main.articleTypes', id=article_type.id) }}">
+                                    {{ article_type.name }}
                                 </a>
                             </li>
-                            <li class="divider"></li>
-                            {% endfor %}
-                        </ul>
-                      </li>
-                  {% endfor %}
-              </ul>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('admin.submitArticles') }}"><span class="glyphicon glyphicon-file">发表博文</span></a></li>
-                        <li><a href="{{ url_for('admin.manager') }}"><span class="glyphicon glyphicon-user">管理博客</span></a></li>
+                        <li><a href="{{ url_for('admin.submitArticles') }}"><span
+                                class="glyphicon glyphicon-file">发表博文</span></a></li>
+                        <li><a href="{{ url_for('admin.manager') }}"><span class="glyphicon glyphicon-user">管理博客</span></a>
+                        </li>
                     {% endif %}
                 </ul>
-           </div>
+            </div>
         </div>
     </nav>
 </header>
 {% block Content %}
-<div class="content">
-    <div class="container">
-    <div class="row">
-        <div class="col-md-8 article">
-            {% for category, message in get_flashed_messages(with_categories=true) %}
-                <div class="alert alert-{{category}} alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{ message }}
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 article">
+                    {% for category, message in get_flashed_messages(with_categories=true) %}
+                        <div class="alert alert-{{ category }} alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                    {% block content %}
+                    {% endblock %}
                 </div>
-            {% endfor %}
-            {% block content %}
-            {% endblock %}
-        </div>
-        <div class="col-md-4 blog_nav">
-            {% block blog_nav_plugin %}
-            <div id='about' class="entry-box">
-                <h5><strong>关于香飘叶子</strong></h5>
-                <p>
-                    取名“香飘叶子”主要是高三同桌的一句调侃：香飘叶子，十里余香。于是在众多的网络博客中，署名都为香飘叶子。
-                    亦有英文名“xpleaf”，其中“xp”并非是操作系统“xp”，而是“香飘”二字的<strong>拼音首字母</strong>。
-                    热爱计算机技术，喜欢编程，尤其喜欢<code>Python</code>，热衷开源技术。目前为某工业大学在校二年级本科生。
-                </p>
+                <div class="col-md-4 blog_nav">
+                    {% block blog_nav_plugin %}
+                        <div id='about' class="entry-box">
+                            <h5><strong>关于香飘叶子</strong></h5>
+                            <p>
+                                取名“香飘叶子”主要是高三同桌的一句调侃：香飘叶子，十里余香。于是在众多的网络博客中，署名都为香飘叶子。
+                                亦有英文名“xpleaf”，其中“xp”并非是操作系统“xp”，而是“香飘”二字的<strong>拼音首字母</strong>。
+                                热爱计算机技术，喜欢编程，尤其喜欢<code>Python</code>，热衷开源技术。目前为某工业大学在校二年级本科生。
+                            </p>
+                        </div>
+                        <div id="blog-info" class="entry-box">
+                            <h5><strong>关注技术</strong></h5>
+                            <p>
+                                <span class="label label-info">Python</span>
+                                <span class="label label-primary">Linux</span>
+                                <span class="label label-success">Web开发</span>
+                            </p>
+                            <p>
+                                <span class="label label-warning">Web集群</span>
+                                <span class="label label-default">CCNA/CCNP/CCIE</span>
+                                <span class="label label-danger">网络技术</span>
+                            </p>
+                        </div>
+                        <div id="contact_me" class="entry-box">
+                            <h5><strong>联系我</strong></h5>
+                            <p>个人社交博客：<a href="https://flasky-mini.herokuapp.com" target="_blank">https://flasky-mini.herokuapp.com</a>
+                            </p>
+                            <p>51cto博客：<a href="http://xpleaf.blog.51cto.com/" target="_blank">http://xpleaf.blog.51cto.com/</a>
+                            </p>
+                            <p>GitHub：<a href="https://github.com/xpleaf" target="_blank">https://github.com/xpleaf</a>
+                            </p>
+                        </div>
+                    {% endblock %}
+                </div>
             </div>
-            <div id="blog-info" class="entry-box">
-                <h5><strong>关注技术</strong></h5>
-                <p>
-                    <span class="label label-info">Python</span>
-                    <span class="label label-primary">Linux</span>
-                    <span class="label label-success">Web开发</span>
-                </p>
-                <p>
-                    <span class="label label-warning">Web集群</span>
-                    <span class="label label-default">CCNA/CCNP/CCIE</span>
-                    <span class="label label-danger">网络技术</span>
-                </p>
-            </div>
-            <div id="contact_me" class="entry-box">
-                <h5><strong>联系我</strong></h5>
-                <p>个人社交博客：<a href="https://flasky-mini.herokuapp.com" target="_blank">https://flasky-mini.herokuapp.com</a></p>
-                <p>51cto博客：<a href="http://xpleaf.blog.51cto.com/" target="_blank">http://xpleaf.blog.51cto.com/</a></p>
-                <p>GitHub：<a href="https://github.com/xpleaf" target="_blank">https://github.com/xpleaf</a></p>
-            </div>
-            {% endblock %}
         </div>
     </div>
-</div>
-</div>
 {% endblock %}
 <div class="footer">
     <p class="footer-content">
@@ -110,11 +127,11 @@
         <a href="#">香飘叶子</a>
         -专注技术分享
         {% if current_user.is_authenticated %}
-        -<a href="{{ url_for('auth.logout') }}">
+            -<a href="{{ url_for('auth.logout') }}">
             <span class="glyphicon glyphicon-user">退出登陆</span>
         </a>
         {% else %}
-        -<a href="{{ url_for('auth.login') }}">
+            -<a href="{{ url_for('auth.login') }}">
             <span class="glyphicon glyphicon-wrench">后台管理</span>
         </a>
         {% endif %}

@@ -111,6 +111,13 @@ function get_articleType_info(url, id) {
         $('#editMenus').val(data.menu);
         $('#articleType_id').val(id);
         $('#ModalTitle').text('修改博文分类：' + data.name);
+        if (data.name == '未分类') {
+            $('#editName').prop('readonly', true);
+            $('#editIntroduction').prop('readonly', true);
+        } else {
+            $('#editName').prop('readonly', false);
+            $('#editIntroduction').prop('readonly', false);
+        }
         $('#editArticleTypeFormModel').modal();
     });
 }

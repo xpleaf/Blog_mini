@@ -14,6 +14,7 @@ manager.add_command('db', MigrateCommand)
 # Global variables to jiajia2 environment:
 app.jinja_env.globals['ArticleType'] = ArticleType
 app.jinja_env.globals['article_types'] = article_types
+app.jinja_env.globals['Menu'] = Menu
 
 
 def make_shell_context():

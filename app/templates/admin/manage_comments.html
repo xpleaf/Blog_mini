@@ -174,8 +174,10 @@
                             {{ form.csrf_token }}
                             {{ form.follow(type='hidden') }}
                             {{ form.article(type='hidden') }}
-                            {{ form.name.label }}{{ form.name(class='form-control', required='', value=current_user.username) }}
-                            {{ form.email.label }}{{ form.email(class='form-control', required='', value=current_user.email) }}
+                            {{ form.name.label }}
+                            {{ form.name(class='form-control', required='', readonly='true', value=current_user.username) }}
+                            {{ form.email.label }}
+                            {{ form.email(class='form-control', required='', readonly='true', value=current_user.email) }}
                             {{ form.content.label }}{{ form.content(class='form-control', required='') }}
                         </div>
 
