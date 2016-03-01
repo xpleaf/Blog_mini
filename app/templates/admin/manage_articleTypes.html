@@ -27,7 +27,11 @@
                 <tbody>
                 {% for articleType in articleTypes %}
                     <tr>
-                        <td>{{ articleType.name }}</td>
+                        <td>
+                            <a href="{{ url_for('main.articleTypes', id=articleType.id) }}" target="_blank">
+                                {{ articleType.name }}
+                            </a>
+                        </td>
                         <td>
                             {% if articleType.introduction %}
                                 {{ articleType.introduction }}

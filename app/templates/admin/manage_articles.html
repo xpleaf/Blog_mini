@@ -58,8 +58,16 @@
                     <tr>
                         <td class="table-checkbox-or-left"><input type="checkbox" class="op_check" value="{{ article.id }}"></td>
                         <td class="table-checkbox-or-left"><a href="{{ url_for('main.articleDetails', id=article.id) }}" target="_blank">{{ article.title }}</a></td>
-                        <td>{{ article.source.name }}</td>
-                        <td>{{ article.articleType.name }}</td>
+                        <td>
+                            <a href="{{ url_for('main.article_sources', id=article.source.id) }}" target="_blank">
+                                {{ article.source.name }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('main.articleTypes', id=article.articleType.id) }}" target="_blank">
+                                {{ article.articleType.name }}
+                            </a>
+                        </td>
                         <td>{{ article.create_time.replace(microsecond=0) }}</td>
                         <td>
                             <a href="{{ url_for('admin.editArticles', id=article.id) }}">
