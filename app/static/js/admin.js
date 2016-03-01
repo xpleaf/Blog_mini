@@ -122,3 +122,20 @@ function get_articleType_info(url, id) {
         $('#editArticleTypeFormModel').modal();
     });
 }
+
+//JS For add articleType
+$(document).ready(function() {
+    $('.add-articleType-nav-btn').click(function() {
+        $('#addArticleTypeNavFormModel').modal();
+    });
+});
+
+//JS For edit articleTypeNav to get its info
+function get_articleTypeNav_info(url) {
+    $.getJSON(url, function(data) {
+        $('#editNavName').val(data.name);
+        $('#nav_id').val(data.nav_id);
+        $('#NavModalTitle').text('修改导航分类：' + data.name);
+        $('#editArticleTypeNavFormModel').modal();
+    });
+}

@@ -13,7 +13,7 @@ from ..models import ArticleType, Source, Article, article_types, \
     Comment, User, Follow, Menu, ArticleTypeSetting
 from .forms import SubmitArticlesForm, ManageArticlesForm, DeleteArticleForm, \
     DeleteArticlesForm, AdminCommentForm, DeleteCommentsForm, AddArticleTypeForm, \
-    EditArticleTypeForm
+    EditArticleTypeForm, AddArticleTypeNavForm, EditArticleNavTypeForm
 from .. import db
 
 
@@ -426,8 +426,9 @@ def edit_articleType():
                 db.session.add(articleType)
                 db.session.commit()
                 flash(u'修改系统默认分类成功！', 'success')
-        elif ArticleType.query.filter_by(name=form2.name.data).first().id != articleType_id:
-            flash(u'修改分类失败！该分类名称已经存在。', 'danger')
+        elif ArticleType.query.filter_by(name=form2.name.data).first():
+            if ArticleType.query.filter_by(name=form2.name.data).first().id != articleType_id:
+                flash(u'修改分类失败！该分类名称已经存在。', 'danger')
         else:
             introduction = form2.introduction.data
             menu = Menu.query.get(form2.menus.data)
@@ -497,4 +498,70 @@ def get_articleType_info(id):
             'setting_hide': setting_hide,
             'introduction': articletype.introduction,
             'menu': articletype.menu_id or -1
+        })
+
+
+@admin.route('/manage-articleTypes/nav', methods=['GET', 'POST'])
+@login_required
+def manage_articleTypes_nav():
+    form = AddArticleTypeNavForm()
+    form2 = EditArticleNavTypeForm()
+
+    page = request.args.get('page', 1, type=int)
+
+    if form.validate_on_submit():
+        name = form.name.data
+        menu = Menu.query.filter_by(name=name).first()
+        if menu:
+            flash(u'添加导航失败！该导航名称已经存在。', 'danger')
+
+        else:
+            menu = Menu(name=name)
+            db.session.add(menu)
+            db.session.commit()
+            flash(u'添加导航成功！', 'success')
+        return redirect(url_for('admin.manage_articleTypes_nav', page=page))
+
+    pagination = Menu.query.paginate(
+            page, per_page=current_app.config['COMMENTS_PER_PAGE'],
+            error_out=False)
+    menus = pagination.items
+    return render_template('admin/manage_articleTypes_nav.html', menus=menus,
+                           pagination=pagination, endpoint='.manage_articleTypes_nav',
+                           page=page, form=form, form2=form2)
+
+
+@admin.route('/manage-articleTypes/nav/edit-nav', methods=['GET', 'POST'])
+@login_required
+def edit_nav():
+    form2 = EditArticleNavTypeForm()
+
+    page = request.args.get('page', 1, type=int)
+
+    if form2.validate_on_submit():
+        name = form2.name.data
+        nav_id = int(form2.nav_id.data)
+        if Menu.query.filter_by(name=name).first():
+            if Menu.query.filter_by(name=name).first().id != nav_id:
+                flash(u'修改导航失败！该导航名称已经存在。', 'danger')
+        else:
+            nav = Menu.query.get_or_404(nav_id)
+            nav.name = name
+            db.session.add(nav)
+            db.session.commit()
+            flash(u'修改导航成功！', 'success')
+        return redirect(url_for('admin.manage_articleTypes_nav', page=page))
+    if form2.errors:
+        flash(u'修改导航失败！请查看填写有无错误。', 'danger')
+        return redirect(url_for('admin.manage_articleTypes_nav', page=page))
+
+
+@admin.route('/manage-articleTypes/get-articleTypeNav-info/<int:id>')
+@login_required
+def get_articleTypeNav_info(id):
+    if request.is_xhr:
+        menu = Menu.query.get_or_404(id)
+        return jsonify({
+            'name': menu.name,
+            'nav_id': menu.id,
         })

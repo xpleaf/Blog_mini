@@ -46,3 +46,11 @@ class AddArticleTypeForm(Form):
 
 class EditArticleTypeForm(AddArticleTypeForm):
     articleType_id = StringField(validators=[DataRequired()])
+
+
+class AddArticleTypeNavForm(Form):
+    name = StringField(u'导航名称', validators=[DataRequired(), Length(1, 64)])
+
+
+class EditArticleNavTypeForm(AddArticleTypeNavForm):
+    nav_id = StringField(validators=[DataRequired()])

@@ -198,7 +198,8 @@ ul.comments .disabled-comment-admin-btn {
     text-align: center;
 }
 .manage-articleTypes .table-header {
-    background-color: #779ecb
+    background-color: #779ecb;
+    /*background-color: #337ab7;*/
 }
 .manage-articleTypes .table-checkbox-or-left {
     text-align: left;
@@ -207,5 +208,26 @@ ul.comments .disabled-comment-admin-btn {
     color: #c9302c;
 }
 .manage-articleTypes .add-articleType-btn {
+    float: right;
+}
+
+/*CSS For manage articleTypes nav*/
+.manage-articleTypes-nav .articleTypes-box {
+    margin-left: 30px;
+    margin-right: 30px;
+}
+.manage-articleTypes-nav th {
+    text-align: center;
+}
+.manage-articleTypes-nav td {
+    text-align: center;
+}
+.manage-articleTypes-nav .table-header {
+    background-color: #779ecb;
+}
+.manage-articleTypes-nav .delete-articleType-nav {
+    color: #c9302c;
+}
+.manage-articleTypes-nav .add-articleType-nav-btn {
     float: right;
 }

@@ -1,0 +1,116 @@
+{% extends 'admin/admin_base.html' %}
+{% import "_macros.html" as macros %}
+
+{% block admin_content %}
+<div class="entry-box manage-articleTypes-nav">
+    <h4><strong>分类导航</strong></h4>
+    <hr/>
+    <p><span class="glyphicon glyphicon-bookmark"></span>导航总数：<span class="badge">{{ ArticleType.query.count() }}</span></p>
+     <div class="articleTypes-nav-box">
+        <ul class="nav nav-tabs">
+            <li class=""><a href="{{ url_for('admin.manage_articleTypes') }}">博文分类</a></li>
+            <li class="active"><a href="{{ url_for('admin.manage_articleTypes_nav') }}">分类导航</a></li>
+        </ul>
+        <div class="articleTypes-nav" id="articleTypesNav">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr class="table-header">
+                    <th>导航名称</th>
+                    <th>所含分类</th>
+                    <th>修改</th>
+                    <th>删除</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for menu in menus %}
+                    <tr>
+                        <td>{{ menu.name }}</td>
+                        <td>
+                            {% for aritcleType in menu.types.all() %}
+                                <a href="{{ url_for('main.articleTypes', id=aritcleType.id) }}" target="_blank">
+                                    {{ aritcleType.name }}
+                                </a>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <a class="btn" title="修改导航信息"
+                               onclick="get_articleTypeNav_info('{{ url_for('admin.get_articleTypeNav_info', id=menu.id) }}')">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-default delete-articleType-nav" title="删除导航">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="add-articleType-nav">
+            <a class="btn btn-sm btn-primary add-articleType-nav-btn">
+                <span class="glyphicon glyphicon-plus-sign"></span>
+                添加导航
+            </a>
+        </div>
+    </div>
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, endpoint) }}
+    </div>
+</div>
+
+<!-- 信息删除确认: For add articleType form-->
+<div class="modal fade" id="addArticleTypeNavFormModel">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title">添加分类导航</h4>
+            </div>
+            <form id="addArticleTypeNavForm" method="post" action="">
+                <div class="modal-body">
+                        <div class="form-group">
+                            {{ form.csrf_token }}
+                            {{ form.name.label }}
+                            {{ form.name(class='form-control', required='') }}
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button id="addArticlyTypeNavCfmClick" type="submit" class="btn btn-success">确定</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- 信息删除确认: For edit articleType nav form-->
+<div class="modal fade" id="editArticleTypeNavFormModel">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="NavModalTitle"></h4>
+            </div>
+            <form id="editArticleTypeNavForm" method="post"
+                  action="{{ url_for('admin.edit_nav', page=page) }}">
+                <div class="modal-body">
+                        <div class="form-group">
+                            {{ form2.csrf_token }}
+                            {{ form2.nav_id(type='hidden') }}
+                            {{ form2.name.label }}
+                            {{ form2.name(id='editNavName', class='form-control', required='') }}
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button id="editArticlyTypeNavCfmClick" type="submit" class="btn btn-success">确定</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endblock %}

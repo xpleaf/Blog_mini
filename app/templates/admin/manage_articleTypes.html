@@ -8,8 +8,8 @@
     <p><span class="glyphicon glyphicon-book"></span>分类总数：<span class="badge">{{ ArticleType.query.count() }}</span></p>
     <div class="articleTypes-box">
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#">博文分类</a></li>
-            <li class=""><a href="#">分类导航</a></li>
+            <li class="active"><a href="{{ url_for('admin.manage_articleTypes') }}">博文分类</a></li>
+            <li class=""><a href="{{ url_for('admin.manage_articleTypes_nav') }}">分类导航</a></li>
         </ul>
         <div class="articleTypes" id="articleTypes">
             <table class="table table-striped table-hover">
