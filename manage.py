@@ -3,7 +3,7 @@ from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
 from app import create_app, db
 from app.models import ArticleType, article_types, Source, \
-    Comment, Article, User, Menu
+    Comment, Article, User, Menu, ArticleTypeSetting
 
 app = create_app()
 manager = Manager(app)
@@ -19,7 +19,8 @@ app.jinja_env.globals['Menu'] = Menu
 
 def make_shell_context():
     return dict(db=db, ArticleType=ArticleType,Source=Source,
-                Comment=Comment, Article=Article, User=User, Menu=Menu)
+                Comment=Comment, Article=Article, User=User, Menu=Menu,
+                ArticleTypeSetting=ArticleTypeSetting)
 
 manager.add_command("shell", Shell(make_context=make_shell_context))
 

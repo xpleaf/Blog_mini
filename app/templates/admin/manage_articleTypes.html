@@ -17,6 +17,7 @@
                 <tr class="table-header">
                     <th>分类名称</th>
                     <th>分类介绍</th>
+                    <th>属性</th>
                     <th>所属导航</th>
                     <th>博文数量</th>
                     <th>修改</th>
@@ -32,6 +33,13 @@
                                 {{ articleType.introduction }}
                             {% else %}
                                 该分类暂时没有介绍
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if articleType.is_hide %}
+                                隐藏
+                            {% else %}
+                                公开
                             {% endif %}
                         </td>
                         <td>
@@ -86,6 +94,8 @@
                             {{ form.csrf_token }}
                             {{ form.name.label }}
                             {{ form.name(class='form-control', required='') }}
+                            {{ form.setting_hide.label }}
+                            {{ form.setting_hide(class='form-control', required='') }}
                             {{ form.introduction.label }}（可选）
                             {{ form.introduction(class='form-control') }}
                             {{ form.menus.label }}
@@ -118,6 +128,8 @@
                             {{ form2.articleType_id(type='hidden') }}
                             {{ form2.name.label }}
                             {{ form2.name(id='editName', class='form-control', required='') }}
+                            {{ form2.setting_hide.label }}
+                            {{ form2.setting_hide(id='editSetting_hide', class='form-control', required='') }}
                             {{ form2.introduction.label }}（可选）
                             {{ form2.introduction(id='editIntroduction', class='form-control') }}
                             {{ form2.menus.label }}

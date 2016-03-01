@@ -43,6 +43,39 @@ class Menu(db.Model):
     name = db.Column(db.String(64), unique=True)
     types = db.relationship('ArticleType', backref='menu', lazy='dynamic')
 
+    @staticmethod
+    def return_menus():
+        menus = [(m.id, m.name) for m in Menu.query.all()]
+        menus.append((-1, u'不选择导航（该分类将单独成一导航）'))
+        return menus
+
+    def __repr__(self):
+        return '<Menu %r>' % self.name
+
+
+class ArticleTypeSetting(db.Model):
+    __tablename__ = 'articleTypeSettings'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    protected = db.Column(db.Boolean, default=False)
+    hide = db.Column(db.Boolean, default=False)
+    types = db.relationship('ArticleType', backref='setting', lazy='dynamic')
+
+    @staticmethod
+    def insert_default_settings():
+        system_setting = ArticleTypeSetting(name='system', protected=True, hide=True)
+        common_setting = ArticleTypeSetting(name='common', protected=False, hide=False)
+        db.session.add(system_setting)
+        db.session.add(common_setting)
+        db.session.commit()
+
+    @staticmethod
+    def return_setting_hide():
+        return [(2, u'公开'), (1, u'隐藏')]
+
+    def __repr__(self):
+        return '<ArticleTypeSetting %r>' % self.name
+
 
 class ArticleType(db.Model):
     __tablename__ = 'articleTypes'
@@ -51,19 +84,23 @@ class ArticleType(db.Model):
     introduction = db.Column(db.String(128), default=None)
     articles = db.relationship('Article', backref='articleType', lazy='dynamic')
     menu_id = db.Column(db.Integer, db.ForeignKey('menus.id'), default=-1)
+    setting_id = db.Column(db.Integer, db.ForeignKey('articleTypeSettings.id'))
 
-    @staticmethod
-    def insert_articleTypes():
-        for key in article_types:
-            for t in article_types[key]:
-                article_type = ArticleType.query.filter_by(name=t).first()
-                if article_type is None:
-                    article_type = ArticleType(name=t)
-                db.session.add(article_type)
-        try:
-            db.session.commit()
-        except:
-            db.session.rollback()
+    @property
+    def is_protected(self):
+        if self.setting:
+            return self.setting.protected
+        else:
+            return False
+
+    @property
+    def is_hide(self):
+        if self.setting:
+            return self.setting.hide
+        else:
+            return False
+    # if the articleType does not have setting,
+    # its is_hie and is_protected property will be False.
 
     def __repr__(self):
         return '<Type %r>' % self.name

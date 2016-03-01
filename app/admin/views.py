@@ -10,9 +10,9 @@ from flask import render_template, redirect, flash, \
 from flask.ext.login import login_required
 from . import admin
 from ..models import ArticleType, Source, Article, article_types, \
-    Comment, User, Follow, Menu
+    Comment, User, Follow, Menu, ArticleTypeSetting
 from .forms import SubmitArticlesForm, ManageArticlesForm, DeleteArticleForm, \
-    DeleteArticlesForm, AdminCommentForm, DeleteCommentsForm, ArticleTypeForm, \
+    DeleteArticlesForm, AdminCommentForm, DeleteCommentsForm, AddArticleTypeForm, \
     EditArticleTypeForm
 from .. import db
 
@@ -341,13 +341,15 @@ def delete_comments():
 @admin.route('/manage-articleTypes', methods=['GET', 'POST'])
 @login_required
 def manage_articleTypes():
-    form = ArticleTypeForm(menus=-1)
+    form = AddArticleTypeForm(menus=-1)
     form2= EditArticleTypeForm()
 
-    menus = [(m.id, m.name) for m in Menu.query.all()]
-    menus.append((-1, u'不选择导航（该分类将单独成一导航）'))
+    menus = Menu.return_menus()
+    return_setting_hide = ArticleTypeSetting.return_setting_hide()
     form.menus.choices = menus
+    form.setting_hide.choices = return_setting_hide
     form2.menus.choices = menus
+    form2.setting_hide.choices = return_setting_hide
 
     page = request.args.get('page', 1, type=int)
     # sub_type = request.args.get('type')
@@ -359,13 +361,18 @@ def manage_articleTypes():
             flash(u'添加分类失败！该分类名称已经存在。', 'danger')
         else:
             introduction = form.introduction.data
+            setting_hide = form.setting_hide.data
             menu = Menu.query.get(form.menus.data)
             if not menu:
                menu = None
-            articleType = ArticleType(name=name, introduction=introduction,
-                                      menu=menu)
+            articleType = ArticleType(name=name, introduction=introduction, menu=menu,
+                                      setting=ArticleTypeSetting(name=name))
+            if setting_hide == 1:
+                articleType.setting.hide = True
+            if setting_hide == 2:
+                articleType.setting.hide = False
             # Note: to check whether introduction or menu is existing or not,
-            # just use if introduction or if articleType.menu.
+            # just use if `articleType.introduction` or `if articleType.menu`.
             db.session.add(articleType)
             db.session.commit()
             flash(u'添加分类成功！', 'success')
@@ -381,7 +388,7 @@ def manage_articleTypes():
     return render_template('admin/manage_articleTypes.html', articleTypes=articleTypes,
                            pagination=pagination, endpoint='.manage_articleTypes',
                            form=form, form2=form2, page=page)
-# 提示，添加分类的验证表单也写在了上面，建议可以分开来写，这里只是提供一种方法分，前面的也是如此
+# 提示，添加分类的验证表单也写在了上面，建议可以分开来写，这里只是提供一种方法，前面的也是如此
 # 虽然分开来写会多写一点代码，但这样的逻辑就更清晰了
 # 另外需要注意的是，两个验证表单写在同一个view当中会出现问题，所以建议还是分开来写
 
@@ -390,31 +397,36 @@ def manage_articleTypes():
 def edit_articleType():
     form2= EditArticleTypeForm()
 
-    menus = [(m.id, m.name) for m in Menu.query.all()]
-    menus.append((-1, u'不选择导航（该分类将单独成一导航）'))
+    menus = Menu.return_menus()
+    setting_hide = ArticleTypeSetting.return_setting_hide()
     form2.menus.choices = menus
+    form2.setting_hide.choices = setting_hide
 
     page = request.args.get('page', 1, type=int)
 
     if form2.validate_on_submit():
         name = form2.name.data
-        articleType = ArticleType.query.filter_by(name=name).first()
         articleType_id = int(form2.articleType_id.data)
+        articleType = ArticleType.query.get_or_404(articleType_id)
+        setting_hide = form2.setting_hide.data
 
-        if ArticleType.query.get_or_404(articleType_id).name == u'未分类':
-            defaultType = ArticleType.query.get_or_404(articleType_id)
-            if form2.name.data != defaultType.name or \
-                form2.introduction.data != defaultType.introduction:
-                flash(u'您只能修改系统默认分类的所属导航！', 'danger')
+        if articleType.is_protected:
+            if form2.name.data != articleType.name or \
+                            form2.introduction.data != articleType.introduction:
+                flash(u'您只能修改系统默认分类的属性和所属导航！', 'danger')
             else:
                 menu = Menu.query.get(form2.menus.data)
                 if not menu:
                     menu = None
-                defaultType.menu = menu
+                articleType.menu = menu
+                if setting_hide == 1:
+                    articleType.setting.hide = True
+                if setting_hide == 2:
+                    articleType.setting.hide = False
                 db.session.add(articleType)
                 db.session.commit()
-                flash(u'修改系统默认分类的所属导航成功！', 'success')
-        elif articleType and articleType.id != articleType_id:
+                flash(u'修改系统默认分类成功！', 'success')
+        elif ArticleType.query.filter_by(name=form2.name.data).first().id != articleType_id:
             flash(u'修改分类失败！该分类名称已经存在。', 'danger')
         else:
             introduction = form2.introduction.data
@@ -425,6 +437,12 @@ def edit_articleType():
             articleType.name = name
             articleType.introduction = introduction
             articleType.menu = menu
+            if not articleType.setting:
+                articleType.setting = ArticleTypeSetting(name=articleType.name)
+            if setting_hide == 1:
+                    articleType.setting.hide = True
+            if setting_hide == 2:
+                articleType.setting.hide = False
 
             db.session.add(articleType)
             db.session.commit()
@@ -441,15 +459,19 @@ def delete_articleType(id):
     page = request.args.get('page', 1, type=int)
 
     articleType = ArticleType.query.get_or_404(id)
-    defaultType = ArticleType.query.filter_by(name=u'未分类').first()
-    if articleType == defaultType:
-        flash(u'您没有删除系统默认分类的权限！', 'danger')
+    if articleType.is_protected:
+        flash(u'警告：您没有删除系统默认分类的权限！', 'danger')
         return redirect(url_for('admin.manage_articleTypes', page=page))
     count = 0
+    systemType = ArticleTypeSetting.query.filter_by(protected=True).first().types.first()
+    articleTypeSetting = ArticleTypeSetting.query.get(articleType.setting_id)
     for article in articleType.articles.all():
         count += 1
-        article.articleType = defaultType
+        article.articleType_id = systemType.id
         db.session.add(article)
+        db.session.commit()
+    if articleTypeSetting:
+        db.session.delete(articleTypeSetting)
     db.session.delete(articleType)
     try:
         db.session.commit()
@@ -466,8 +488,13 @@ def delete_articleType(id):
 def get_articleType_info(id):
     if request.is_xhr:
         articletype = ArticleType.query.get_or_404(id)
+        if articletype.is_hide:
+            setting_hide = 1
+        else:
+            setting_hide = 2
         return jsonify({
             'name': articletype.name,
+            'setting_hide': setting_hide,
             'introduction': articletype.introduction,
             'menu': articletype.menu_id or -1
         })

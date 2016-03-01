@@ -36,12 +36,14 @@
                                         class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     {% for article_type in menu.types.all() %}
-                                        <li>
-                                            <a href="{{ url_for('main.articleTypes', id=article_type.id) }}">
-                                                {{ article_type.name }}
-                                            </a>
-                                        </li>
-                                        <li class="divider"></li>
+                                        {% if not article_type.is_hide %}
+                                            <li>
+                                                <a href="{{ url_for('main.articleTypes', id=article_type.id) }}">
+                                                    {{ article_type.name }}
+                                                </a>
+                                            </li>
+                                            <li class="divider"></li>
+                                        {% endif %}
                                     {% endfor %}
                                 </ul>
                             </li>
@@ -49,11 +51,13 @@
                     {% endfor %}
                     {% for article_type in ArticleType.query.all() %}
                         {% if not article_type.menu %}
-                            <li>
-                                <a href="{{ url_for('main.articleTypes', id=article_type.id) }}">
-                                    {{ article_type.name }}
-                                </a>
-                            </li>
+                            {% if not article_type.is_hide %}
+                                <li>
+                                    <a href="{{ url_for('main.articleTypes', id=article_type.id) }}">
+                                        {{ article_type.name }}
+                                    </a>
+                                </li>
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 </ul>

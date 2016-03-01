@@ -107,6 +107,7 @@ function delArticleTypeCfm(url) {
 function get_articleType_info(url, id) {
     $.getJSON(url, function(data) {
         $('#editName').val(data.name);
+        $('#editSetting_hide').val(data.setting_hide);
         $('#editIntroduction').val(data.introduction);
         $('#editMenus').val(data.menu);
         $('#articleType_id').val(id);
