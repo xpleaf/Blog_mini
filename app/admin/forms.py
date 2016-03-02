@@ -54,3 +54,7 @@ class AddArticleTypeNavForm(Form):
 
 class EditArticleNavTypeForm(AddArticleTypeNavForm):
     nav_id = StringField(validators=[DataRequired()])
+
+
+class SortArticleNavTypeForm(AddArticleTypeNavForm):
+    order = StringField(u'序号', validators=[DataRequired()])

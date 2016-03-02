@@ -13,7 +13,7 @@ from ..models import ArticleType, Source, Article, article_types, \
     Comment, User, Follow, Menu, ArticleTypeSetting
 from .forms import SubmitArticlesForm, ManageArticlesForm, DeleteArticleForm, \
     DeleteArticlesForm, AdminCommentForm, DeleteCommentsForm, AddArticleTypeForm, \
-    EditArticleTypeForm, AddArticleTypeNavForm, EditArticleNavTypeForm
+    EditArticleTypeForm, AddArticleTypeNavForm, EditArticleNavTypeForm, SortArticleNavTypeForm
 from .. import db
 
 
@@ -506,6 +506,7 @@ def get_articleType_info(id):
 def manage_articleTypes_nav():
     form = AddArticleTypeNavForm()
     form2 = EditArticleNavTypeForm()
+    form3 = SortArticleNavTypeForm()
 
     page = request.args.get('page', 1, type=int)
 
@@ -515,22 +516,20 @@ def manage_articleTypes_nav():
         if menu:
             flash(u'添加导航失败！该导航名称已经存在。', 'danger')
         else:
-            menu = Menu(name=name)
-            db.session.add(menu)
-            db.session.commit()
-            menu.order = menu.id
+            menu_count = Menu.query.count()
+            menu = Menu(name=name, order=menu_count+1)
             db.session.add(menu)
             db.session.commit()
             flash(u'添加导航成功！', 'success')
         return redirect(url_for('admin.manage_articleTypes_nav', page=page))
 
-    pagination = Menu.query.paginate(
+    pagination = Menu.query.order_by(Menu.order.asc()).paginate(
             page, per_page=current_app.config['COMMENTS_PER_PAGE'],
             error_out=False)
     menus = pagination.items
     return render_template('admin/manage_articleTypes_nav.html', menus=menus,
                            pagination=pagination, endpoint='.manage_articleTypes_nav',
-                           page=page, form=form, form2=form2)
+                           page=page, form=form, form2=form2, form3=form3)
 
 
 @admin.route('/manage-articleTypes/nav/edit-nav', methods=['GET', 'POST'])
@@ -569,6 +568,7 @@ def delete_nav(id):
         count += 1
         articleType.menu = None
         db.session.add(articleType)
+    nav.sort()
     db.session.delete(nav)
     try:
         db.session.commit()
@@ -589,3 +589,12 @@ def get_articleTypeNav_info(id):
             'name': menu.name,
             'nav_id': menu.id,
         })
+
+
+@admin.route('/manage-articleTypes/get-articleTypeNav-sort')
+@login_required
+def get_articleTypeNav_sort():
+    if request.is_xhr:
+        data = {nav.order: nav.name for
+                nav in Menu.query.order_by(Menu.order.asc()).all()}
+        return jsonify(data)

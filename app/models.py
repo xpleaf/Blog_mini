@@ -50,6 +50,10 @@ class Menu(db.Model):
     types = db.relationship('ArticleType', backref='menu', lazy='dynamic')
     order = db.Column(db.Integer, default=0, nullable=False)
 
+    def sort(self):
+        for menu in Menu.query.offset(self.order).all():
+            menu.order -= 1
+            db.session.add(menu)
 
     @staticmethod
     def insert_menus():
@@ -62,7 +66,6 @@ class Menu(db.Model):
             menu.order = menu.id
             db.session.add(menu)
             db.session.commit()
-
 
     @staticmethod
     def return_menus():
@@ -236,7 +239,7 @@ class Comment(db.Model):
         for i in range(count):
             a = Article.query.offset(randint(0, article_count - 1)).first()
             c = Comment(content=forgery_py.lorem_ipsum.sentences(randint(3, 5)),
-                        timestamp=forgery_py.date.date(True),
+                        timestamp=forgery_py.date.date(True, -10, 0),
                         author_name=forgery_py.internet.user_name(True),
                         author_email=forgery_py.internet.email_address(),
                         article=a)
@@ -252,16 +255,15 @@ class Comment(db.Model):
         import forgery_py
 
         seed()
-        article_count = Article.query.count()
         comment_count = Comment.query.count()
         for i in range(count):
             followed = Comment.query.offset(randint(0, comment_count - 1)).first()
-            a = Article.query.offset(randint(0, article_count - 1)).first()
             c = Comment(content=forgery_py.lorem_ipsum.sentences(randint(3, 5)),
-                        timestamp=forgery_py.date.date(True),
+                        timestamp=forgery_py.date.date(True, -20, -10),
                         author_name=forgery_py.internet.user_name(True),
                         author_email=forgery_py.internet.email_address(),
-                        article=a, comment_type='reply', reply_to=followed.author_name)
+                        article=followed.article, comment_type='reply',
+                        reply_to=followed.author_name)
             f = Follow(follower=c, followed=followed)
             db.session.add(f)
             db.session.commit()
