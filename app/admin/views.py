@@ -514,7 +514,6 @@ def manage_articleTypes_nav():
         menu = Menu.query.filter_by(name=name).first()
         if menu:
             flash(u'添加导航失败！该导航名称已经存在。', 'danger')
-
         else:
             menu = Menu(name=name)
             db.session.add(menu)
@@ -554,6 +553,28 @@ def edit_nav():
     if form2.errors:
         flash(u'修改导航失败！请查看填写有无错误。', 'danger')
         return redirect(url_for('admin.manage_articleTypes_nav', page=page))
+
+
+@admin.route('/manage-articleTypes/nav/delete-nav/<int:id>')
+@login_required
+def delete_nav(id):
+    page = request.args.get('page', 1, type=int)
+
+    nav = Menu.query.get_or_404(id)
+    count = 0
+    for articleType in nav.types.all():
+        count += 1
+        articleType.menu = None
+        db.session.add(articleType)
+    db.session.delete(nav)
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        flash(u'删除导航失败！', 'danger')
+    else:
+        flash(u'删除导航成功！同时将原来该导航的%s种分类的导航设置为无。' % count, 'success')
+    return redirect(url_for('admin.manage_articleTypes_nav', page=page))
 
 
 @admin.route('/manage-articleTypes/get-articleTypeNav-info/<int:id>')

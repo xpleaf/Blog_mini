@@ -135,7 +135,15 @@ function get_articleTypeNav_info(url) {
     $.getJSON(url, function(data) {
         $('#editNavName').val(data.name);
         $('#nav_id').val(data.nav_id);
-        $('#NavModalTitle').text('修改导航分类：' + data.name);
+        $('#NavModalTitle').text('修改分类导航：' + data.name);
         $('#editArticleTypeNavFormModel').modal();
     });
+}
+
+//JS For confirm to delete an articleType nav
+function delArticleTypeNavCfm(url) {
+    $('#delArticleTypeNavCfmClick').click(function(){
+        window.location.href = url;
+    });
+    $('#delArticleTypeNavCfmModel').modal();
 }
