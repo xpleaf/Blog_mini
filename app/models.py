@@ -19,6 +19,12 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
 
+    @staticmethod
+    def insert_admin(email, username, password):
+        user = User(email=email, username=username, password=password)
+        db.session.add(user)
+        db.session.commit()
+
     @property
     def password(self):
         raise AttributeError('password is not a readable attribute')
@@ -42,6 +48,21 @@ class Menu(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
     types = db.relationship('ArticleType', backref='menu', lazy='dynamic')
+    order = db.Column(db.Integer, default=0, nullable=False)
+
+
+    @staticmethod
+    def insert_menus():
+        menus = [u'Web开发', u'数据库', u'网络技术', u'爱生活，爱自己',
+                 u'Linux世界', u'开发语言']
+        for name in menus:
+            menu = Menu(name=name)
+            db.session.add(menu)
+            db.session.commit()
+            menu.order = menu.id
+            db.session.add(menu)
+            db.session.commit()
+
 
     @staticmethod
     def return_menus():
@@ -60,6 +81,12 @@ class ArticleTypeSetting(db.Model):
     protected = db.Column(db.Boolean, default=False)
     hide = db.Column(db.Boolean, default=False)
     types = db.relationship('ArticleType', backref='setting', lazy='dynamic')
+
+    @staticmethod
+    def insert_system_setting():
+        system = ArticleTypeSetting(name='system', protected=True, hide=True)
+        db.session.add(system)
+        db.session.commit()
 
     @staticmethod
     def insert_default_settings():
@@ -85,6 +112,28 @@ class ArticleType(db.Model):
     articles = db.relationship('Article', backref='articleType', lazy='dynamic')
     menu_id = db.Column(db.Integer, db.ForeignKey('menus.id'), default=-1)
     setting_id = db.Column(db.Integer, db.ForeignKey('articleTypeSettings.id'))
+
+    @staticmethod
+    def insert_system_articleType():
+        articleType = ArticleType(name=u'未分类',
+                                  introduction=u'系统默认分类，不可删除。',
+                                  setting=ArticleTypeSetting.query.filter_by(protected=True).first()
+                                  )
+        db.session.add(articleType)
+        db.session.commit()
+
+    @staticmethod
+    def insert_articleTypes():
+        articleTypes = ['Python', 'Java', 'JavaScript', 'Django',
+                        'CentOS', 'Ubuntu', 'MySQL', 'Redis',
+                        u'Linux成长之路', u'Linux运维实战', u'其它',
+                        u'思科网络技术', u'生活那些事', u'学校那些事',
+                        u'感情那些事', 'Flask']
+        for name in articleTypes:
+            articleType = ArticleType(name=name,
+                                      setting=ArticleTypeSetting(name=name))
+            db.session.add(articleType)
+        db.session.commit()
 
     @property
     def is_protected(self):
@@ -196,6 +245,26 @@ class Comment(db.Model):
             db.session.commit()
         except:
             db.session.rollback()
+
+    @staticmethod
+    def generate_fake_replies(count=100):
+        from random import seed, randint
+        import forgery_py
+
+        seed()
+        article_count = Article.query.count()
+        comment_count = Comment.query.count()
+        for i in range(count):
+            followed = Comment.query.offset(randint(0, comment_count - 1)).first()
+            a = Article.query.offset(randint(0, article_count - 1)).first()
+            c = Comment(content=forgery_py.lorem_ipsum.sentences(randint(3, 5)),
+                        timestamp=forgery_py.date.date(True),
+                        author_name=forgery_py.internet.user_name(True),
+                        author_email=forgery_py.internet.email_address(),
+                        article=a, comment_type='reply', reply_to=followed.author_name)
+            f = Follow(follower=c, followed=followed)
+            db.session.add(f)
+            db.session.commit()
 
     def is_reply(self):
         if self.followed.count() == 0:

@@ -426,8 +426,8 @@ def edit_articleType():
                 db.session.add(articleType)
                 db.session.commit()
                 flash(u'修改系统默认分类成功！', 'success')
-        elif ArticleType.query.filter_by(name=form2.name.data).first():
-            if ArticleType.query.filter_by(name=form2.name.data).first().id != articleType_id:
+        elif ArticleType.query.filter_by(name=form2.name.data).first() \
+            and ArticleType.query.filter_by(name=form2.name.data).first().id != articleType_id:
                 flash(u'修改分类失败！该分类名称已经存在。', 'danger')
         else:
             introduction = form2.introduction.data
@@ -518,6 +518,9 @@ def manage_articleTypes_nav():
             menu = Menu(name=name)
             db.session.add(menu)
             db.session.commit()
+            menu.order = menu.id
+            db.session.add(menu)
+            db.session.commit()
             flash(u'添加导航成功！', 'success')
         return redirect(url_for('admin.manage_articleTypes_nav', page=page))
 
@@ -540,8 +543,8 @@ def edit_nav():
     if form2.validate_on_submit():
         name = form2.name.data
         nav_id = int(form2.nav_id.data)
-        if Menu.query.filter_by(name=name).first():
-            if Menu.query.filter_by(name=name).first().id != nav_id:
+        if Menu.query.filter_by(name=name).first() \
+            and Menu.query.filter_by(name=name).first().id != nav_id:
                 flash(u'修改导航失败！该导航名称已经存在。', 'danger')
         else:
             nav = Menu.query.get_or_404(nav_id)
