@@ -509,20 +509,23 @@ def manage_articleTypes_nav():
     form3 = SortArticleNavTypeForm()
 
     page = request.args.get('page', 1, type=int)
-
     if form.validate_on_submit():
         name = form.name.data
         menu = Menu.query.filter_by(name=name).first()
         if menu:
+            page = page
             flash(u'添加导航失败！该导航名称已经存在。', 'danger')
         else:
             menu_count = Menu.query.count()
             menu = Menu(name=name, order=menu_count+1)
             db.session.add(menu)
             db.session.commit()
+            page = -1
             flash(u'添加导航成功！', 'success')
         return redirect(url_for('admin.manage_articleTypes_nav', page=page))
-
+    if page == -1:
+        page = (Menu.query.count() - 1) // \
+               current_app.config['COMMENTS_PER_PAGE'] + 1
     pagination = Menu.query.order_by(Menu.order.asc()).paginate(
             page, per_page=current_app.config['COMMENTS_PER_PAGE'],
             error_out=False)

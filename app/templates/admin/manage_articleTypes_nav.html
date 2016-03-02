@@ -56,7 +56,8 @@
                 <span class="glyphicon glyphicon-plus-sign"></span>
                 添加导航
             </a>
-            <a class="btn btn-sm btn-info sort-articleType-nav-btn">
+            <a class="btn btn-sm btn-info sort-articleType-nav-btn"
+               onclick="get_articleTypeNav_sort('{{ url_for('admin.get_articleTypeNav_sort') }}')">
                 <span class="glyphicon glyphicon-plus-sign"></span>
                 导航排序
             </a>
@@ -67,7 +68,7 @@
     </div>
 </div>
 
-<!-- 信息删除确认: For add articleType form-->
+<!-- 信息删除确认: For add articleTypeNav form-->
 <div class="modal fade" id="addArticleTypeNavFormModel">
     <div class="modal-dialog">
         <div class="modal-content message_align">
@@ -87,7 +88,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button id="addArticlyTypeNavCfmClick" type="submit" class="btn btn-success">确定</button>
+                    <button id="addArticleTypeNavCfmClick" type="submit" class="btn btn-success">确定</button>
                 </div>
             </form>
         </div><!-- /.modal-content -->
@@ -115,7 +116,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button id="editArticlyTypeNavCfmClick" type="submit" class="btn btn-success">确定</button>
+                    <button id="editArticleTypeNavCfmClick" type="submit" class="btn btn-success">确定</button>
                 </div>
             </form>
         </div><!-- /.modal-content -->
@@ -140,6 +141,32 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <a onclick="" id="delArticleTypeNavCfmClick" class="btn btn-success" data-dismiss="modal">确定</a>
             </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- 信息删除确认: For sort articleType nav form-->
+<div class="modal fade" id="sortArticleTypeNavFormModel">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title">导航排序</h4>
+            </div>
+            <form id="sortArticleTypeNavForm" method="post"
+                  action="">
+                <div class="modal-body">
+                    <div class="form-group" id="navFormGroup">
+                        {{ form3.csrf_token }}
+                        {{ form3.order(type='hidden', value='just_for_csrf_token') }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button id="sortArticleTypeNavCfmClick" type="submit" class="btn btn-success">确定</button>
+                </div>
+            </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
