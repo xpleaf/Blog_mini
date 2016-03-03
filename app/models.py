@@ -51,7 +51,7 @@ class Menu(db.Model):
     order = db.Column(db.Integer, default=0, nullable=False)
 
     def sort(self):
-        for menu in Menu.query.offset(self.order).all():
+        for menu in Menu.query.order_by(Menu.order).offset(self.order).all():
             menu.order -= 1
             db.session.add(menu)
 

@@ -147,21 +147,3 @@ function delArticleTypeNavCfm(url) {
     });
     $('#delArticleTypeNavCfmModel').modal();
 }
-
-//JS For sort nav to get nav sort info
-function get_articleTypeNav_sort(url) {
-    $.getJSON(url, function(data) {
-        $('.navSortTable').remove();
-        for(nav in data) {
-            $('#navFormGroup').append(
-                '<tr class="navSortTable">'+
-                    '<td>' + '<input ' + 'class=""' + ' value=' +nav + '>' +
-                    '</td>'+
-                    '<td>' + '<span class="btn btn-warning">' +  data[nav] + '</span>' +
-                    '</td>'+
-                '</tr>'
-            );
-        };
-        $('#sortArticleTypeNavFormModel').modal();
-    });
-}

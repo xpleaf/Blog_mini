@@ -144,30 +144,4 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-<!-- 信息删除确认: For sort articleType nav form-->
-<div class="modal fade" id="sortArticleTypeNavFormModel">
-    <div class="modal-dialog">
-        <div class="modal-content message_align">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">×</span></button>
-                <h4 class="modal-title">导航排序</h4>
-            </div>
-            <form id="sortArticleTypeNavForm" method="post"
-                  action="">
-                <div class="modal-body">
-                    <div class="form-group" id="navFormGroup">
-                        {{ form3.csrf_token }}
-                        {{ form3.order(type='hidden', value='just_for_csrf_token') }}
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button id="sortArticleTypeNavCfmClick" type="submit" class="btn btn-success">确定</button>
-                </div>
-            </form>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 {% endblock %}
