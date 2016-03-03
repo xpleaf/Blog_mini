@@ -152,12 +152,21 @@
         <span class="glyphicon glyphicon-arrow-down"></span>
     </button>
 </div>
-{% block script_jquery %}
-    <script src="{{ url_for('static', filename='js/jquery-2.2.1.min.js') }}"></script>
-{% endblock %}
 {% block script %}
+    <script src="{{ url_for('static', filename='js/jquery-2.2.1.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/floatButton.js') }}"></script>
+    {# csrfToken for Ajax   #}
+    <script>
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                }
+            }
+        })
+    </script>
 {% endblock %}
 </body>
 </html>
