@@ -1,5 +1,6 @@
 body {
-    background: #F0F0F0;
+    /*background: #F0F0F0;*/
+    background: url('../images/background.jpg');
 }
 .content {
     min-height: 800px;
