@@ -571,7 +571,7 @@ def delete_nav(id):
         count += 1
         articleType.menu = None
         db.session.add(articleType)
-    nav.sort()
+    nav.sort_delete()
     db.session.delete(nav)
     try:
         db.session.commit()
@@ -580,6 +580,42 @@ def delete_nav(id):
         flash(u'删除导航失败！', 'danger')
     else:
         flash(u'删除导航成功！同时将原来该导航的%s种分类的导航设置为无。' % count, 'success')
+    return redirect(url_for('admin.manage_articleTypes_nav', page=page))
+
+
+@admin.route('/manage-articleTypes/nav/sort-up/<int:id>')
+@login_required
+def nav_sort_up(id):
+    page = request.args.get('page', 1, type=int)
+
+    menu = Menu.query.get_or_404(id)
+    pre_menu = Menu.query.filter_by(order=menu.order-1).first()
+    if pre_menu:
+        (menu.order, pre_menu.order) = (pre_menu.order, menu.order)
+        db.session.add(menu)
+        db.session.add(pre_menu)
+        db.session.commit()
+        flash(u'成功将该导航升序！', 'success')
+    else:
+        flash(u'该导航已经位于最前面！', 'danger')
+    return redirect(url_for('admin.manage_articleTypes_nav', page=page))
+
+
+@admin.route('/manage-articleTypes/nav/sort-down/<int:id>')
+@login_required
+def nav_sort_down(id):
+    page = request.args.get('page', 1, type=int)
+
+    menu = Menu.query.get_or_404(id)
+    latter_menu = Menu.query.filter_by(order=menu.order+1).first()
+    if latter_menu:
+        (latter_menu.order, menu.order) = (menu.order, latter_menu.order)
+        db.session.add(menu)
+        db.session.add(latter_menu)
+        db.session.commit()
+        flash(u'成功将该导航降序！', 'success')
+    else:
+        flash(u'该导航已经位于最后面！', 'danger')
     return redirect(url_for('admin.manage_articleTypes_nav', page=page))
 
 
@@ -592,12 +628,3 @@ def get_articleTypeNav_info(id):
             'name': menu.name,
             'nav_id': menu.id,
         })
-
-
-@admin.route('/manage-articleTypes/get-articleTypeNav-sort')
-@login_required
-def get_articleTypeNav_sort():
-    if request.is_xhr:
-        data = {nav.order: nav.name for
-                nav in Menu.query.order_by(Menu.order.asc()).all()}
-        return jsonify(data)

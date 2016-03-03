@@ -50,7 +50,7 @@ class Menu(db.Model):
     types = db.relationship('ArticleType', backref='menu', lazy='dynamic')
     order = db.Column(db.Integer, default=0, nullable=False)
 
-    def sort(self):
+    def sort_delete(self):
         for menu in Menu.query.order_by(Menu.order).offset(self.order).all():
             menu.order -= 1
             db.session.add(menu)

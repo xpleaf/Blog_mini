@@ -231,7 +231,9 @@ ul.comments .disabled-comment-admin-btn {
 .manage-articleTypes-nav .add-articleType-nav-btn {
     float: right;
 }
-.manage-articleTypes-nav .sort-articleType-nav-btn {
-    float: right;
-    margin-right: 5px;
+.manage-articleTypes-nav .sort-up {
+    color: #449d44;
+}
+.manage-articleTypes-nav .sort-down {
+    color: #337ab7;
 }

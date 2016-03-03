@@ -5,7 +5,7 @@
 <div class="entry-box manage-articleTypes-nav">
     <h4><strong>分类导航</strong></h4>
     <hr/>
-    <p><span class="glyphicon glyphicon-bookmark"></span>导航总数：<span class="badge">{{ ArticleType.query.count() }}</span></p>
+    <p><span class="glyphicon glyphicon-bookmark"></span>导航总数：<span class="badge">{{ Menu.query.count() }}</span></p>
      <div class="articleTypes-nav-box">
         <ul class="nav nav-tabs">
             <li class=""><a href="{{ url_for('admin.manage_articleTypes') }}">博文分类</a></li>
@@ -18,6 +18,7 @@
                     <th>序号</th>
                     <th>导航名称</th>
                     <th>所含分类</th>
+                    <th>排序</th>
                     <th>修改</th>
                     <th>删除</th>
                 </tr>
@@ -28,11 +29,25 @@
                         <td>{{ menu.order }}</td>
                         <td>{{ menu.name }}</td>
                         <td>
-                            {% for aritcleType in menu.types.all() %}
-                                <a href="{{ url_for('main.articleTypes', id=aritcleType.id) }}" target="_blank">
-                                    {{ aritcleType.name }}
-                                </a>
-                            {% endfor %}
+                            {% if menu.types.count() %}
+                                {% for aritcleType in menu.types.all() %}
+                                    <a href="{{ url_for('main.articleTypes', id=aritcleType.id) }}" target="_blank">
+                                        {{ aritcleType.name }}
+                                    </a>
+                                {% endfor %}
+                            {% else %}
+                                没有分类，该导航将不显示。
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a class="btn sort-up" title="升序"
+                               href="{{ url_for('admin.nav_sort_up', id=menu.id, page=page) }}">
+                                <span class="glyphicon glyphicon-circle-arrow-up"></span>
+                            </a>
+                            <a class="btn sort-down" title="降序"
+                               href="{{ url_for('admin.nav_sort_down', id=menu.id, page=page) }}">
+                                <span class="glyphicon glyphicon-circle-arrow-down"></span>
+                            </a>
                         </td>
                         <td>
                             <a class="btn" title="修改导航信息"
@@ -55,11 +70,6 @@
             <a class="btn btn-sm btn-primary add-articleType-nav-btn">
                 <span class="glyphicon glyphicon-plus-sign"></span>
                 添加导航
-            </a>
-            <a class="btn btn-sm btn-info sort-articleType-nav-btn"
-               onclick="get_articleTypeNav_sort('{{ url_for('admin.get_articleTypeNav_sort') }}')">
-                <span class="glyphicon glyphicon-plus-sign"></span>
-                导航排序
             </a>
         </div>
     </div>
