@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
-    <title>开源博客系统Blog_mini</title>
+    <title>{{ BlogInfo.query.first().title }}</title>
     {% block stylesheet %}
         <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
         <link href="{{ url_for('static', filename='css/common.css') }}" rel="stylesheet">
@@ -11,12 +11,15 @@
 </head>
 <body>
 <header>
-    <div class='header-top' style="height: 80px;">
+    <div class='header-top'>
         <div class="container">
-            <h2>开源博客系统Blog_mini</h2>
+            <h2  class="blog-title"><a href="{{ url_for('main.index') }}">{{ BlogInfo.query.first().title }}</a></h2>
+            <p class="lead signature">
+                {{ BlogInfo.query.first().signature }}
+            </p>
         </div>
     </div>
-    <nav class="navbar navbar-inverse" role="navigation">
+    <nav class="navbar navbar-{{ BlogInfo.query.first().navbar }}" role="navigation">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">

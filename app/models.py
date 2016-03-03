@@ -323,3 +323,19 @@ class Article(db.Model):
 
     def __repr__(self):
         return '<Article %r>' % self.title
+
+
+class BlogInfo(db.Model):
+    __tablename__ = 'blog_info'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(256))
+    signature = db.Column(db.String(256))
+    navbar = db.Column(db.String(64))
+
+    @staticmethod
+    def insert_blog_info():
+        blog_mini_info = BlogInfo(title=u'开源博客系统Blog_mini',
+                                  signature=u'让每个人都轻松拥有可管理的个人博客！— By xpleaf',
+                                  navbar='inverse')
+        db.session.add(blog_mini_info)
+        db.session.commit()

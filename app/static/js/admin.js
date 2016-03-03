@@ -147,3 +147,10 @@ function delArticleTypeNavCfm(url) {
     });
     $('#delArticleTypeNavCfmModel').modal();
 }
+
+//JS For editing blog info
+$(document).ready(function() {
+    $('#editBlogInfo').click(function() {
+        $('#editBlogInfoFormModal').modal();
+    });
+});

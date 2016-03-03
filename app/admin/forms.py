@@ -58,3 +58,9 @@ class EditArticleNavTypeForm(AddArticleTypeNavForm):
 
 class SortArticleNavTypeForm(AddArticleTypeNavForm):
     order = StringField(u'序号', validators=[DataRequired()])
+
+
+class CustomBlogInfoForm(Form):
+    title = StringField(u'博客标题', validators=[DataRequired()])
+    signature = StringField(u'个性签名', validators=[DataRequired()])
+    navbar = SelectField(u'导航样式', coerce=int, validators=[DataRequired()])

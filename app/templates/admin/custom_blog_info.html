@@ -1,0 +1,58 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block admin_content %}
+<div class="entry-box custom-blog">
+    <h4><strong>基本信息</strong></h4>
+    <hr/>
+    <div class="blog-info-box">
+        <h5 class="info-header"><strong>博客标题：</strong></h5>
+        <i>{{ BlogInfo.query.first().title }}</i>
+        <h5 class="info-header"><strong>个性签名：</strong></h5>
+        <i>{{ BlogInfo.query.first().signature }}</i>
+        <h5 class="info-header"><strong>导航样式：</strong></h5>
+        <i>
+            {% if BlogInfo.query.first().navbar == 'inverse' %}
+                魅力黑
+            {% else %}
+                优雅白
+            {% endif %}
+        </i>
+        <div class="add-articleType-nav">
+            <a class="btn btn-sm btn-primary blog-info-btn" id="editBlogInfo">
+                <span class="glyphicon glyphicon-edit"></span>
+                修改
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- 信息删除确认: For edit blog info form-->
+<div class="modal fade" id="editBlogInfoFormModal">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title">修改基本信息</h4>
+            </div>
+            <form id="editBlogInfoForm" method="post" action="">
+                <div class="modal-body">
+                        <div class="form-group">
+                            {{ form.csrf_token }}
+                            {{ form.title.label }}
+                            {{ form.title(class='form-control', required='', value=blog.title) }}
+                            {{ form.signature.label }}
+                            {{ form.signature(class='form-control', required='', value=blog.signature) }}
+                            {{ form.navbar.label }}
+                            {{ form.navbar(class='form-control', required='', value=navbar) }}
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button id="editblogInfoCfmClick" type="submit" class="btn btn-success">确定</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endblock %}

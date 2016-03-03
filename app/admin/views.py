@@ -10,10 +10,11 @@ from flask import render_template, redirect, flash, \
 from flask.ext.login import login_required
 from . import admin
 from ..models import ArticleType, Source, Article, article_types, \
-    Comment, User, Follow, Menu, ArticleTypeSetting
+    Comment, User, Follow, Menu, ArticleTypeSetting, BlogInfo
 from .forms import SubmitArticlesForm, ManageArticlesForm, DeleteArticleForm, \
     DeleteArticlesForm, AdminCommentForm, DeleteCommentsForm, AddArticleTypeForm, \
-    EditArticleTypeForm, AddArticleTypeNavForm, EditArticleNavTypeForm, SortArticleNavTypeForm
+    EditArticleTypeForm, AddArticleTypeNavForm, EditArticleNavTypeForm, SortArticleNavTypeForm, \
+    CustomBlogInfoForm
 from .. import db
 
 
@@ -628,3 +629,34 @@ def get_articleTypeNav_info(id):
             'name': menu.name,
             'nav_id': menu.id,
         })
+
+
+@admin.route('/custom/blog-info', methods=['GET', 'POST'])
+@login_required
+def custom_blog_info():
+    form = CustomBlogInfoForm()
+
+    navbars = [(1, u'魅力黑'), (2, u'优雅白')]
+    navbar = 1
+    form.navbar.choices = navbars
+    blog = BlogInfo.query.first()
+
+    if form.validate_on_submit():
+        blog.title = form.title.data
+        blog.signature = form.signature.data
+        if form.navbar.data == 1:
+            blog.navbar = 'inverse'
+        else:
+            blog.navbar = 'default'
+        db.session.add(blog)
+        db.session.commit()
+
+        flash(u'修改博客基本信息成功！', 'success')
+        return redirect(url_for('admin.custom_blog_info'))
+
+    if blog.navbar == 'inverse':
+        navbar = 1
+    else:
+        navbar = 2
+    return render_template('admin/custom_blog_info.html',
+                           form=form, blog=blog, navbar=navbar)

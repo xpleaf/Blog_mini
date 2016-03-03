@@ -1,6 +1,13 @@
+/*CSS For common appearance*/
 body {
     /*background: #F0F0F0;*/
     background: url('../images/background.jpg');
+}
+.blog-title a:link {
+    text-decoration: none;
+}
+.signature {
+    padding-left: 0px;
 }
 .content {
     min-height: 800px;
@@ -236,5 +243,13 @@ ul.comments .disabled-comment-admin-btn {
     color: #449d44;
 }
 .manage-articleTypes-nav .sort-down {
+    color: #337ab7;
+}
+
+/*CSS For custom blog info*/
+/*.custom-blog .blog-info-box {*/
+    /*margin-left: 30px;*/
+/*}*/
+.custom-blog .info-header {
     color: #337ab7;
 }
