@@ -64,3 +64,9 @@ class CustomBlogInfoForm(Form):
     title = StringField(u'博客标题', validators=[DataRequired()])
     signature = StringField(u'个性签名', validators=[DataRequired()])
     navbar = SelectField(u'导航样式', coerce=int, validators=[DataRequired()])
+
+
+class AddBlogPluginForm(Form):
+    title = StringField(u'插件名称', validators=[DataRequired()])
+    note = StringField(u'备注')
+    content = TextAreaField(u'内容', validators=[DataRequired()])

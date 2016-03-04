@@ -10,11 +10,11 @@ from flask import render_template, redirect, flash, \
 from flask.ext.login import login_required
 from . import admin
 from ..models import ArticleType, Source, Article, article_types, \
-    Comment, User, Follow, Menu, ArticleTypeSetting, BlogInfo
+    Comment, User, Follow, Menu, ArticleTypeSetting, BlogInfo, Plugin
 from .forms import SubmitArticlesForm, ManageArticlesForm, DeleteArticleForm, \
     DeleteArticlesForm, AdminCommentForm, DeleteCommentsForm, AddArticleTypeForm, \
     EditArticleTypeForm, AddArticleTypeNavForm, EditArticleNavTypeForm, SortArticleNavTypeForm, \
-    CustomBlogInfoForm
+    CustomBlogInfoForm, AddBlogPluginForm
 from .. import db
 
 
@@ -655,3 +655,98 @@ def custom_blog_info():
 
     return render_template('admin/custom_blog_info.html',
                            form=form, blog=blog)
+
+
+@admin.route('/custom/blog-plugin', methods=['GET', 'POST'])
+@login_required
+def custom_blog_plugin():
+    page = request.args.get('page', 1, type=int)
+
+    pagination = Plugin.query.order_by(Plugin.order.asc()).paginate(
+            page, per_page=current_app.config['COMMENTS_PER_PAGE'],
+            error_out=False)
+    plugins = pagination.items
+
+    return render_template('admin/custom_blog_plugin.html',
+                           Plugin=Plugin, pagination=pagination, endpoint='.custom_blog_plugin',
+                           plugins=plugins, page=page)
+
+
+@admin.route('/custom/blog-plugin/delete/<int:id>')
+@login_required
+def blog_plugin_delete(id):
+    page = request.args.get('page', 1, type=int)
+
+    plugin = Plugin.query.get_or_404(id)
+    plugin.sort_delete()
+    db.session.delete(plugin)
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        flash(u'删除插件失败！', 'danger')
+    else:
+        flash(u'删除插件成功！' ,'success')
+    return redirect(url_for('admin.custom_blog_plugin', page=page))
+
+
+@admin.route('/custom/blog-plugin/sort-up/<int:id>')
+@login_required
+def plugin_sort_up(id):
+    page = request.args.get('page', 1, type=int)
+
+    plugin = Plugin.query.get_or_404(id)
+    pre_plugin = Plugin.query.filter_by(order=plugin.order-1).first()
+    if pre_plugin:
+        (plugin.order, pre_plugin.order) = (pre_plugin.order, plugin.order)
+        db.session.add(plugin)
+        db.session.add(pre_plugin)
+        db.session.commit()
+        flash(u'成功将该插件升序！', 'success')
+    else:
+        flash(u'该插件已经位于最前面！', 'danger')
+    return redirect(url_for('admin.custom_blog_plugin', page=page))
+
+
+@admin.route('/custom/blog-plugin/sort-down/<int:id>')
+@login_required
+def plugin_sort_down(id):
+    page = request.args.get('page', 1, type=int)
+
+    plugin = Plugin.query.get_or_404(id)
+    latter_plugin = Plugin.query.filter_by(order=plugin.order+1).first()
+    if latter_plugin:
+        (latter_plugin.order, plugin.order) = (plugin.order, latter_plugin.order)
+        db.session.add(plugin)
+        db.session.add(latter_plugin)
+        db.session.commit()
+        flash(u'成功将该插件降序！', 'success')
+    else:
+        flash(u'该插件已经位于最后面！', 'danger')
+    return redirect(url_for('admin.custom_blog_plugin', page=page))
+
+
+@admin.route('/custom/blog-plugin/disable/<int:id>')
+@login_required
+def disable_plugin(id):
+    page = request.args.get('page', 1, type=int)
+
+    plugin = Plugin.query.get_or_404(id)
+    plugin.disabled = True
+    db.session.add(plugin)
+    db.session.commit()
+    flash(u'禁用插件成功！', 'success')
+    return redirect(url_for('admin.custom_blog_plugin', page=page))
+
+
+@admin.route('/custom/blog-plugin/enable/<int:id>')
+@login_required
+def enable_plugin(id):
+    page = request.args.get('page', 1, type=int)
+
+    plugin = Plugin.query.get_or_404(id)
+    plugin.disabled = False
+    db.session.add(plugin)
+    db.session.commit()
+    flash(u'启用插件成功！', 'success')
+    return redirect(url_for('admin.custom_blog_plugin', page=page))

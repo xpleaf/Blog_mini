@@ -46,7 +46,7 @@
                     <span class="glyphicon glyphicon-trash"></span>
                 </a>
                 {% if comment.disabled == True %}
-                    <a class="btn btn-sm btn-success comment-handle-admin disabled-comment-admin-btn" title="恢复评论"
+                    <a class="btn btn-sm btn-success comment-handle-admin enabled-comment-admin-btn" title="恢复评论"
                        href="{{ url_for('admin.enable_comment', id=comment.id, page=page, enable_type='admin') }}">
                         <span class="glyphicon glyphicon-ok-sign"></span>
                     </a>

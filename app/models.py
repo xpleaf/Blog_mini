@@ -328,8 +328,8 @@ class Article(db.Model):
 class BlogInfo(db.Model):
     __tablename__ = 'blog_info'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(256))
-    signature = db.Column(db.String(256))
+    title = db.Column(db.String(64))
+    signature = db.Column(db.String(128))
     navbar = db.Column(db.String(64))
 
     @staticmethod
@@ -339,3 +339,21 @@ class BlogInfo(db.Model):
                                   navbar='inverse')
         db.session.add(blog_mini_info)
         db.session.commit()
+
+
+class Plugin(db.Model):
+    __tablename__ = 'plugins'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(64))
+    note = db.Column(db.String(128), default='')
+    content = db.Column(db.String(), default='')
+    order = db.Column(db.Integer, default=0)
+    disabled = db.Column(db.Boolean, default=False)
+
+    def sort_delete(self):
+        for plugin in Plugin.query.order_by(Plugin.order.asc()).offset(self.order).all():
+            plugin.order -= 1
+            db.session.add(plugin)
+
+    def __repr__(self):
+        return '<Plugin %r>' % self.title

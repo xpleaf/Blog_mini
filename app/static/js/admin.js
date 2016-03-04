@@ -154,3 +154,11 @@ $(document).ready(function() {
         $('#editBlogInfoFormModal').modal();
     });
 });
+
+//JS For confirm to delete a plugin
+function delPluginCfm(url) {
+    $('#delPluginCfmClick').click(function(){
+        window.location.href = url;
+    });
+    $('#delPluginCfmModal').modal();
+}
