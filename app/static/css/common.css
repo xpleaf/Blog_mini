@@ -289,3 +289,8 @@ ul.comments .disabled-comment-admin-btn {
 .account .email {
     color: #337ab7;
 }
+
+/*CSS For login page*/
+.login-page {
+    margin-top: 200px;
+}

@@ -2,7 +2,7 @@
 from flask import render_template, redirect, request, url_for, flash
 from flask.ext.login import login_user, login_required, logout_user
 from . import auth
-from ..models import User, ArticleType, article_types
+from ..models import User
 from .forms import LoginForm
 
 
@@ -20,8 +20,7 @@ def login():
     if form.errors:
         flash(u'登陆失败，请尝试重新登陆.', 'danger')
 
-    return render_template('auth/login.html', ArticleType=ArticleType, article_types=article_types,
-                           form=form)
+    return render_template('auth/login.html', form=form)
 
 
 @auth.route('/logout')

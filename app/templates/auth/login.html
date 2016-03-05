@@ -1,8 +1,54 @@
-{% extends 'base.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
-
-{% block content %}
-    <div class="col-md-6 col-md-offset-3" style="margin-top: 100px">
-        {{ wtf.quick_form(form) }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}"/>
+    <title>登陆Blog_mini管理后台</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/common.css') }}" rel="stylesheet">
+</head>
+<body background="{{ url_for('static', filename='images/background.jpg') }}">
+<div class="container login-page">
+    <div class="row">
+        <div class="col-md-4 col-lg-offset-4">
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+                <div class="alert alert-{{ category }} alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {{ message }}
+                </div>
+            {% endfor %}
+            <h3 class="text-center">欢迎登陆Blog_mini管理后台</h3>
+            <form class="form-horizontal" role="form" method="post" action="{{ url_for('auth.login') }}">
+                {{ form.csrf_token }}
+                <div class="form-group">
+                    {{ form.email.label(class='col-sm-3 control-label') }}
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            <span class="input-group-addon">@</span>
+                            {{ form.email(class='form-control', placeholder='请输入您的电子邮件', required='') }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form.password.label(class='col-sm-3 control-label') }}
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            <span class="input-group-addon">#</span>
+                            {{ form.password(class='form-control', placeholder='请输入您的密码', required='') }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="submit" class="btn btn-default">登录</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
-{% endblock %}
+</div>
+
+<script src="{{ url_for('static', filename='js/jquery-2.2.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</body>
+</html>
