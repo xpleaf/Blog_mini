@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% import '_macros.html' as macros %}
 
+{% block title %}
+    Blog_mini -{{ article.title }}
+{% endblock %}
+
 {% block content %}
 <div id='article-detials' class="entry-box">
     {% include '_article_info.html' %}

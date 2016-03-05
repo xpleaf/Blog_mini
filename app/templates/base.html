@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
-    <title>{{ BlogInfo.query.first().title }}</title>
+    <title>
+        {% block title %}
+        {{ BlogInfo.query.first().title }}
+        {% endblock %}
+    </title>
     {% block stylesheet %}
         <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
         <link href="{{ url_for('static', filename='css/common.css') }}" rel="stylesheet">
