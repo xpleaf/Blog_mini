@@ -92,36 +92,14 @@
                 </div>
                 <div class="col-md-4 blog_nav">
                     {% block blog_nav_plugin %}
-                        <div id='about' class="entry-box">
-                            <h5><strong>关于香飘叶子</strong></h5>
-                            <p>
-                                取名“香飘叶子”主要是高三同桌的一句调侃：香飘叶子，十里余香。于是在众多的网络博客中，署名都为香飘叶子。
-                                亦有英文名“xpleaf”，其中“xp”并非是操作系统“xp”，而是“香飘”二字的<strong>拼音首字母</strong>。
-                                热爱计算机技术，喜欢编程，尤其喜欢<code>Python</code>，热衷开源技术。目前为某工业大学在校二年级本科生。
-                            </p>
-                        </div>
-                        <div id="blog-info" class="entry-box">
-                            <h5><strong>关注技术</strong></h5>
-                            <p>
-                                <span class="label label-info">Python</span>
-                                <span class="label label-primary">Linux</span>
-                                <span class="label label-success">Web开发</span>
-                            </p>
-                            <p>
-                                <span class="label label-warning">Web集群</span>
-                                <span class="label label-default">CCNA/CCNP/CCIE</span>
-                                <span class="label label-danger">网络技术</span>
-                            </p>
-                        </div>
-                        <div id="contact_me" class="entry-box">
-                            <h5><strong>联系我</strong></h5>
-                            <p>个人社交博客：<a href="https://flasky-mini.herokuapp.com" target="_blank">https://flasky-mini.herokuapp.com</a>
-                            </p>
-                            <p>51cto博客：<a href="http://xpleaf.blog.51cto.com/" target="_blank">http://xpleaf.blog.51cto.com/</a>
-                            </p>
-                            <p>GitHub：<a href="https://github.com/xpleaf" target="_blank">https://github.com/xpleaf</a>
-                            </p>
-                        </div>
+                        {% for plugin in Plugin.query.order_by(Plugin.order.asc()).all() %}
+                            {% if plugin.disabled != True %}
+                                <div id="{{ plugin.title }}" class="entry-box">
+                                    <h5><strong>{{ plugin.title }}</strong></h5>
+                                    {{ plugin.content | safe }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
                     {% endblock %}
                 </div>
             </div>

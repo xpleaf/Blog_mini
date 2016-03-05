@@ -17,6 +17,7 @@ app.jinja_env.globals['ArticleType'] = ArticleType
 app.jinja_env.globals['article_types'] = article_types
 app.jinja_env.globals['Menu'] = Menu
 app.jinja_env.globals['BlogInfo'] = BlogInfo
+app.jinja_env.globals['Plugin'] = Plugin
 
 
 def make_shell_context():

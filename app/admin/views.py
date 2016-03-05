@@ -674,7 +674,7 @@ def custom_blog_plugin():
 
 @admin.route('/custom/blog-plugin/delete/<int:id>')
 @login_required
-def blog_plugin_delete(id):
+def delete_plugin(id):
     page = request.args.get('page', 1, type=int)
 
     plugin = Plugin.query.get_or_404(id)
@@ -750,3 +750,56 @@ def enable_plugin(id):
     db.session.commit()
     flash(u'启用插件成功！', 'success')
     return redirect(url_for('admin.custom_blog_plugin', page=page))
+
+
+@admin.route('/custom/blog-plugin/add', methods=['GET', 'POST'])
+@login_required
+def add_plugin():
+    form = AddBlogPluginForm()
+
+    if form.validate_on_submit():
+        title = form.title.data
+        plugin = Plugin.query.filter_by(title=title).first()
+        if plugin:
+            form = AddBlogPluginForm(title=title, note=form.note.data,
+                                     content=form.content.data)
+            flash(u'添加插件失败！该插件名称已经存在。', 'danger')
+            return render_template('admin/blog_plugin_add.html', form=form)
+        else:
+            note = form.note.data
+            content = form.content.data
+            plugin_count = Plugin.query.count()
+            plugin = Plugin(title=title, note=note,
+                            content=content, order=plugin_count+1)
+            db.session.add(plugin)
+            db.session.commit()
+            flash(u'添加插件成功！', 'success')
+        return redirect(url_for('admin.custom_blog_plugin'))
+
+    return render_template('admin/blog_plugin_add.html', form=form)
+
+
+@admin.route('/custom/blog-plugin/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_plugin(id):
+    page = request.args.get('page', 1, type=int)
+    plugin = Plugin.query.get_or_404(id)
+    form = AddBlogPluginForm(title=plugin.title,
+                             note=plugin.note,
+                             content=plugin.content)
+    if form.validate_on_submit():
+        title = form.title.data
+        plugin_check = Plugin.query.filter_by(title=title).first()
+        if plugin_check and plugin_check.id != id:
+            flash(u'修改插件失败！该插件名称已经存在。', 'danger')
+            return redirect(url_for('admin.edit_plugin', id=id))
+        else:
+            plugin.title = title
+            plugin.note = form.note.data
+            plugin.content = form.content.data
+            db.session.add(plugin)
+            db.session.commit()
+            flash(u'修改插件成功！', 'success')
+        return redirect(url_for('admin.custom_blog_plugin', page=page))
+
+    return render_template('admin/blog_plugin_add.html', form=form, page=page)
