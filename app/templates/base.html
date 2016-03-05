@@ -68,7 +68,7 @@
                     {% if current_user.is_authenticated %}
                         <li><a href="{{ url_for('admin.submitArticles') }}"><span
                                 class="glyphicon glyphicon-file">发表博文</span></a></li>
-                        <li><a href="{{ url_for('admin.manager') }}"><span class="glyphicon glyphicon-user">管理博客</span></a>
+                        <li><a href="{{ url_for('admin.account') }}"><span class="glyphicon glyphicon-user">管理博客</span></a>
                         </li>
                     {% endif %}
                 </ul>
@@ -104,7 +104,7 @@
                                         <h5><strong>博客统计</strong></h5>
                                         <p>访问量：<span class="badge">{{ BlogView.query.first().num_of_view }}</span></p>
                                         <p>
-                                            文章总数：<span class="badge">{{ Article.query.count() }}</span>
+                                            博文总数：<span class="badge">{{ Article.query.count() }}</span>
                                             评论总数：<span class="badge">{{ Comment.query.count() }}</span>
                                         </p>
                                         <p>

@@ -1,7 +1,8 @@
 # coding:utf-8
 from flask.ext.wtf import Form
-from wtforms import SelectField, StringField, TextAreaField, SubmitField
-from wtforms.validators import DataRequired, Length
+from wtforms import SelectField, StringField, TextAreaField, SubmitField, \
+    PasswordField
+from wtforms.validators import DataRequired, Length, Email, EqualTo
 from ..main.forms import CommentForm
 
 
@@ -70,3 +71,16 @@ class AddBlogPluginForm(Form):
     title = StringField(u'插件名称', validators=[DataRequired()])
     note = StringField(u'备注')
     content = TextAreaField(u'内容', validators=[DataRequired()])
+
+
+class ChangePasswordForm(Form):
+    old_password = PasswordField(u'原来密码', validators=[DataRequired()])
+    password = PasswordField(u'新密码', validators=[
+        DataRequired(), EqualTo('password2', message=u'两次输入密码不一致！')])
+    password2 = PasswordField(u'确认新密码', validators=[DataRequired()])
+
+
+class EditUserInfoForm(Form):
+    username = StringField(u'昵称', validators=[DataRequired()])
+    email = StringField(u'电子邮件', validators=[DataRequired(), Length(1, 64), Email()])
+    password = PasswordField(u'密码确认', validators=[DataRequired()])

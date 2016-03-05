@@ -162,3 +162,13 @@ function delPluginCfm(url) {
     });
     $('#delPluginCfmModal').modal();
 }
+
+//JS For change password
+function changePassword() {
+    $('#changePasswordFormModal').modal();
+}
+
+//JS For edit user info
+function EditUserInfo() {
+    $('#editUserInfoFormModal').modal();
+}

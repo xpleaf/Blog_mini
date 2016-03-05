@@ -7,14 +7,14 @@ from datetime import datetime
 import json
 from flask import render_template, redirect, flash, \
     url_for, request, current_app, jsonify
-from flask.ext.login import login_required
+from flask.ext.login import login_required, current_user
 from . import admin
 from ..models import ArticleType, Source, Article, article_types, \
     Comment, User, Follow, Menu, ArticleTypeSetting, BlogInfo, Plugin
 from .forms import SubmitArticlesForm, ManageArticlesForm, DeleteArticleForm, \
     DeleteArticlesForm, AdminCommentForm, DeleteCommentsForm, AddArticleTypeForm, \
     EditArticleTypeForm, AddArticleTypeNavForm, EditArticleNavTypeForm, SortArticleNavTypeForm, \
-    CustomBlogInfoForm, AddBlogPluginForm
+    CustomBlogInfoForm, AddBlogPluginForm, ChangePasswordForm, EditUserInfoForm
 from .. import db
 
 
@@ -803,3 +803,48 @@ def edit_plugin(id):
         return redirect(url_for('admin.custom_blog_plugin', page=page))
 
     return render_template('admin/blog_plugin_add.html', form=form, page=page)
+
+
+@admin.route('/account/')
+@login_required
+def account():
+    form = ChangePasswordForm()
+    form2 = EditUserInfoForm()
+
+    return render_template('admin/admin_account.html',
+                           form=form, form2=form2)
+
+
+@admin.route('/account/change-password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+
+    if form.validate_on_submit():
+        if current_user.verify_password(form.old_password.data):
+            current_user.password = form.password.data
+            db.session.add(current_user)
+            db.session.commit()
+            flash(u'修改密码成功！', 'success')
+            return redirect(url_for('admin.account'))
+        else:
+            flash(u'修改密码失败！密码不正确！', 'danger')
+            return redirect(url_for('admin.account'))
+
+
+@admin.route('/account/edit-user-info', methods=['GET', 'POST'])
+@login_required
+def edit_user_info():
+    form2 = EditUserInfoForm()
+
+    if form2.validate_on_submit():
+        if current_user.verify_password(form2.password.data):
+            current_user.username = form2.username.data
+            current_user.email = form2.email.data
+            db.session.add(current_user)
+            db.session.commit()
+            flash(u'修改用户信息成功！', 'success')
+            return redirect(url_for('admin.account'))
+        else:
+            flash(u'修改用户信息失败！密码不正确！', 'danger')
+            return redirect(url_for('admin.account'))

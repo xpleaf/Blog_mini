@@ -275,3 +275,17 @@ ul.comments .disabled-comment-admin-btn {
 .custom-blog-plugin .add-blog-plugin-btn {
     float: right;
 }
+
+/*CSS For account*/
+.account {
+    min-height: 250px;
+}
+.account .profile-header {
+    margin-left: 135px;
+}
+.account .username {
+    color: #337ab7;
+}
+.account .email {
+    color: #337ab7;
+}
