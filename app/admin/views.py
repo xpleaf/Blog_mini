@@ -848,3 +848,10 @@ def edit_user_info():
         else:
             flash(u'修改用户信息失败！密码不正确！', 'danger')
             return redirect(url_for('admin.account'))
+
+
+@admin.route('/help')
+@login_required
+def help():
+
+    return render_template('admin/help_page.html')
