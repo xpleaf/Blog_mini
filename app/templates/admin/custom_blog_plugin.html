@@ -51,18 +51,23 @@
                                 </a>
                             {% endif %}
                         </td>
-                        <td>
-                            <a class="btn" title="修改插件信息"
-                               href="{{ url_for('admin.edit_plugin', id=plugin.id, page=page) }}">
-                                <span class="glyphicon glyphicon-edit"></span>
-                            </a>
-                        </td>
-                        <td>
-                            <a class="btn btn-sm btn-default delete-blog-plugin" title="删除插件"
-                               onclick="delPluginCfm('{{ url_for('admin.delete_plugin', id=plugin.id, page=page) }}')">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </a>
-                        </td>
+                        {% if plugin.content != 'system_plugin' %}
+                            <td>
+                                <a class="btn" title="修改插件信息"
+                                   href="{{ url_for('admin.edit_plugin', id=plugin.id, page=page) }}">
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-default delete-blog-plugin" title="删除插件"
+                                   onclick="delPluginCfm('{{ url_for('admin.delete_plugin', id=plugin.id, page=page) }}')">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </a>
+                            </td>
+                        {% else %}
+                            <td></td>
+                            <td></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>

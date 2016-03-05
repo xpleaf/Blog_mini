@@ -3,13 +3,14 @@ from flask import render_template, request, current_app, redirect,\
     url_for, flash
 from . import main
 from ..models import Article, ArticleType, article_types, Comment, \
-    Follow, User, Source
+    Follow, User, Source, BlogView
 from .forms import CommentForm
 from .. import db
 
 
 @main.route('/')
 def index():
+    BlogView.add_view(db)
     page = request.args.get('page', 1, type=int)
     pagination = Article.query.order_by(Article.create_time.desc()).paginate(
             page, per_page=current_app.config['ARTICLES_PER_PAGE'],
@@ -21,6 +22,7 @@ def index():
 
 @main.route('/article-types/<int:id>/')
 def articleTypes(id):
+    BlogView.add_view(db)
     page = request.args.get('page', 1, type=int)
     pagination = ArticleType.query.get_or_404(id).articles.order_by(
             Article.create_time.desc()).paginate(
@@ -34,6 +36,7 @@ def articleTypes(id):
 
 @main.route('/article-sources/<int:id>/')
 def article_sources(id):
+    BlogView.add_view(db)
     page = request.args.get('page', 1, type=int)
     pagination = Source.query.get_or_404(id).articles.order_by(
             Article.create_time.desc()).paginate(
@@ -47,6 +50,7 @@ def article_sources(id):
 
 @main.route('/article-detials/<int:id>', methods=['GET', 'POST'])
 def articleDetails(id):
+    BlogView.add_view(db)
     form = CommentForm(request.form, follow=-1)
     article = Article.query.get_or_404(id)
 

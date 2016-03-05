@@ -344,11 +344,19 @@ class BlogInfo(db.Model):
 class Plugin(db.Model):
     __tablename__ = 'plugins'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(64))
+    title = db.Column(db.String(64), unique=True)
     note = db.Column(db.String(128), default='')
     content = db.Column(db.String(), default='')
     order = db.Column(db.Integer, default=0)
     disabled = db.Column(db.Boolean, default=False)
+
+    @staticmethod
+    def insert_system_plugin():
+        plugin = Plugin(title=u'博客统计',
+                        note=u'系统插件',
+                        content='system_plugin')
+        db.session.add(plugin)
+        db.session.commit()
 
     def sort_delete(self):
         for plugin in Plugin.query.order_by(Plugin.order.asc()).offset(self.order).all():
@@ -357,3 +365,22 @@ class Plugin(db.Model):
 
     def __repr__(self):
         return '<Plugin %r>' % self.title
+
+
+class BlogView(db.Model):
+    __tablename__ = 'blog_view'
+    id = db.Column(db.Integer, primary_key=True)
+    num_of_view = db.Column(db.BigInteger, default=0)
+
+    @staticmethod
+    def insert_view():
+        view = BlogView(num_of_view=0)
+        db.session.add(view)
+        db.session.commit()
+
+    @staticmethod
+    def add_view(db):
+        view = BlogView.query.first()
+        view.num_of_view += 1
+        db.session.add(view)
+        db.session.commit()

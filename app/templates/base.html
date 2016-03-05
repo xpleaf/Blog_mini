@@ -94,10 +94,27 @@
                     {% block blog_nav_plugin %}
                         {% for plugin in Plugin.query.order_by(Plugin.order.asc()).all() %}
                             {% if plugin.disabled != True %}
-                                <div id="{{ plugin.title }}" class="entry-box">
-                                    <h5><strong>{{ plugin.title }}</strong></h5>
-                                    {{ plugin.content | safe }}
-                                </div>
+                                {% if plugin.content != 'system_plugin' %}
+                                    <div id="{{ plugin.title }}" class="entry-box">
+                                        <h5><strong>{{ plugin.title }}</strong></h5>
+                                        {{ plugin.content | safe }}
+                                    </div>
+                                {% else %}
+                                    <div class="entry-box">
+                                        <h5><strong>博客统计</strong></h5>
+                                        <p>访问量：<span class="badge">{{ BlogView.query.first().num_of_view }}</span></p>
+                                        <p>
+                                            文章总数：<span class="badge">{{ Article.query.count() }}</span>
+                                            评论总数：<span class="badge">{{ Comment.query.count() }}</span>
+                                        </p>
+                                        <p>
+                                            {% for source in Source.query.all() %}
+                                                <a href="{{ url_for('main.article_sources', id=source.id) }}">{{ source.name }}</a>：
+                                                <span class="badge">{{ source.articles.count() }}</span>
+                                            {% endfor %}
+                                        </p>
+                                    </div>
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                     {% endblock %}
