@@ -33,5 +33,46 @@ def make_shell_context():
 manager.add_command("shell", Shell(make_context=make_shell_context))
 
 
+@manager.command
+def deploy(deploy_type):
+    from flask.ext.migrate import upgrade
+    from app.models import BlogInfo, User, ArticleTypeSetting, Source, \
+        ArticleType, Plugin, BlogView, Comment
+
+    # upgrade database to the latest version
+    upgrade()
+
+    if deploy_type == 'product':
+        # step_1:insert basic blog info
+        BlogInfo.insert_blog_info()
+        # step_2:insert admin account
+        User.insert_admin(email='blog_mini@163.com', username='blog_mini', password='blog_mini')
+        # step_3:insert system default setting
+        ArticleTypeSetting.insert_system_setting()
+        # step_4:insert default article sources
+        Source.insert_sources()
+        # step_5:insert default articleType
+        ArticleType.insert_system_articleType()
+        # step_6:insert system plugin
+        Plugin.insert_system_plugin()
+        # step_7:insert blog view
+        BlogView.insert_view()
+
+    # You must run `python manage.py deploy(product)` before run `python manage.py deploy(test_data)`
+    if deploy_type == 'test_data':
+        # step_1:insert navs
+        Menu.insert_menus()
+        # step_2:insert articleTypes
+        ArticleType.insert_articleTypes()
+        # step_3:generate random articles
+        Article.generate_fake(100)
+        # step_4:generate random comments
+        Comment.generate_fake(300)
+        # step_5:generate random replies
+        Comment.generate_fake_replies(100)
+        # step_4:generate random comments
+        Comment.generate_fake(300)
+
+
 if __name__ == '__main__':
     manager.run()

@@ -38,10 +38,10 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def __init__(self, **kwargs):
-        super(Comment, self).__init__(**kwargs)
+        super(User, self).__init__(**kwargs)
         if self.email is not None and self.avatar_hash is None:
             self.avatar_hash = hashlib.md5(
-                    self.author_email.encode('utf-8')).hexdigest()
+                    self.email.encode('utf-8')).hexdigest()
 
     def gravatar(self, size=40, default='identicon', rating='g'):
         # if request.is_secure:
@@ -257,7 +257,7 @@ class Comment(db.Model):
         for i in range(count):
             a = Article.query.offset(randint(0, article_count - 1)).first()
             c = Comment(content=forgery_py.lorem_ipsum.sentences(randint(3, 5)),
-                        timestamp=forgery_py.date.date(True, -10, 0),
+                        timestamp=forgery_py.date.date(True),
                         author_name=forgery_py.internet.user_name(True),
                         author_email=forgery_py.internet.email_address(),
                         article=a)
@@ -277,7 +277,7 @@ class Comment(db.Model):
         for i in range(count):
             followed = Comment.query.offset(randint(0, comment_count - 1)).first()
             c = Comment(content=forgery_py.lorem_ipsum.sentences(randint(3, 5)),
-                        timestamp=forgery_py.date.date(True, -20, -10),
+                        timestamp=forgery_py.date.date(True),
                         author_name=forgery_py.internet.user_name(True),
                         author_email=forgery_py.internet.email_address(),
                         article=followed.article, comment_type='reply',
