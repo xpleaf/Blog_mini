@@ -19,7 +19,7 @@
                 <img class="img-rounded profile-thumbnail" src="{{ comment.gravatar() }}">
             </div>
             <div class="comment-info">
-                <div class="comment-date"><span>{{ comment.timestamp.replace(microsecond=0) }}</span></div>
+                <div class="comment-date"><span>{{ moment(comment.timestamp.replace(microsecond=0)).format('LLL') }}</span></div>
                 <div class="comment-author">
                     <span>{{ comment.author_name }}</span>
                     {% if User.query.filter_by(email=comment.author_email).count() %}

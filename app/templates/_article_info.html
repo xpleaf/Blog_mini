@@ -5,7 +5,7 @@
 </div>
 <div class="article-entry-info">
     <div class="base-info">
-        <span class="label label-default">{{ article.create_time.date() }}</span>&nbsp;
+        <span class="label label-default">{{ moment(article.create_time.date()).format('LL') }}</span>&nbsp;
         <span class="label label-warning">
             <a href="{{ url_for('main.article_sources', id=article.source.id) }}" target="_blank" style="color: white">
                 {{ article.source.name }}

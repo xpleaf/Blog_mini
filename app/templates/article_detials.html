@@ -15,7 +15,12 @@
         </p>
     </div>
     <div class="article-add-info">
-        <p><span class="glyphicon glyphicon-time">博文最后更新时间：{{ article.update_time.date() }}</span></p>
+        <p>
+            <span class="glyphicon glyphicon-time">
+                博文最后更新时间：
+            </span>
+            {{ moment(article.update_time.replace(microsecond=0)).format('LLL') }}
+        </p>
     </div>
     {% if current_user.is_authenticated %}
     <div class="article-edit">

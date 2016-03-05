@@ -12,3 +12,4 @@ SQLAlchemy==1.0.11
 Werkzeug==0.11.3
 wheel==0.24.0
 flask-login==0.3.2
+flask-moment==0.5.1
