@@ -1,4 +1,11 @@
-# Blog_mini
-An open souce blog system.
-It will help a lot if you never finish an entire a project by yourself.
-Cloning the Blog_mini Git warehouse to your local computer and learn it.
+# Blog_mini：一个开源的博客系统
+Blog_mini是一个开源的博客系统，用Python开发完成，具有简洁的界面和强大的后台管理，
+使用它，你可以轻松架设属于你自己的个人博客网站！
+
+Blog_mini的作者撰写了详细的部署文档，你可以在下面的地址中获得详细的功能介绍和部署文档：
+
+作者51cto博客：http://xpleaf.blog.51cot.com（开源项目一栏）
+作者个人博客网站：http://www.xpleaf.com
+
+请在作者的51cto博客中留言，并提出你在部署和使用过程中的疑问或遇到的问题，
+作者承诺，将无偿提供技术支持！
