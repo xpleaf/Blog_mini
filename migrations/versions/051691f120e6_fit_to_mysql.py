@@ -1,13 +1,13 @@
-"""ready for deplying
+"""fit to MySQL
 
-Revision ID: 5e321c21ec2a
+Revision ID: 051691f120e6
 Revises: None
-Create Date: 2016-03-05 21:49:03.285373
+Create Date: 2016-03-06 19:11:38.238238
 
 """
 
 # revision identifiers, used by Alembic.
-revision = '5e321c21ec2a'
+revision = '051691f120e6'
 down_revision = None
 
 from alembic import op
@@ -27,7 +27,7 @@ def upgrade():
     op.create_table('blog_info',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=64), nullable=True),
-    sa.Column('signature', sa.String(length=128), nullable=True),
+    sa.Column('signature', sa.Text(), nullable=True),
     sa.Column('navbar', sa.String(length=64), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
@@ -46,8 +46,8 @@ def upgrade():
     op.create_table('plugins',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=64), nullable=True),
-    sa.Column('note', sa.String(length=128), nullable=True),
-    sa.Column('content', sa.String(), nullable=True),
+    sa.Column('note', sa.Text(), nullable=True),
+    sa.Column('content', sa.Text(), nullable=True),
     sa.Column('order', sa.Integer(), nullable=True),
     sa.Column('disabled', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
@@ -72,7 +72,7 @@ def upgrade():
     op.create_table('articleTypes',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=64), nullable=True),
-    sa.Column('introduction', sa.String(length=128), nullable=True),
+    sa.Column('introduction', sa.Text(), nullable=True),
     sa.Column('menu_id', sa.Integer(), nullable=True),
     sa.Column('setting_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['menu_id'], ['menus.id'], ),
@@ -106,8 +106,8 @@ def upgrade():
     sa.Column('avatar_hash', sa.String(length=32), nullable=True),
     sa.Column('article_id', sa.Integer(), nullable=True),
     sa.Column('disabled', sa.Boolean(), nullable=True),
-    sa.Column('comment_type', sa.String(), nullable=True),
-    sa.Column('reply_to', sa.String(), nullable=True),
+    sa.Column('comment_type', sa.String(length=64), nullable=True),
+    sa.Column('reply_to', sa.String(length=128), nullable=True),
     sa.ForeignKeyConstraint(['article_id'], ['articles.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

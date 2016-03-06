@@ -12,6 +12,9 @@ body {
 .content {
     min-height: 800px;
 }
+.article-entry-sum {
+    margin-top: 5px;
+}
 .entry-box {
     background: #fff;
     padding: 15px;

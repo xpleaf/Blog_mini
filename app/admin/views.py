@@ -638,14 +638,14 @@ def custom_blog_info():
 
     navbars = [(1, u'魅力黑'), (2, u'优雅白')]
     form.navbar.choices = navbars
-    blog = BlogInfo.query.first()
 
     if form.validate_on_submit():
+        blog = BlogInfo.query.first()
         blog.title = form.title.data
         blog.signature = form.signature.data
         if form.navbar.data == 1:
             blog.navbar = 'inverse'
-        if form.navbar.data ==2 :
+        if form.navbar.data == 2:
             blog.navbar = 'default'
         db.session.add(blog)
         db.session.commit()
@@ -653,8 +653,23 @@ def custom_blog_info():
         flash(u'修改博客基本信息成功！', 'success')
         return redirect(url_for('admin.custom_blog_info'))
 
-    return render_template('admin/custom_blog_info.html',
-                           form=form, blog=blog)
+    return render_template('admin/custom_blog_info.html', form=form)
+
+
+@admin.route('/custom/blog-info/get')
+@login_required
+def get_blog_info():
+    if request.is_xhr:
+        blog = BlogInfo.query.first()
+        if blog.navbar == 'inverse':
+            navbar = 1
+        if blog.navbar == 'default':
+            navbar = 2
+        return jsonify({
+            'title': blog.title,
+            'signature':blog.signature,
+            'navbar': navbar,
+        })
 
 
 @admin.route('/custom/blog-plugin', methods=['GET', 'POST'])

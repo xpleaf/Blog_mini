@@ -22,7 +22,8 @@
             {% endif %}
         </i>
         <div class="add-articleType-nav">
-            <a class="btn btn-sm btn-primary blog-info-btn" id="editBlogInfo">
+            <a class="btn btn-sm btn-primary blog-info-btn" id="editBlogInfo"
+               onclick="get_blog_info('{{ url_for('admin.get_blog_info') }}')">
                 <span class="glyphicon glyphicon-edit"></span>
                 修改
             </a>
@@ -44,9 +45,9 @@
                         <div class="form-group">
                             {{ form.csrf_token }}
                             {{ form.title.label }}
-                            {{ form.title(class='form-control', required='', value=blog.title) }}
+                            {{ form.title(class='form-control', required='') }}
                             {{ form.signature.label }}
-                            {{ form.signature(class='form-control', required='', value=blog.signature) }}
+                            {{ form.signature(class='form-control', required='') }}
                             {{ form.navbar.label }}
                             {{ form.navbar(class='form-control', required='') }}
                         </div>

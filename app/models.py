@@ -131,7 +131,7 @@ class ArticleType(db.Model):
     name = db.Column(db.String(64), unique=True)
     introduction = db.Column(db.Text, default=None)
     articles = db.relationship('Article', backref='articleType', lazy='dynamic')
-    menu_id = db.Column(db.Integer, db.ForeignKey('menus.id'), default=-1)
+    menu_id = db.Column(db.Integer, db.ForeignKey('menus.id'), default=None)
     setting_id = db.Column(db.Integer, db.ForeignKey('articleTypeSettings.id'))
 
     @staticmethod

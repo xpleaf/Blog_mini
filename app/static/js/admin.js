@@ -149,11 +149,15 @@ function delArticleTypeNavCfm(url) {
 }
 
 //JS For editing blog info
-$(document).ready(function() {
-    $('#editBlogInfo').click(function() {
+function get_blog_info(url) {
+    $.getJSON(url, function(data) {
+        console.log(data);
+        $('#title').val(data.title);
+        $('#signature').val(data.signature);
+        $('#navbar').val(data.navbar);
         $('#editBlogInfoFormModal').modal();
     });
-});
+}
 
 //JS For confirm to delete a plugin
 function delPluginCfm(url) {
