@@ -129,7 +129,7 @@ class ArticleType(db.Model):
     __tablename__ = 'articleTypes'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    introduction = db.Column(db.String(128), default=None)
+    introduction = db.Column(db.Text, default=None)
     articles = db.relationship('Article', backref='articleType', lazy='dynamic')
     menu_id = db.Column(db.Integer, db.ForeignKey('menus.id'), default=-1)
     setting_id = db.Column(db.Integer, db.ForeignKey('articleTypeSettings.id'))
@@ -216,8 +216,8 @@ class Comment(db.Model):
     avatar_hash = db.Column(db.String(32))
     article_id = db.Column(db.Integer, db.ForeignKey('articles.id'))
     disabled = db.Column(db.Boolean, default=False)
-    comment_type = db.Column(db.String, default='comment')
-    reply_to = db.Column(db.String, default='notReply')
+    comment_type = db.Column(db.String(64), default='comment')
+    reply_to = db.Column(db.String(128), default='notReply')
 
     followed = db.relationship('Follow',
                                foreign_keys=[Follow.follower_id],
@@ -347,7 +347,7 @@ class BlogInfo(db.Model):
     __tablename__ = 'blog_info'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64))
-    signature = db.Column(db.String(128))
+    signature = db.Column(db.Text)
     navbar = db.Column(db.String(64))
 
     @staticmethod
@@ -363,8 +363,8 @@ class Plugin(db.Model):
     __tablename__ = 'plugins'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64), unique=True)
-    note = db.Column(db.String(128), default='')
-    content = db.Column(db.String(), default='')
+    note = db.Column(db.Text, default='')
+    content = db.Column(db.Text, default='')
     order = db.Column(db.Integer, default=0)
     disabled = db.Column(db.Boolean, default=False)
 
