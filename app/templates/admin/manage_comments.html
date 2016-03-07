@@ -61,7 +61,9 @@
                     </a>
                 {% endif %}
                 <div class="comment-date">
-                    <span>{{ comment.timestamp.replace(microsecond=0) }}</span>
+                    <span>
+                        <small>{{ moment(comment.timestamp.replace(microsecond=0)).format('LLL') }}</small>
+                    </span>
                 </div>
                 <div class="comment-content">
                     {% if comment.comment_type == 'reply' %}

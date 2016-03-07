@@ -72,7 +72,7 @@
                                 {{ article.articleType.name }}
                             </a>
                         </td>
-                        <td>{{ article.create_time.replace(microsecond=0) }}</td>
+                        <td>{{ moment(article.create_time.replace(microsecond=0)).format('LLL') }}</td>
                         <td>
                             <a href="{{ url_for('admin.editArticles', id=article.id) }}">
                                 <span class="glyphicon glyphicon-pencil" title="编辑博文"></span>
