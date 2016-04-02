@@ -86,8 +86,9 @@ def submitArticles():
             db.session.add(article)
             db.session.commit()
             flash(u'发表博文成功！', 'success')
-            article_id = Article.query.filter_by(title=title).first().id
-            return redirect(url_for('main.articleDetails', id=article_id))
+            #article_id = Article.query.filter_by(title=title).first().id
+            #return redirect(url_for('main.articleDetails', id=article_id))
+            return redirect(url_for('admin.manage_articles'))
     if form.errors:
         flash(u'发表博文失败', 'danger')
 

@@ -27,12 +27,23 @@ def search():
     
 @main.route('/search_results/<query>')
 def search_results(query):
+    BlogView.add_view(db)
     per_page = current_app.config['ARTICLES_PER_PAGE']
-    results = Article.query.whoosh_search(query, per_page*2).all()
-    print query, results
-    articles = pagination.items
+    max_search = current_app.config['MAX_SEARCH_RESULTS']
+#    pagination = Article.query.whoosh_search(query, max_search).paginate(
+#            page=1, per_page=current_app.config['ARTICLES_PER_PAGE'],
+#            error_out=False)
+#    print query, pagination
+#    articles = pagination.items
+#    return render_template('search_results.html', articles=articles,
+#            query = query,pagination=pagination, endpoint='.search_results')
+
+    articles = Article.query.whoosh_search(query, max_search).all()
+    print query, articles
+    #articles = pagination.items
     return render_template('search_results.html', articles=articles,
-            query = query,pagination=pagination, results = results, endpoint='.search_results')
+            query = query, endpoint='.search_results')
+
 
 @main.route('/')
 def index():
@@ -112,6 +123,6 @@ def articleDetails(id):
     article.add_view(article, db)
     return render_template('article_detials.html', User=User, article=article,
                            comments=comments, pagination=pagination, page=page,
-                           form=form, endpoint='.articleDetails', id=article.id)
+                           form=form, endpoint='main.articleDetails', id=article.id)
     # page=page, this is used to return the current page args to the
     # disable comment or enable comment endpoint to pass it to the articleDetails endpoint

@@ -4,6 +4,7 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
 from . import db, login_manager
+from jieba.analyse import ChineseAnalyzer
 
 article_types = {u'开发语言': ['Python', 'Java', 'JavaScript'],
                  'Linux': [u'Linux成长之路', u'Linux运维实战', 'CentOS', 'Ubuntu'],
@@ -299,8 +300,9 @@ class Comment(db.Model):
             return self.followed.first().followed.author_name
 
 class Article(db.Model):
-    __searchable__ = ['title']
+    __searchable__ = ['id','title', 'content', 'summary']
     __tablename__ = 'articles'
+    __analyzer__ = ChineseAnalyzer()
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64), unique=True)
     content = db.Column(db.Text)

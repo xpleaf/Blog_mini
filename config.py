@@ -7,7 +7,6 @@ class Config():
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     # SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_RECORD_QUERIES = True
-    #WHOOSHEE_DIR = "e:\\tmp\\whoosh\\"
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data.sqlite')
     ARTICLES_PER_PAGE = 10
