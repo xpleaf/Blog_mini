@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% import "_macros.html" as macros %}
+
+{% block content %}
+    <h1>Search results for "{{query}}":</h1>
+    {% include "_article_entry.html" %}
+    <div class="pagination">
+    {% if endpoint == '.index' %}
+        {{ macros.pagination_widget(pagination, endpoint) }}
+    {% else %}
+        {{ macros.pagination_widget(pagination, endpoint, id=id) }}
+    {% endif %}
+    </div>
+{% endblock %}
