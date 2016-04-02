@@ -20,7 +20,6 @@ def create_app():
     app.config.from_object(Config)
     Config.init_app(app)
     CsrfProtect(app)
-
     db.init_app(app)
     bootstrap.init_app(app)
     moment.init_app(app)
@@ -34,5 +33,5 @@ def create_app():
 
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
-
     return app
+

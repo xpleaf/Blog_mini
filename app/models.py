@@ -299,6 +299,7 @@ class Comment(db.Model):
             return self.followed.first().followed.author_name
 
 class Article(db.Model):
+    __searchable__ = ['title']
     __tablename__ = 'articles'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64), unique=True)
