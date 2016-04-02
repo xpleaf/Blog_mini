@@ -19,10 +19,11 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
     avatar_hash = db.Column(db.String(32))
+    userlevel = db.Column(db.String(32))
 
     @staticmethod
-    def insert_admin(email, username, password):
-        user = User(email=email, username=username, password=password)
+    def insert_admin(email, username, password, userlevel):
+        user = User(email=email, username=username, password=password, userlevel=userlevel)
         db.session.add(user)
         db.session.commit()
 
