@@ -14,7 +14,7 @@ from ..models import ArticleType, Source, Article, article_types, \
 from .forms import SubmitArticlesForm, ManageArticlesForm, DeleteArticleForm, \
     DeleteArticlesForm, AdminCommentForm, DeleteCommentsForm, AddArticleTypeForm, \
     EditArticleTypeForm, AddArticleTypeNavForm, EditArticleNavTypeForm, SortArticleNavTypeForm, \
-    CustomBlogInfoForm, AddBlogPluginForm, ChangePasswordForm, EditUserInfoForm
+    CustomBlogInfoForm, AddBlogPluginForm, ChangePasswordForm, EditUserInfoForm, AddAccountInfoForm
 from .. import db
 
 
@@ -23,6 +23,42 @@ from .. import db
 def manager():
     return redirect(url_for('admin.custom_blog_info'))
 
+@admin.route('/account/add', methods=['GET', 'POST'])
+@login_required
+def add_account():
+    form = AddAccountInfoForm()
+    levels = [(1,u'admin'), (2,u'user')]
+    form.userlevel.choices = levels
+
+    if form.validate_on_submit():
+        #username = form.username.data
+        email = form.email.data
+        #password = form.password.data
+        account = User.query.filter_by(email=email).first()
+        if account:
+            form = AddAccountInfoForm(username=username, email=form.email.data,
+                                     password=form.password.data)
+            flash(u'添加失败！该帐号已经存在。', 'danger')
+            return render_template('admin/blog_account_add.html', form=form)
+        else:
+            username = form.username.data
+            email = form.email.data
+            password = form.password.data
+            level = form.userlevel.data
+            if level==1:
+                userlevel = "admin"
+            elif level ==2:
+                userlevel = "user"
+            
+            #account_count = User.query.count()
+            User.insert_admin(username=username, email=email,password=password, userlevel=userlevel)
+            #db.session.add(plugin)
+            #db.session.commit()
+            flash(u'添加帐号成功！', 'success')
+        return redirect(url_for('admin.account'))
+
+    return render_template('admin/blog_account_add.html', form=form)
+    #form = 
 
 @admin.route('/submit-articles', methods=['GET', 'POST'])
 @login_required
@@ -50,8 +86,9 @@ def submitArticles():
             db.session.add(article)
             db.session.commit()
             flash(u'发表博文成功！', 'success')
-            article_id = Article.query.filter_by(title=title).first().id
-            return redirect(url_for('main.articleDetails', id=article_id))
+            #article_id = Article.query.filter_by(title=title).first().id
+            #return redirect(url_for('main.articleDetails', id=article_id))
+            return redirect(url_for('admin.manage_articles'))
     if form.errors:
         flash(u'发表博文失败', 'danger')
 
@@ -856,6 +893,11 @@ def edit_user_info():
         if current_user.verify_password(form2.password.data):
             current_user.username = form2.username.data
             current_user.email = form2.email.data
+#            lvl = form2.userlevel.data
+#            if lvl ==1:
+#                current_user.userlevel = "admin"
+#            elif lvl ==2:
+#                current_user.userlevel = "user"
             db.session.add(current_user)
             db.session.commit()
             flash(u'修改用户信息成功！', 'success')

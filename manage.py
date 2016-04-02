@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
+#import app
 from app import create_app, db
 from app.models import ArticleType, article_types, Source, \
     Comment, Article, User, Menu, ArticleTypeSetting, BlogInfo, \
     Plugin, BlogView
+import flask.ext.whooshalchemyplus as whooshalchemy
+#from flask.ext.whooshee import Whooshee
 
 app = create_app()
 manager = Manager(app)
 migrate = Migrate(app, db)
 manager.add_command('db', MigrateCommand)
-
+whooshalchemy.whoosh_index(app, Article)
+#whooshee = Whooshee(app)
 
 # Global variables to jiajia2 environment:
 app.jinja_env.globals['ArticleType'] = ArticleType
@@ -46,7 +50,7 @@ def deploy(deploy_type):
         # step_1:insert basic blog info
         BlogInfo.insert_blog_info()
         # step_2:insert admin account
-        User.insert_admin(email='blog_mini@163.com', username='blog_mini', password='blog_mini')
+        User.insert_admin(email='blog_mini@163.com', username='blog_mini', password='blog_mini', userlevel='admin')
         # step_3:insert system default setting
         ArticleTypeSetting.insert_system_setting()
         # step_4:insert default article sources
