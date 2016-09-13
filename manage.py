@@ -6,14 +6,13 @@ from app import create_app, db
 from app.models import ArticleType, article_types, Source, \
     Comment, Article, User, Menu, ArticleTypeSetting, BlogInfo, \
     Plugin, BlogView
-import flask.ext.whooshalchemyplus as whooshalchemy
-#from flask.ext.whooshee import Whooshee
+#import flask.ext.whooshalchemyplus as whooshalchemy
 
 app = create_app()
 manager = Manager(app)
 migrate = Migrate(app, db)
 manager.add_command('db', MigrateCommand)
-whooshalchemy.whoosh_index(app, Article)
+#whooshalchemy.whoosh_index(app, Article)
 #whooshee = Whooshee(app)
 
 # Global variables to jiajia2 environment:

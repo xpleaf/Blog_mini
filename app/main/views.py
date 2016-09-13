@@ -38,8 +38,23 @@ def search_results(query):
 #    return render_template('search_results.html', articles=articles,
 #            query = query,pagination=pagination, endpoint='.search_results')
 
-    articles = Article.query.whoosh_search(query, max_search).all()
-    print query, articles
+    # use whoosh for fulltext search
+    #articles = Article.query.whoosh_search(query, max_search).all()
+    #print query, articles
+    #articles = pagination.items
+    
+    # use mysql 5.7 for fulltext search
+    articles_by_content = db.session.query(Article).filter(Article.content.match(query)).all()
+    articles_by_title = db.session.query(Article).filter(Article.title.match(query)).all()
+    articles = articles_by_content + articles_by_title
+    #articles = articles_by_content
+    
+    #合并搜索结果的重复内容。重新得到唯一不重复的articles。这里可以改变文章排序，只能按id顺序。如果id 是按时间递增最好
+    #之所以这么绕个弯，因为 Flask-SQLAlchemy=2.1版本目前不支持 多列 全文索引的查询方式。
+    articleids = {}
+    for article in articles:
+        articleids[article.id]=article
+    articles = articleids.values()
     #articles = pagination.items
     return render_template('search_results.html', articles=articles,
             query = query, endpoint='.search_results')
