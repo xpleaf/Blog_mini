@@ -79,7 +79,7 @@ python manage.py deploy product
 
 
 启动python网站服务：
-python manage:app runserver
+python manage.py runserver
 
 打开网页测试
 http://localhost:5000/
