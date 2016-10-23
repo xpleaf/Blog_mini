@@ -42,6 +42,10 @@ def search_results(query):
     #articles = Article.query.whoosh_search(query, max_search).all()
     #print query, articles
     #articles = pagination.items
+    original_query = query
+    #use mysql‘s boolin search synatex（+），for each query string（as an AND search）
+    query = u" ".join([u'+{0}'.format(i) for i in query.replace('+', '').split(' ')])
+    print query
     
     # use mysql 5.7 for fulltext search
     articles_by_content = db.session.query(Article).filter(Article.content.match(query)).all()

@@ -24,7 +24,7 @@ mysql> show tables;
 +---------------------+
 0 rows in set (0.00 sec)
 
-        这里我们创建了名为`blog_mini`的数据库，同时指定编码和字符集分别为utf8和utf8_general_ic。
+        这里我们创建了名为`blog_mini`的数据库，同时指定编码和字符集分别为utf8和utf8_general_ci。
         目前该数据库内没有表，空的。
 
      
