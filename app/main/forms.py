@@ -10,3 +10,6 @@ class CommentForm(Form):
                                             Email()])
     content = TextAreaField(u'内容', validators=[DataRequired(), Length(1, 1024)])
     follow = StringField(validators=[DataRequired()])
+
+class SearchForm(Form):
+    search = StringField(u'搜索', validators = [DataRequired()], render_kw={"placeholder": u"请输入要查询的"})

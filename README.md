@@ -35,3 +35,4 @@ Blog_mini是一个开源的博客系统，用Python开发完成，具有简洁�
     作者51cto博客：http://xpleaf.blog.51cto.com
     作者个人博客网站：http://www.xpleaf.com
     
+### 6.利用mysql5.7实现的全文搜索的支持，请参考docs目录内的文档

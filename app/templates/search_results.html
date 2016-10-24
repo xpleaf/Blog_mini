@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% import "_macros.html" as macros %}
+
+{% block content %}
+    <h1>"{{query}}" 查询得到的信息:</h1>
+    {% include "_search_article_entry.html" %}
+{% endblock %}

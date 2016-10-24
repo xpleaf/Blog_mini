@@ -3,13 +3,13 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config():
-    # DEBUG = True
+    DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     # SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_RECORD_QUERIES = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+    SQLALCHEMY_DATABASE_URI = 'mysql://root:123456@localhost/blog_mini'
     ARTICLES_PER_PAGE = 10
+    MAX_SEARCH_RESULTS = 50
     COMMENTS_PER_PAGE = 6
     SECRET_KEY = 'secret key to protect from csrf'
     WTF_CSRF_SECRET_KEY = 'random key for form' # for csrf protection

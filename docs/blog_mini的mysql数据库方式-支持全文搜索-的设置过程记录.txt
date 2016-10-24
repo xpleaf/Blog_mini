@@ -1,0 +1,90 @@
+
+======================================基于mysql5.7数据库的 windows下运行 blog_mini和初始化数据库 的完整过程====================================
+ pip install MySQL-python 
+ win下用exe直接安装。
+ 
+ root用户登录mysql创建数据库和用户：
+mysql> create database blog_mini default character set utf8 collate utf8_general_ci;
+Query OK, 1 row affected (0.00 sec)
+ 
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| blog_mini          |
+| mysql              |
++--------------------+
+3 rows in set (0.00 sec)
+mysql> use blog_mini
+mysql> show tables;
++---------------------+
+| Tables_in_blog_mini |
++---------------------+
++---------------------+
+0 rows in set (0.00 sec)
+
+        这里我们创建了名为`blog_mini`的数据库，同时指定编码和字符集分别为utf8和utf8_general_ci。
+        目前该数据库内没有表，空的。
+
+     
+git clone https://github.com/kerneltravel/Blog_mini.git
+cd Blog_mini   
+git checkout -b blog_mini_fulltext_search_by_mysql57
+pip install -r requirements/common.txt
+        
+根据你的情况修改config.py内的 mysql 连接参数：
+SQLALCHEMY_DATABASE_URI = 'mysql://root:123456@localhost/blog_mini'
+
+
+数据库版本控制：
+（先手动删掉原来的 mirgrations目录）
+再根据models.py 里面的数据定义自动生成blog_mini数据库的所有表格
+python manage.py db init （只需要第一次部署的时候做，后面更新表结构时不需要本命令）
+python manage.py db migrate -m "first db mysql"
+python manage.py db upgrade
+
+进mysql 数据库看blog_mini数据库里面，已经自动生成有表了。
+
+
+mysql> use blog_mini
+mysql> show tables;
++---------------------+
+| Tables_in_blog_mini |
++---------------------+
+| alembic_version     |
+| articles            |
+| articletypes        |
+| articletypesettings |
+| blog_info           |
+| blog_view           |
+| comments            |
+| follows             |
+| menus               |
+| plugins             |
+| sources             |
+| user                |
++---------------------+
+12 rows in set (0.00 sec)
+
+
+blog_mini数据库的文章表 title,content,summary这3个字段增加全文搜索索引：
+alter table articles add fulltext index fts_title(title) with PARSER ngram;
+alter table articles add fulltext index fts_content(`content`) with PARSER ngram;
+alter table articles add fulltext index fts_summary(`summary`) with PARSER ngram;
+
+
+初始化Blog_mini系统默认数据:
+python manage.py deploy product
+
+
+启动python网站服务：
+python manage.py runserver
+
+打开网页测试
+http://localhost:5000/
+
+后台登陆账号：
+    账号：blog_mini@163.com
+
+    密码：blog_mini
