@@ -52,4 +52,6 @@ Blog_mini是一个开源的博客系统，用Python开发完成，具有简洁�
 如果你在部署和使用过程中有疑问，请给作者留言：
 
     作者51cto博客：http://xpleaf.blog.51cto.com
-    作者个人博客网站：http://www.xpleaf.com
+    作者个人博客网站：http://www.xpleaf.cn(目前不可访问)
+    郑重说明：http://www.xpleaf.com这个域名已经被抢注，并且被用于发布不良内容，我将会进行举报！
+
