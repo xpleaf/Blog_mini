@@ -1,5 +1,6 @@
 # coding:utf-8
 import sys
+import hashlib
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -857,6 +858,8 @@ def edit_user_info():
             current_user.username = form2.username.data
             current_user.email = form2.email.data
             db.session.add(current_user)
+            current_user.avatar_hash = hashlib.md5(
+                    current_user.email.encode('utf-8')).hexdigest()
             db.session.commit()
             flash(u'修改用户信息成功！', 'success')
             return redirect(url_for('admin.account'))
