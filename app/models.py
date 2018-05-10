@@ -50,7 +50,7 @@ class User(UserMixin, db.Model):
         #     url = 'http://www.gravatar.com/avatar'
         #url = 'http://gravatar.duoshuo.com/avatar'
         url = 'http://cdn.v2ex.com/gravatar'
-        hash = hashlib.md5(
+        hash = self.avatar_hash or hashlib.md5(
             self.email.encode('utf-8')).hexdigest()
         return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
             url=url, hash=hash, size=size, default=default, rating=rating)
@@ -244,7 +244,7 @@ class Comment(db.Model):
         #     url = 'http://www.gravatar.com/avatar'
         #url = 'http://gravatar.duoshuo.com/avatar'
         url = 'http://cdn.v2ex.com/gravatar'
-        hash = hashlib.md5(
+        hash = self.avatar_hash or hashlib.md5(
             self.author_email.encode('utf-8')).hexdigest()
         return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
             url=url, hash=hash, size=size, default=default, rating=rating)
