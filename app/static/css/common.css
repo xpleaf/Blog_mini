@@ -109,6 +109,13 @@ ul.comments .delete-comment{
 .comment-reply-info {
     color: #3f42cd;
 }
+#article-container {
+    display: inline-block;
+}
+#article-container img {
+    max-width: 90%;
+    min-width: 50px;
+}
 
 /*CSS For Comments(admin page), use the same CSS as above*/
 ul.comments .comment-handle-admin {
@@ -141,6 +148,16 @@ ul.comments .disabled-comment-admin-btn {
 /*CSS For submit comment*/
 .comment-submit {
     margin-left: 25px;
+}
+#verificode {
+    border-radius: 4px;
+    cursor: pointer;
+    position: absolute;
+    z-index: 3;
+    right: 0;
+    top: 0;
+    max-width: 50%;
+    height: 100%;
 }
 
 /*CSS For floatButton*/

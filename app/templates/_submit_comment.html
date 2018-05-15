@@ -6,14 +6,21 @@
 {#            <button type="button" class="close" data-dismiss="alert" id="undo_reply">&times;</button>#}
 {#            回复<strong><i>香飘叶子</i></strong> </div>#}
         <form class="submit-comment-form" id="submit-comment-form" method="post" action="">
-            {{ form.csrf_token }}
-            {{ form.follow(type='hidden') }}
-            {{ form.name.label }}{{ form.name(class='form-control', required='', value=current_user.username) }}
-            {{ form.email.label }}{{ form.email(class='form-control', required='', value=current_user.email) }}
-            {{ form.content.label }}{{ form.content(class='form-control', required='') }}
-            <button type="submit" class="btn btn-default">
-                提交
-            </button>
+            <div class="form-group col-md-12">
+                {{ form.csrf_token }}
+                {{ form.follow(type='hidden') }}
+                {{ form.name.label }}{{ form.name(class='form-control', required='', value=current_user.username) }}
+                {{ form.email.label }}{{ form.email(class='form-control', required='', value=current_user.email) }}
+                {{ form.content.label }}{{ form.content(class='form-control', required='') }}
+                {{ form.varify_code.label }}<small>  不区分大小写</small>
+                <div class="input-group col-md-12">
+                    {{ form.varify_code(class='form-control', required='')}}
+                    <img id='verificode' src="{{ url_for('main.get_code')}}" title="点击刷新" alt="这是验证码图片" onclick="this.src='{{ url_for('main.get_code')}}?'+ Math.random()">
+                </div>
+                <button type="submit" class="btn btn-default">
+                    提交
+                </button>
+            </div>
         </form>
     </div>
 </div>

@@ -1,11 +1,13 @@
 #coding:utf-8
 from flask import render_template, request, current_app, redirect,\
-    url_for, flash
+    url_for, flash, make_response, session
 from . import main
 from ..models import Article, ArticleType, article_types, Comment, \
     Follow, User, Source, BlogView
 from .forms import CommentForm
+from .verify_code import validate_pic
 from .. import db
+from io import BytesIO
 
 
 @main.route('/')
@@ -54,26 +56,33 @@ def articleDetails(id):
     form = CommentForm(request.form, follow=-1)
     article = Article.query.get_or_404(id)
 
+
     if form.validate_on_submit():
-        comment = Comment(article=article,
+        if 'image' in session and session.get('image') == form.varify_code.data.upper():
+            comment = Comment(article=article,
                           content=form.content.data,
                           author_name=form.name.data,
                           author_email=form.email.data)
-        db.session.add(comment)
-        db.session.commit()
-        followed_id = int(form.follow.data)
-        if followed_id != -1:
-            followed = Comment.query.get_or_404(followed_id)
-            f = Follow(follower=comment, followed=followed)
-            comment.comment_type = 'reply'
-            comment.reply_to = followed.author_name
-            db.session.add(f)
             db.session.add(comment)
             db.session.commit()
-        flash(u'提交评论成功！', 'success')
-        return redirect(url_for('.articleDetails', id=article.id, page=-1))
+            followed_id = int(form.follow.data)
+            
+            if followed_id != -1:
+                followed = Comment.query.get_or_404(followed_id)
+                f = Follow(follower=comment, followed=followed)
+                comment.comment_type = 'reply'
+                comment.reply_to = followed.author_name
+                db.session.add(f)
+                db.session.add(comment)
+                db.session.commit()
+            flash(u'提交评论成功！', 'success')
+            return redirect(url_for('.articleDetails', id=article.id, page=-1))
+        else:
+            flash(u'验证码错误！', 'danger')
     if form.errors:
         flash(u'发表评论失败', 'danger')
+
+
 
     page = request.args.get('page', 1, type=int)
     if page == -1:
@@ -89,3 +98,17 @@ def articleDetails(id):
                            form=form, endpoint='.articleDetails', id=article.id)
     # page=page, this is used to return the current page args to the
     # disable comment or enable comment endpoint to pass it to the articleDetails endpoint
+
+
+@main.route('/code')
+def get_code():
+    # 把strs发给前端,或者在后台使用session保存
+    code_img, strs = validate_pic()
+    buf = BytesIO()
+    code_img.save(buf, 'jpeg')
+
+    buf_str = buf.getvalue()
+    response = current_app.make_response(buf_str)
+    response.headers['Content-Type'] = 'image/gif'
+    session['image'] = strs.upper()#忽略大小写
+    return response

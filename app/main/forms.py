@@ -10,3 +10,4 @@ class CommentForm(Form):
                                             Email()])
     content = TextAreaField(u'内容', validators=[DataRequired(), Length(1, 1024)])
     follow = StringField(validators=[DataRequired()])
+    varify_code = StringField(u'验证码', validators=[DataRequired()])
