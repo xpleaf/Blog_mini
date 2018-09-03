@@ -48,7 +48,7 @@ class User(UserMixin, db.Model):
         #     url = 'https://secure.gravatar.com/avatar'
         # else:
         #     url = 'http://www.gravatar.com/avatar'
-        url = 'http://gravatar.duoshuo.com/avatar'
+        url = 'https://gravatar.loli.net/avatar'
         hash = self.avatar_hash or hashlib.md5(
             self.email.encode('utf-8')).hexdigest()
         return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
