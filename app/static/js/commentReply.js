@@ -10,7 +10,7 @@ function go_to_reply(id, author_name) {
     $('#reply-dialog-box').remove();
     $('#submit-comment-container').prepend('<div class="alert alert-info alert-dismissable" id="reply-dialog-box">' +
             '<button type="button" class="close" data-dismiss="alert" onclick="undo_reply()">&times;</button>' +
-            '回复给<strong><i>' + author_name +'</i></strong> </div>');
+            '回复给<strong><i>' + $('<div/>').text(author_name).html() +'</i></strong> </div>');
 }
 
 //Reset the follow value when refresh page
