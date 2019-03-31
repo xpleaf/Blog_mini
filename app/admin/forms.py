@@ -83,4 +83,11 @@ class ChangePasswordForm(Form):
 class EditUserInfoForm(Form):
     username = StringField(u'昵称', validators=[DataRequired()])
     email = StringField(u'电子邮件', validators=[DataRequired(), Length(1, 64), Email()])
+    #userlevel = SelectField(u'权限', coerce=int, validators=[DataRequired()])
     password = PasswordField(u'密码确认', validators=[DataRequired()])
+
+class AddAccountInfoForm(Form):
+    username = StringField(u'昵称', validators=[DataRequired()])
+    email = StringField(u'电子邮件', validators=[DataRequired(), Length(1, 64), Email()])
+    userlevel = SelectField(u'权限', coerce=int, validators=[DataRequired()])
+    password = PasswordField(u'密码', validators=[DataRequired()])

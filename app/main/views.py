@@ -1,11 +1,48 @@
 #coding:utf-8
 from flask import render_template, request, current_app, redirect,\
-    url_for, flash
+    url_for, flash, g
+from flask.ext.login import login_required, current_user
 from . import main
 from ..models import Article, ArticleType, article_types, Comment, \
     Follow, User, Source, BlogView
-from .forms import CommentForm
+from .forms import CommentForm, SearchForm
 from .. import db
+
+@main.before_request
+def before_request():
+    g.user = current_user
+#    if g.user.is_authenticated():
+#        g.user.last_seen = datetime.utcnow()
+#        db.session.add(g.user)
+#        db.session.commit()
+#        g.search_form = SearchForm()
+    g.search_form = SearchForm()
+    #g.locale = get_locale()
+
+@main.route('/search', methods = ['POST'])
+def search():
+    if not g.search_form.validate_on_submit():
+        return redirect(url_for('index'))
+    return redirect(url_for('main.search_results', query = g.search_form.search.data))
+    
+@main.route('/search_results/<query>')
+def search_results(query):
+    BlogView.add_view(db)
+    per_page = current_app.config['ARTICLES_PER_PAGE']
+    max_search = current_app.config['MAX_SEARCH_RESULTS']
+#    pagination = Article.query.whoosh_search(query, max_search).paginate(
+#            page=1, per_page=current_app.config['ARTICLES_PER_PAGE'],
+#            error_out=False)
+#    print query, pagination
+#    articles = pagination.items
+#    return render_template('search_results.html', articles=articles,
+#            query = query,pagination=pagination, endpoint='.search_results')
+
+    articles = Article.query.whoosh_search(query, max_search).all()
+    print query, articles
+    #articles = pagination.items
+    return render_template('search_results.html', articles=articles,
+            query = query, endpoint='.search_results')
 
 
 @main.route('/')
@@ -86,6 +123,6 @@ def articleDetails(id):
     article.add_view(article, db)
     return render_template('article_detials.html', User=User, article=article,
                            comments=comments, pagination=pagination, page=page,
-                           form=form, endpoint='.articleDetails', id=article.id)
+                           form=form, endpoint='main.articleDetails', id=article.id)
     # page=page, this is used to return the current page args to the
     # disable comment or enable comment endpoint to pass it to the articleDetails endpoint

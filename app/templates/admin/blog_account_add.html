@@ -1,0 +1,36 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block title %}
+    Blog_mini -添加帐号
+{% endblock %}
+
+{% block admin_content %}
+<div class="entry-box submit-article">
+    <h4><strong>添加帐号</strong></h4>
+    <hr/>
+    <div>
+    <form class="add-blog-account" method="post" action="">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            {{ form.username.label }}
+            {{ form.username(class='form-control', required='') }}
+            {{ form.email.label }}
+            {{ form.email(class='form-control') }}
+            {{ form.password.label }}
+            {{ form.password(class='form-control', required='') }}
+            <strong>权限：</strong>
+            {{ form.userlevel(class='form-control',required='',id='userlevel') }}
+        </div>
+        <div class="add-account-button">
+            <button type="submit" class="btn btn-success">提交</button>
+        </div>
+    </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='tinymce/js/tinymce/tinymce.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/tinymce_setup.js') }}"></script>
+{% endblock %}
