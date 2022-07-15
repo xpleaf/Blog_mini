@@ -28,7 +28,7 @@ def make_shell_context():
     return dict(db=db, ArticleType=ArticleType,Source=Source,
                 Comment=Comment, Article=Article, User=User, Menu=Menu,
                 ArticleTypeSetting=ArticleTypeSetting, BlogInfo=BlogInfo,
-                Plugin=Plugin, BlogView=BlogView)
+                Plugin=Plugin, BlogView=BlogView,)
 
 manager.add_command("shell", Shell(make_context=make_shell_context))
 
